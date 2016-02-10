@@ -1,11 +1,11 @@
 job_deploy:
   stage: deploy
-  tags: deployStaging
+  tags: [deployStaging]
   script:
     -  npm install &&  forever bin/www
 
 job_deploy:
   stage: deploy
-  tags: deployProduction
+  tags: [deployProduction]
   script:
     -  npm install &&  forever bin/www
