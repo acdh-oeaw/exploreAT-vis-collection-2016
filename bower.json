@@ -1,0 +1,27 @@
+{
+  "name": "exploreat",
+  "description": "",
+  "main": "public/index.html",
+  "authors": [
+    "abenito@usal.es"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "http://exploreat.usal.es",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^3.5.14",
+    "jquery": "^2.2.0",
+    "wellknown": "^0.4.1",
+    "Wicket": "*",
+    "d3-queue": "^2.0.2",
+    "topojson": "^1.6.22"
+  }
+}
