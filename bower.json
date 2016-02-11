@@ -22,6 +22,7 @@
     "wellknown": "^0.4.1",
     "Wicket": "*",
     "d3-queue": "^2.0.2",
-    "topojson": "^1.6.22"
+    "topojson": "^1.6.22",
+    "d3-tip": "^0.6.7"
   }
 }

@@ -57,8 +57,8 @@ var refreshIntervalId;
 var q =  d3_queue.queue();
 
 q
-    .defer(d3.json, "/data/exploreAT.json")
-    .defer(d3.json, "/data/places_out.json")
+    .defer(d3.json, "data/exploreAT.json")
+    .defer(d3.json, "data/places_out.json")
     .await(makeMap);
 
 function makeMap(error, exploreAT, places_out, target) {
