@@ -5,12 +5,18 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var users = require('./routes/users');
-
 var api = require('./routes/api');
 
 var app = express();
+
+var config = require('config');
+var prefix = "";
+if (config.has('appConfig.prefix')) {
+    prefix = config.get('appConfig.prefix');
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,13 +29,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, prefix + 'public')));
 
-app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+app.use(prefix + '/bower_components',  express.static(__dirname + '/bower_components'));
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/api', api);
+app.use(prefix + '/', index);
+app.use(prefix + '/users', users);
+app.use(prefix + '/api', api);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

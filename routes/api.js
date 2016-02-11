@@ -1,10 +1,14 @@
 var express = require('express');
 var router = express.Router();
+
+var config = require('config');
+var mariaDBConfig = config.get('mariaDB.dbConfig');
+
 var dbClient = new require('mariasql')({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '***REMOVED***',
-    db: 'dboe_1'
+    host: mariaDBConfig.host,
+    user: mariaDBConfig.user,
+    password: mariaDBConfig.password,
+    db: mariaDBConfig.db
 });
 
 router.get('/region/:region_id', function(req, res, next) {

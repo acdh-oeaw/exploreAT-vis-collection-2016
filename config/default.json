@@ -1,0 +1,12 @@
+{
+  
+  //DB connection settings
+  "mariaDB": {
+    "dbConfig": {
+      "host": "localhost",
+      "user": "root",
+      "db": "dboe_1",
+      "password": "***REMOVED***"
+    }
+  }
+}
