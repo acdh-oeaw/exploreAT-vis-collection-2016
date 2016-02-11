@@ -173,7 +173,7 @@ function updateMapWithRegionWithID(id) {
     if (id > 0 && id < 350) {
         $.ajax({
             type: "GET",
-            url: "http://localhost:3000/region/" + id,
+            url: "api/region/" + id,
             dataType: "json",
             async: true,
             success: function (response) {
