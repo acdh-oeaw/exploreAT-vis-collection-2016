@@ -1,12 +1,10 @@
 {
   
   //DB connection settings
-  "mariaDB": {
-    "dbConfig": {
+  "mysql": {
       "host": "localhost",
       "user": "root",
       "db": "dboe_1",
       "password": "***REMOVED***"
-    }
   }
 }

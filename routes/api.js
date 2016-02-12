@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var config = require('config');
-var mysqlConfig = config.get('mariaDB.dbConfig');
+var mysqlConfig = config.get('mysql');
 
 var MySQL      = require('mysql');
 var dbClient = MySQL.createConnection({
