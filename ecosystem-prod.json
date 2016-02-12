@@ -25,7 +25,7 @@
    */
   deploy : {
     production : {
-      user : "alex",
+      user : "exploreat",
       host : "exploreat.usal.es",
       ref  : "origin/master",
       repo : "/home/git/repositories/usal-vis/exploreat.git",

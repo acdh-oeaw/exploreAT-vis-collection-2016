@@ -26,7 +26,7 @@
    */
   deploy : {
     staging : {
-      user : "alex",
+      user : "exploreat",
       host : "exploreat.usal.es",
       ref  : "origin/develop",
       repo : "/home/git/repositories/usal-vis/exploreat.git",
