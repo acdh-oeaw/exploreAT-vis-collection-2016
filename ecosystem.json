@@ -1,0 +1,56 @@
+{
+  /**
+   * Application configuration section
+   * http://pm2.keymetrics.io/docs/usage/application-declaration/
+   */
+  apps : [
+    // First application
+    {
+      name      : "ExploreaAT",
+      script    : "bin/www",
+      env: {
+        PORT: "3000"
+      },
+      env_staging : {
+        NODE_ENV: "staging",
+        PORT: "3001",
+        TEST: true,
+        NODE_CONFIG_DIR: "../"
+      },
+      env_production : {
+        NODE_ENV: "production",
+        PORT: "3002",
+        NODE_CONFIG_DIR: "../"
+      }
+    }
+  ],
+
+  /**
+   * Deployment section
+   * http://pm2.keymetrics.io/docs/usage/deployment/
+   */
+  deploy : {
+    production : {
+      user : "alex",
+      host : "exploreat.usal.es",
+      ref  : "origin/master",
+      repo : "/home/git/repositories/usal-vis/exploreat.git",
+      path : "/usr/src/app/production",
+      "post-deploy" : "npm install ; pm2 startOrRestart ecosystem.json --env production",
+      env  : {
+        NODE_ENV: "production"
+      }
+    },
+    staging : {
+      user : "alex",
+      host : "exploreat.usal.es",
+      ref  : "origin/development",
+      repo : "/home/git/repositories/usal-vis/exploreat.git",
+      path : "/usr/src/app/staging",
+      "post-deploy" : "npm install ; pm2 startOrRestart ecosystem.json --env staging",
+      env  : {
+        NODE_ENV: "staging"
+      }
+    }
+  }
+}

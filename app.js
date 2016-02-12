@@ -11,12 +11,6 @@ var api = require('./routes/api');
 
 var app = express();
 
-var config = require('config');
-//var prefix = "";
-//if (config.has('appConfig.prefix')) {
-//    prefix = config.get('appConfig.prefix');
-//}
-//console.log('Prefix is ' + prefix);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
