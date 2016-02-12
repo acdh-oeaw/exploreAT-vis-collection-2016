@@ -30,7 +30,7 @@
       ref  : "origin/master",
       repo : "/home/git/repositories/usal-vis/exploreat.git",
       path : "/usr/src/app/production",
-      "post-deploy" : "npm install ; bower install; pm2 startOrRestart ecosystem.json --env production",
+      "post-deploy" : "npm install ; bower install; pm2 startOrRestart ecosystem-prod.json --env production",
       env  : {
         NODE_ENV: "production"
       }
