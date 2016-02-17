@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mapping Austria | PERSONS</title>
+    <link href="stylesheets/style.css" rel="stylesheet">
+    <script src="bower_components/d3/d3.min.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>-->
+    <script src="bower_components/d3-queue/d3-queue.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+    <script src="bower_components/wellknown/wellknown.js"></script>
+    <script src="bower_components/Wicket/wicket.js"></script>
+</head>
+
+<body>
+
+  <div id="map">
+    <div id="header">
+      <div id="fieldFilter" class="filter-box">
+        <input type="text" id="searchField" placeholder="Word...">
+        <button type="button" id="searchFieldButton">Filter</button>
+        <button type="button" id="clearFieldButton">Clear</button>
+      </div>
+      <div id="speechFilter" class="filter-box">
+      </div>
+      <br>
+
+    </div>
+  </div>
+
+  <div id="info-tooltip">
+    Tooltip
+  </div>
+
+  <script src="javascripts/words.js"></script>
+
+</body>
+
+</html>
