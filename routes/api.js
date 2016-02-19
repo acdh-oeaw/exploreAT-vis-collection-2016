@@ -50,22 +50,21 @@ router.get('/words/:table', function(req, res, next) {
     dbClient.query('SELECT lemma.dbo as word, '+
     'lemma_wortart.bezeichnung as partOfSpeech, '+
     'belegzettel.quelle as quelleSource, '+
-    'quelle.erscheinungsjahr as year, '+
+    'belegzettel.belegjahr as year, '+
     'ort.nameLang as locationName, '+
     'AsText(GISort.the_geom) as geometry '+
-    'FROM belegzettel_beleg, belegzettel, quelle, ort, GISort, lemma_wortart, lemma '+
-    'WHERE lemma.dbo LIKE \'%%\' '+
-    // 'AND CHAR_LENGTH(quelle.erscheinungsjahr) = 4 '+
+    'FROM belegzettel_beleg, belegzettel, ort, GISort, lemma_wortart , lemma '+
+    'WHERE belegzettel_beleg.beleg LIKE \'%%\' '+
     'AND belegzettel.lokation_ort_id IS NOT NULL '+
     'AND ort.gis_ort_id IS NOT NULL '+
-    'AND lemma.lemma_wortart_id IS NOT NULL '+
+    'AND belegzettel_beleg.beleg_wortart_id IS NOT NULL '+
     'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
-    'AND quelle.id = belegzettel.quelle_id '+
     'AND belegzettel.lokation_ort_id = ort.id '+
+    'AND belegzettel_beleg.hauptlemma_id IS NOT NULL '+
     'AND ort.gis_ort_id = GISort.id '+
-    'AND lemma.lemma_wortart_id = lemma_wortart.id '+
+    'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
     'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
-    'ORDER BY quelle.erscheinungsjahr DESC'
+    'ORDER BY belegzettel.belegjahr DESC'
     , null , function(err, rows) {
         if (err)
           console.error(err);

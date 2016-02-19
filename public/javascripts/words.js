@@ -541,7 +541,12 @@ function drawMap() {
       html += "<br>";
       html += "Location: <b>"+d.features[0].properties.locationName+"</b>"
       html += "<br>";
-      html += "Source: <b>"+d.features[0].properties.quelleSource+"</b>"
+      if(d.features[0].properties.quelleSource == null){
+        html += "Source: <b>Unknown</b>"
+      }
+      else{
+          html += "Source: <b>"+d.features[0].properties.quelleSource+"</b>"
+      }
       return html;
     })
   })
