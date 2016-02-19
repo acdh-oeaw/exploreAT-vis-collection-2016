@@ -47,25 +47,26 @@ router.get('/words/:table', function(req, res, next) {
 
   if(req.params.table == "lemma"){
 
-    dbClient.query('SELECT lemma.dbo as word, '+
-    'lemma_wortart.bezeichnung as partOfSpeech, '+
-    'belegzettel.quelle as quelleSource, '+
-    'belegzettel.belegjahr as year, '+
-    'ort.nameLang as locationName, '+
-    'AsText(GISort.the_geom) as geometry '+
-    'FROM belegzettel_beleg, belegzettel, ort, GISort, lemma_wortart , lemma '+
-    'WHERE belegzettel_beleg.beleg LIKE \'%%\' '+
-    'AND belegzettel.lokation_ort_id IS NOT NULL '+
-    'AND ort.gis_ort_id IS NOT NULL '+
-    'AND belegzettel_beleg.beleg_wortart_id IS NOT NULL '+
-    'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
-    'AND belegzettel.lokation_ort_id = ort.id '+
-    'AND belegzettel_beleg.hauptlemma_id IS NOT NULL '+
-    'AND ort.gis_ort_id = GISort.id '+
-    'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
-    'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
-    'ORDER BY belegzettel.belegjahr DESC',
-    timeout: 120000
+    dbClient.query( {
+        sql: 'SELECT lemma.dbo as word, '+
+            'lemma_wortart.bezeichnung as partOfSpeech, '+
+            'belegzettel.quelle as quelleSource, '+
+            'belegzettel.belegjahr as year, '+
+            'ort.nameLang as locationName, '+
+            'AsText(GISort.the_geom) as geometry '+
+            'FROM belegzettel_beleg, belegzettel, ort, GISort, lemma_wortart , lemma '+
+            'WHERE belegzettel_beleg.beleg LIKE \'%%\' '+
+            'AND belegzettel.lokation_ort_id IS NOT NULL '+
+            'AND ort.gis_ort_id IS NOT NULL '+
+            'AND belegzettel_beleg.beleg_wortart_id IS NOT NULL '+
+            'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
+            'AND belegzettel.lokation_ort_id = ort.id '+
+            'AND belegzettel_beleg.hauptlemma_id IS NOT NULL '+
+            'AND ort.gis_ort_id = GISort.id '+
+            'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
+            'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
+            'ORDER BY belegzettel.belegjahr DESC',
+            timeout: 120000}
     , null , function(err, rows) {
         if (err)
           console.error(err);
@@ -76,25 +77,26 @@ router.get('/words/:table', function(req, res, next) {
   }
   else if(req.params.table == "beleg"){
 
-    dbClient.query('SELECT belegzettel_beleg.beleg as word, '+
-    'lemma_wortart.bezeichnung as partOfSpeech, '+
-    'belegzettel.quelle as quelleSource, '+
-    'quelle.erscheinungsjahr as year, '+
-    'ort.nameLang as locationName, '+
-    'AsText(GISort.the_geom) as geometry '+
-    'FROM belegzettel_beleg, belegzettel, quelle, ort, GISort, lemma_wortart '+
-    'WHERE belegzettel_beleg.beleg LIKE \'%%\' '+
-    //'AND CHAR_LENGTH(quelle.erscheinungsjahr) = 4 '+
-    'AND belegzettel.lokation_ort_id IS NOT NULL '+
-    'AND ort.gis_ort_id IS NOT NULL '+
-    'AND belegzettel_beleg.beleg_wortart_id IS NOT NULL '+
-    'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
-    'AND quelle.id = belegzettel.quelle_id '+
-    'AND belegzettel.lokation_ort_id = ort.id '+
-    'AND ort.gis_ort_id = GISort.id '+
-    'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
-    'ORDER BY quelle.erscheinungsjahr DESC',
-    timeout: 120000
+    dbClient.query( {
+        sql: 'SELECT belegzettel_beleg.beleg as word, '+
+            'lemma_wortart.bezeichnung as partOfSpeech, '+
+            'belegzettel.quelle as quelleSource, '+
+            'quelle.erscheinungsjahr as year, '+
+            'ort.nameLang as locationName, '+
+            'AsText(GISort.the_geom) as geometry '+
+            'FROM belegzettel_beleg, belegzettel, quelle, ort, GISort, lemma_wortart '+
+            'WHERE belegzettel_beleg.beleg LIKE \'%%\' '+
+            //'AND CHAR_LENGTH(quelle.erscheinungsjahr) = 4 '+
+            'AND belegzettel.lokation_ort_id IS NOT NULL '+
+            'AND ort.gis_ort_id IS NOT NULL '+
+            'AND belegzettel_beleg.beleg_wortart_id IS NOT NULL '+
+            'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
+            'AND quelle.id = belegzettel.quelle_id '+
+            'AND belegzettel.lokation_ort_id = ort.id '+
+            'AND ort.gis_ort_id = GISort.id '+
+            'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
+            'ORDER BY quelle.erscheinungsjahr DESC',
+            timeout: 120000 }
     , null , function(err, rows) {
         if (err)
           console.error(err);
