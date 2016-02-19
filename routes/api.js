@@ -64,7 +64,8 @@ router.get('/words/:table', function(req, res, next) {
     'AND ort.gis_ort_id = GISort.id '+
     'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
     'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
-    'ORDER BY belegzettel.belegjahr DESC'
+    'ORDER BY belegzettel.belegjahr DESC',
+    timeout: 120000
     , null , function(err, rows) {
         if (err)
           console.error(err);
@@ -92,7 +93,8 @@ router.get('/words/:table', function(req, res, next) {
     'AND belegzettel.lokation_ort_id = ort.id '+
     'AND ort.gis_ort_id = GISort.id '+
     'AND belegzettel_beleg.beleg_wortart_id = lemma_wortart.id '+
-    'ORDER BY quelle.erscheinungsjahr DESC'
+    'ORDER BY quelle.erscheinungsjahr DESC',
+    timeout: 120000
     , null , function(err, rows) {
         if (err)
           console.error(err);
