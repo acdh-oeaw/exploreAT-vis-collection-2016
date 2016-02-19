@@ -206,7 +206,7 @@ function createWords(table) {
 
   $.ajax({
       type: "GET",
-      url: "http://localhost:3000/api/words/"+table,
+      url: "api/words/"+table,
       dataType: "json",
       async: true,
       success: function (response) {
