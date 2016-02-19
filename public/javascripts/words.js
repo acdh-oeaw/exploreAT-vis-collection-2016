@@ -99,7 +99,7 @@ function zoomed() {
 
 var q = d3_queue.queue();
 
-q.defer(d3.json, "/data/exploreAT.json")
+q.defer(d3.json, "data/exploreAT.json")
 .await(makeMap);
 
 function makeMap(error, exploreAT, target) {
