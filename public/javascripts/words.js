@@ -208,6 +208,7 @@ function createWords(table) {
       type: "GET",
       url: "api/words/"+table,
       dataType: "json",
+      timeout: 120000,
       async: true,
       success: function (response) {
 
