@@ -4,24 +4,50 @@
 <head>
     <meta charset="utf-8">
     <title>Mapping Austria</title>
-    <link href="stylesheets/style.css" rel="stylesheet">
+    <link href="stylesheets/style-home.css" rel="stylesheet">
     <script src="bower_components/d3/d3.min.js"></script>
-    <script src="bower_components/topojson/topojson.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <!--<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>-->
-    <script src="bower_components/d3-queue/d3-queue.js"></script>
-    <script src="bower_components/d3-tip/index.js"></script>
-    <script src="bower_components/wellknown/wellknown.js"></script>
-    <script src="bower_components/Wicket/wicket.js"></script>
 </head>
 
 <body>
-    <div class="chart-stage">
-        <div class="collapse in" id="pcp-chart">
-            <div id="map"></div>
-        </div>
+    <div id="page-wrapper">
+      <div id="header">
+        <h1>ExploreAT!</h1>
+        <h2>Available Visualizations</h2>
+      </div>
+      <div id="content">
+        <a class="card-link" href="/ex_words">
+          <div class="card">
+            <div class="card-top">
+              <img src="img/home/ex_words.png"/>
+            </div>
+            <div class="card-bottom">
+              <div class="name">
+                Geographical Lemmas
+              </div>
+              <div class="description">
+                Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map.
+              </div>
+            </div>
+          </div>
+        </a>
+        <a class="card-link" href="/ex_words_sources">
+          <div class="card">
+            <div class="card-top">
+              <img src="img/home/ex_words_sources.png"/>
+            </div>
+            <div class="card-bottom">
+              <div class="name">
+                Word-Source Relations
+              </div>
+              <div class="description">
+                Geographical exploration of Lemmas, including filtering and relations between words based on the source they appear in when clicking on any of them.
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
-<script src="javascripts/simple_map.js"></script>
 </body>
 
 </html>

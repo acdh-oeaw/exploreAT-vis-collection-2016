@@ -48,9 +48,11 @@ router.get('/words/:table', function(req, res, next) {
   if(req.params.table == "lemma"){
 
     dbClient.query( {
-        sql: 'SELECT lemma.dbo as word, '+
+        sql: 'SELECT lemma.id as id, ' +
+            'lemma.dbo as word, '+
             'lemma_wortart.bezeichnung as partOfSpeech, '+
             'belegzettel.quelle as quelleSource, '+
+            'belegzettel.quelle_id as quelleId, '+
             'belegzettel.belegjahr as year, '+
             'ort.nameLang as locationName, '+
             'AsText(GISort.the_geom) as geometry '+
@@ -78,9 +80,11 @@ router.get('/words/:table', function(req, res, next) {
   else if(req.params.table == "beleg"){
 
     dbClient.query( {
-        sql: 'SELECT belegzettel_beleg.beleg as word, '+
+        sql: 'SELECT belegzettel_beleg.id as id, '+
+            'belegzettel_beleg.beleg as word, '+
             'lemma_wortart.bezeichnung as partOfSpeech, '+
             'belegzettel.quelle as quelleSource, '+
+            'belegzettel.quelle_id as quelleId, '+
             'quelle.erscheinungsjahr as year, '+
             'ort.nameLang as locationName, '+
             'AsText(GISort.the_geom) as geometry '+

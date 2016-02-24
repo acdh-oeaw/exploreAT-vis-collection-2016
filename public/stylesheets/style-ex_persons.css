@@ -191,6 +191,15 @@ text {
 .wordPoint:hover {
   stroke: black;
   fill: black;
+  cursor: pointer;
+}
+
+.quelleLine {
+  opacity: .25;
+}
+.quelleLine {
+  stroke: red;
+  fill: red;
 }
 
 #info-tooltip {
