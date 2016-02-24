@@ -1,0 +1,28 @@
+{
+    "type" : "jdbc",
+    "jdbc" : {
+        "url" : "jdbc:mysql://localhost:3306/dboe_1",
+        "user" : "root",
+        "password" : "***REMOVED***",
+        "sql" :  "select lemma.id as _id, fragebogen.nummer as fragebogen_nr, lemma.dbo as dbo, frage.originalfrage as originalfrage, fragebogen.titel as title, fragebogen.erscheinungsjahr as year from lemma inner join belegzettel_beleg on lemma.id=belegzettel_beleg.hauptlemma_id inner join frage on belegzettel_beleg.frage_id = frage.id inner join fragebogen on frage.fragebogen_id = fragebogen.id",
+        "index" : "dboe",
+        "type" : "lemma_fragebogen",
+        "ignore_null_values" : "true",
+        "fetchsize" : "min",
+        "treat_binary_as_string" : false,
+        "max_bulk_actions" : 20000,
+        "max_concurrent_bulk_requests" : 10,
+        "metrics" : {
+            "enabled" : true,
+            "logger" : {
+                "plain" : true,
+                "json" : true
+            },
+            "interval" : "1s"
+        },
+        "elasticsearch" : {
+            "cluster" : "elasticsearch_alexb",
+            "autodiscover" : true
+        }
+    }
+}
