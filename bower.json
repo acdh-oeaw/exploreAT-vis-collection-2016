@@ -26,7 +26,8 @@
     "d3-tip": "^0.6.7",
     "jquery-ui": "*",
     "fontawesome": "*",
-    "noUiSlider-ms": "~6.0.0"
+    "noUiSlider-ms": "~6.0.0",
+    "underscore": "~1.8.3"
   },
   "resolutions": {
     "d3": "3.5.5"

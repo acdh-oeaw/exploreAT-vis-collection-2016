@@ -19,6 +19,10 @@ router.get('/ex_words_sources', function(req,res) {
     res.render('ex_words_sources');
 });
 
+router.get('/ex_word_bubbles', function(req,res) {
+    res.render('ex_word_bubbles');
+});
+
 router.get('/ex_colors', function(req,res) {
     res.render('ex_colors');
 });

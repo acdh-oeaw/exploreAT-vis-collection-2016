@@ -111,6 +111,15 @@ router.get('/words/:table', function(req, res, next) {
   }
 });
 
+router.get('/lemmas', function(req, res, next) {
+    dbClient.query('SELECT lemma.id as id, lemma.dbo as dbo FROM lemma WHERE lemma.dbo LIKE \'%%\' LIMIT 500',
+        function(err, rows) {
+            if (err)
+                throw err;
+            // `rows.info.metadata` contains the metadata
+            res.json({rows: rows});
+        });
+});
 
 router.get('/colorLemma/:name', function(req, res, next) {
     dbClient.query('SELECT person.vorname,person.nachname,GISort.the_geom '+
