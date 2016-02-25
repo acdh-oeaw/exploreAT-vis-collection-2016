@@ -7,7 +7,7 @@ var width = 700,
 var force;
 var svg;
 
-var	padding = 4;
+var	padding = 3;
 var radius = d3.scale.sqrt().range([0, 12]);
 
 createWords();
@@ -36,7 +36,7 @@ function dealWithData(response){
     bubble.bigradius = 6;
     bubble.cx = width/2;
     bubble.cy = height/2;
-    bubble.color = "black";
+    bubble.color = '#'+Math.floor(Math.random()*16777215).toString(16);
     bubble.id = response.rows[i].id;
     bubble.lemma = response.rows[i].dbo;
 
@@ -113,7 +113,7 @@ function createVisualization(){
 
     function tick(e) {
       circle.each(gravity(0.2 * e.alpha))
-      .each(collide(0.5))
+      .each(collide(0.1))
       .attr("cx", function (d) {
         return d.x;
       })
