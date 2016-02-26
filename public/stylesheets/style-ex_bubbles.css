@@ -34,10 +34,57 @@ h2 {
   width: 200px;
 }
 
-#chart {
+/*#chart {
 	border: 1px solid red;
 }
 
 svg {
 	border: 1px solid blue;
+}*/
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label.lade {
+	opacity: .1;
+}
+.label.bedeutung {
+	opacity: .8;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+.node.lade {
+	fill: #ae3030;
+	background-color: #ae3030;
+}
+
+.node.bedeutung {
+	fill: #e66c6c;
+	background-color: #e66c6c;
+}
+
+.node.dbo {
+	fill: #f6bcbc;
+	background-color: #f6bcbc;
 }

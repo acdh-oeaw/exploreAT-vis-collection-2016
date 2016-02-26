@@ -23,6 +23,14 @@ router.get('/ex_word_bubbles', function(req,res) {
     res.render('ex_word_bubbles');
 });
 
+router.get('/ex_word_circles', function(req,res) {
+    res.render('ex_word_circles');
+});
+
+router.get('/ex_word_treemap', function(req,res) {
+    res.render('ex_word_treemap');
+});
+
 router.get('/ex_colors', function(req,res) {
     res.render('ex_colors');
 });

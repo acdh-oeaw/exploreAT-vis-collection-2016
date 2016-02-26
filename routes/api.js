@@ -112,7 +112,18 @@ router.get('/words/:table', function(req, res, next) {
 });
 
 router.get('/lemmas', function(req, res, next) {
-    dbClient.query('SELECT lemma.id as id, lemma.dbo as dbo FROM lemma WHERE lemma.dbo LIKE \'%%\' LIMIT 500',
+    dbClient.query('SELECT lemma.id as id, '+
+    'lemma.dbo as dbo, '+
+    'belegzettel.lade as lade, '+
+    'lemma.lemma_wortart_id as partOfSpeech '+
+    'FROM lemma, belegzettel, belegzettel_beleg  '+
+    'WHERE lemma.dbo LIKE \'%%\'  '+
+    'AND lemma.dbo NOT LIKE \'%jost nickel%\'  '+
+    'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
+    'AND belegzettel_beleg.belegzettel_id IS NOT NULL '+
+    'AND belegzettel_beleg.hauptlemma_id IS NOT NULL '+
+    'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
+    'LIMIT 500',
         function(err, rows) {
             if (err)
                 throw err;
