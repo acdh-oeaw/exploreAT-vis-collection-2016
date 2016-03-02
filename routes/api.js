@@ -18,23 +18,23 @@ Flickr.authenticate(flickrOptions, function(error, flickr) {
   flickrClient = flickr;
 });
 
-// var mysqlConfig = config.get('mysql');
-//
-// var MySQL      = require('mysql');
-// var dbClient = MySQL.createConnection({
-//     host: mysqlConfig.host,
-//     user: mysqlConfig.user,
-//     password: mysqlConfig.password,
-//     database: mysqlConfig.db
-// });
-//
-// dbClient.connect(function(err) {
-//     if (err) {
-//         console.error('error connecting: ' + err.stack);
-//         return;
-//     }
-//     console.log('connected as id ' + dbClient.threadId);
-// });
+var mysqlConfig = config.get('mysql');
+
+var MySQL      = require('mysql');
+var dbClient = MySQL.createConnection({
+    host: mysqlConfig.host,
+    user: mysqlConfig.user,
+    password: mysqlConfig.password,
+    database: mysqlConfig.db
+});
+
+dbClient.connect(function(err) {
+    if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
+    console.log('connected as id ' + dbClient.threadId);
+});
 
 
 router.get('/flickr/:queryText', function(req, res, next) {
