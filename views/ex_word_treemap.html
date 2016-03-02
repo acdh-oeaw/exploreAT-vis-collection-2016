@@ -28,15 +28,23 @@
 
   <div id="page-wrapper">
     <div id="header">
-      Header
+      <div class="title">ExploreAT!</div>
+      <div id="filter-bar">
+        <div id="explanation">
+          Type any word to generate to then generate its context treemap.<br>
+          You can use the <span class="huge">*</span> or <span class="big">?</span> characters as a wildcard before, after or in the middle of the word.
+        </div>
+        <input type="text" id="filterField" placeholder="Word..." value="">
+        <div id="generateTreeButton" class="load-block">Generate <b>TreeMap</b></div>
+        <div id="errorMessage">The field must contain something!</div>
+      </div>
     </div>
     <div id="content">
-      <div id="filter-bar">
-        <input type="text" id="searchField" placeholder="Word...">
-        <button type="button" id="resetZoomButton">Reset Zoom</button>
-      </div>
       <div id="chart"></div>
     </div>
+  </div>
+
+  <div id="imgTooltip">
   </div>
 
   <script src="javascripts/word_treemap.js"></script>

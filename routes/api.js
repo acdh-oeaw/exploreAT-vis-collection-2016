@@ -2,22 +2,56 @@ var express = require('express');
 var router = express.Router();
 
 var config = require('config');
-var mysqlConfig = config.get('mysql');
 
-var MySQL      = require('mysql');
-var dbClient = MySQL.createConnection({
-    host: mysqlConfig.host,
-    user: mysqlConfig.user,
-    password: mysqlConfig.password,
-    database: mysqlConfig.db
+var flickrConfig = config.get('flickr');
+var flickrClient;
+var Flickr = require("flickrapi"),
+    flickrOptions = {
+      api_key: flickrConfig.apiKey,
+      secret: flickrConfig.apiSecret,
+      user_id: flickrConfig.userId,
+      access_token: flickrConfig.accessToken,
+      access_token_secret: flickrConfig.accessTokenSecret
+    };
+
+Flickr.authenticate(flickrOptions, function(error, flickr) {
+  flickrClient = flickr;
 });
 
-dbClient.connect(function(err) {
-    if (err) {
-        console.error('error connecting: ' + err.stack);
-        return;
+// var mysqlConfig = config.get('mysql');
+//
+// var MySQL      = require('mysql');
+// var dbClient = MySQL.createConnection({
+//     host: mysqlConfig.host,
+//     user: mysqlConfig.user,
+//     password: mysqlConfig.password,
+//     database: mysqlConfig.db
+// });
+//
+// dbClient.connect(function(err) {
+//     if (err) {
+//         console.error('error connecting: ' + err.stack);
+//         return;
+//     }
+//     console.log('connected as id ' + dbClient.threadId);
+// });
+
+
+router.get('/flickr/:queryText', function(req, res, next) {
+
+    console.log("querying")
+
+  flickrClient.photos.search({
+    text: req.params.queryText,
+    page: 1,
+    per_page: 1
+  }, function(err, result) {
+    if(err){
+      res.send(err);
     }
-    console.log('connected as id ' + dbClient.threadId);
+    res.send(result);
+  });
+
 });
 
 
