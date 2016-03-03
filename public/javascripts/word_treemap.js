@@ -8,7 +8,7 @@ var originalRoot = root;
 
 var indexV = "10";
 
-var ip = 'http:\/\/'+'localhost';
+var ip = 'http:\/\/'+'exploreat.usal.es';
 var client = new $.es.Client({
   hosts: ip+":9200"
 });
