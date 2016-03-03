@@ -9,8 +9,8 @@ var originalRoot = root;
 var indexV = "10";
 
 var ip = 'http:\/\/'+'exploreat.usal.es';
-var client = new $.es.Client({
-  hosts: ip+":9200"
+var esClient = new $.es.Client({
+  hosts: ip+"/elasticsearch"
 });
 
 var img_tooltip = $('#imgTooltip');
@@ -56,7 +56,13 @@ function createWords(inputString) {
 
   inputString = "*"+inputString+"*";
 
-  client.search({
+  // $.ajax({
+  //   type: "GET",
+  //   url: "api/es/bedeutung/"+inputString.toLowerCase(),
+  //   dataType: "json",
+  //   async: true,
+  //   success: function (resp) {
+  esClient.search({
     index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
     body: {
         query : {
@@ -101,7 +107,7 @@ function createWords(inputString) {
         function(resolve, reject) {
 
           // For each lade get only those lemmas where the lade is the same
-          client.search({
+          esClient.search({
             index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
             body: {
                 query: {
