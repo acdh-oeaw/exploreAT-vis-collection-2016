@@ -116,7 +116,7 @@ function createWords(inputString) {
                   aggregation: {
                     terms: {
                       field: "dbo.raw",
-                      size: 15
+                      size: 30
                     }
                   }
                 }
@@ -159,9 +159,13 @@ function createWords(inputString) {
       //Get a photo for each node
       root.children.forEach(function(children,i){
 
+        var name = root.children[i].name.split(";")[0].split(",")[0];
+        if(name == undefined){name = root.children[i].name.split(";")[0];}
+        if(name == undefined){name = root.children[i].name}
+
           $.ajax({
             type: "GET",
-            url: "api/flickr/"+root.children[i].name.split(";")[0].split(",")[0],
+            url: "api/flickr/"+name,
             dataType: "json",
             async: true,
             success: function (response) {
@@ -194,7 +198,7 @@ function createWords(inputString) {
                  .attr('y', 0)
                  .attr('preserveAspectRatio','xMinYMin slice');
 
-              console.log("image fetched")
+              //console.log("image fetched")
             }
           });
       });
