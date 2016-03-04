@@ -91,7 +91,7 @@ function createWords(inputString) {
     }
   }).then(function (resp) {
 
-    root.name = "Contexts containing: "+boxString;
+    root.name = "Contexts where lemmas containing \""+boxString+"\" appear in";
 
     var children;
 
@@ -132,7 +132,8 @@ function createWords(inputString) {
                 //       size: 30
                 //     }
                 //   }
-                }
+                },
+                size:25
               }
             },
             function (error, resp2) {
@@ -414,18 +415,13 @@ function generateVisualization() {
                         html += '<div class="clearfix"></div>';
                         html += '</div>';
                         html += '<div class="box">';
-                        html += '<div class="left-side">Source</div>';
-                        html += '<div class="right-side">'+d.quelle+'</div>';
-                        html += '<div class="clearfix"></div>';
-                        html += '</div>';
-                        html += '<div class="box">';
-                        html += '<div class="left-side">Location</div>';
-                        html += '<div class="right-side">'+d.lokation+'</div>';
-                        html += '<div class="clearfix"></div>';
-                        html += '</div>';
-                        html += '<div class="box">';
                         html += '<div class="left-side">Drawer</div>';
                         html += '<div class="right-side">'+d.lade+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Source</div>';
+                        html += '<div class="right-side">'+d.quelle+'</div>';
                         html += '<div class="clearfix"></div>';
                         html += '</div>';
                         html += '<div class="box">';
@@ -433,11 +429,15 @@ function generateVisualization() {
                         html += '<div class="right-side">'+d.belegjahr+'</div>';
                         html += '<div class="clearfix"></div>';
                         html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Location</div>';
+                        html += '<div class="right-side">'+d.lokation+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
                         return html;
                       });
                     };
                   });
-
 
                   // g.append("defs")
                   //    .append('pattern')
@@ -469,7 +469,7 @@ function generateVisualization() {
                       d3.select(this).style('fill-opacity', '0.5');
                   })
                   .on('mouseover', function(d,i){
-                    console.log(d.type)
+                    // console.log(d.type)
                       if(d.type.indexOf("bedeutung") >= 0){
                         img_tooltip.show();
                         img_tooltip.html('<img src="'+root.children[root.children.length-1-i].photoURL+'" />');
@@ -484,7 +484,6 @@ function generateVisualization() {
                 ;
 
 
-
           // Animation
           function transition(d) {
 
@@ -494,7 +493,7 @@ function generateVisualization() {
                 root.name = ".";
               }
               else if(d.type.indexOf("root") >= 0){
-                root.name = "Contexts containing: "+boxString;
+                root.name = "Contexts where lemmas containing \""+boxString+"\" appear in";
               }
 
               if (transitioning || !d)
