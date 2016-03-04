@@ -4,11 +4,11 @@
         "url" : "jdbc:mysql://localhost:3306/dboe_1",
         "user" : "root",
         "password" : "***REMOVED***",
-        "sql" :  "SELECT lemma.dbo as dbo, belegzettel_beleg.grammatik as grammatik, belegzettel_beleg.beleg as beleg, belegzettel.katalog as katalog, belegzettel.lade as lade, belegzettel.belegjahr as belegjahr, belegzettel.lokation as lokation, belegzettel_beleg_bedeutung.bedeutung as bedeutung FROM belegzettel_beleg_bedeutung_liste inner join belegzettel_beleg ON belegzettel_beleg.id = belegzettel_beleg_bedeutung_liste.beleg_id INNER JOIN belegzettel_beleg_bedeutung ON belegzettel_beleg_bedeutung.id = belegzettel_beleg_bedeutung_liste.beleg_bedeutung_id inner join belegzettel on belegzettel_beleg.belegzettel_id = belegzettel.id inner join lemma on belegzettel_beleg.hauptlemma_id = lemma.id",
-        "index" : "dboe-beleg_bedeutung_lemma",
-        "type" : "dboe-beleg_bedeutung_lemma",
+        "sql" :  "SELECT lemma.dbo as dbo, belegzettel_beleg.beleg as beleg, belegzettel.quelle as quelle, belegzettel.lade as lade, belegzettel.belegjahr as belegjahr, belegzettel.lokation as lokation, belegzettel_beleg_bedeutung.bedeutung as bedeutung FROM belegzettel_beleg_bedeutung_liste inner join belegzettel_beleg ON belegzettel_beleg.id = belegzettel_beleg_bedeutung_liste.beleg_id INNER JOIN belegzettel_beleg_bedeutung ON belegzettel_beleg_bedeutung.id = belegzettel_beleg_bedeutung_liste.beleg_bedeutung_id inner join belegzettel on belegzettel_beleg.belegzettel_id = belegzettel.id inner join lemma on belegzettel_beleg.hauptlemma_id = lemma.id",
+        "index" : "dboe-beleg_bedeutung_lemma_v11",
+        "type" : "beleg_bedeutung_lemma",
         "type_mapping": {
-            "dboe-beleg_bedeutung_lemma" : {
+            "beleg_bedeutung_lemma_v11" : {
                 "properties" : {
                     "belegjahr" : {
                         "type" : "date",

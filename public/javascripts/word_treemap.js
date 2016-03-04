@@ -6,7 +6,9 @@ var root = {
 var miRoot;
 var originalRoot = root;
 
-var indexV = "10";
+var boxString = "";
+
+var indexV = "11";
 
 var ip = 'http:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
@@ -14,16 +16,19 @@ var esClient = new $.es.Client({
 });
 
 var img_tooltip = $('#imgTooltip');
+var lemma_tooltip = $('#lemmaTooltip');
 
-function setupFloatingDiv() {
+function setupFloatingDivs() {
     img_tooltip.hide();
+    lemma_tooltip.hide();
 
     $(document).mousemove(function(e){
         img_tooltip.css({'top': e.pageY-100,'left': e.pageX+20});
+        lemma_tooltip.css({'top': e.pageY-100,'left': e.pageX+20});
     });
 }
 
-setupFloatingDiv();
+setupFloatingDivs();
 
 // At first add the listener to the generation button
 
@@ -56,6 +61,8 @@ function createWords(inputString) {
 
   inputString = "*"+inputString+"*";
 
+  boxString = inputString.replace(/\*/g, '');
+
   // $.ajax({
   //   type: "GET",
   //   url: "api/es/bedeutung/"+inputString.toLowerCase(),
@@ -84,7 +91,7 @@ function createWords(inputString) {
     }
   }).then(function (resp) {
 
-    root.name = "Contexts containing: "+inputString;
+    root.name = "Contexts containing: "+boxString;
 
     var children;
 
@@ -117,41 +124,52 @@ function createWords(inputString) {
                       { match: { "bedeutung.raw" : root.children[i].name   }}
                     ]
                   }
-                },
-                aggs: {
-                  aggregation: {
-                    terms: {
-                      field: "dbo.raw",
-                      size: 30
-                    }
-                  }
+                // },
+                // aggs: {
+                //   aggregation: {
+                //     terms: {
+                //       field: "dbo.raw",
+                //       size: 30
+                //     }
+                //   }
                 }
               }
             },
             function (error, resp2) {
 
-              var buckets = resp2.aggregations.aggregation.buckets;
+              // var buckets = resp2.aggregations.aggregation.buckets;
+
+              var lemmas = resp2.hits.hits;
 
               root.children[i].children = new Array();
 
               // For the selected BEDEUTUNG, we need to add all of its subchildrens (LEMMAS)
-              for(var j=0; j<buckets.length; j++){
+              // buckets.forEach(function(bucket,j){
+              lemmas.forEach(function(lemma,j){
 
                 // One children per BEDEUTUNG
                 var subChildren = {};
-                var realString = buckets[j].key
+                var realString = lemma._source.dbo
                 .replace(" © 2008-2080 jost nickel","")
                 .replace("+?+ ","")
                 .replace("+? ","")
                 .replace("+","")
                 .replace("?","");
                 subChildren.name = realString;
-                subChildren.size = buckets[j].doc_count;
+                if(lemma._source.quelle == undefined || lemma._source.quelle == ""){subChildren.quelle = "Unknown";}
+                else{subChildren.quelle = lemma._source.quelle;}
+                if(lemma._source.lokation == undefined || lemma._source.lokation == ""){subChildren.lokation = "Unknown";}
+                else{subChildren.lokation = lemma._source.lokation;}
+                if(lemma._source.lade == undefined || lemma._source.lade == ""){subChildren.lade = "Unknown";}
+                else{subChildren.lade = lemma._source.lade;}
+                if(lemma._source.belegjahr == undefined || lemma._source.belegjahr == ""){subChildren.belegjahr = "Unknown";}
+                else{subChildren.belegjahr = lemma._source.belegjahr;}
+                subChildren.size = 1;
                 subChildren.type = "node lemma"
                 // subChildren.children = new Array(); // This will hold words
 
                 root.children[i].children.push(subChildren);
-              }
+              });
 
               resolve();
             }
@@ -379,7 +397,47 @@ function generateVisualization() {
                   .enter().append('rect')
                   .attr('class', 'child')
                   .call(rect)
-                  .style('fill', getColor);
+                  .style('fill', getColor)
+                  .on('mouseout', function(){
+                      lemma_tooltip.hide();
+                      lemma_tooltip.html("");
+                  })
+                  .on('mouseover', function(d,i){
+                    if(d.type.indexOf("lemma") >= 0){
+                      lemma_tooltip.show();
+                      lemma_tooltip.html(function(){
+                        var html = '';
+                        html += '<div class="title">'+d.name+'</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Context</div>';
+                        html += '<div class="right-side">'+$('g.grandparent > text').html().replace("./","")+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Source</div>';
+                        html += '<div class="right-side">'+d.quelle+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Location</div>';
+                        html += '<div class="right-side">'+d.lokation+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Drawer</div>';
+                        html += '<div class="right-side">'+d.lade+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        html += '<div class="box">';
+                        html += '<div class="left-side">Year</div>';
+                        html += '<div class="right-side">'+d.belegjahr+'</div>';
+                        html += '<div class="clearfix"></div>';
+                        html += '</div>';
+                        return html;
+                      });
+                    };
+                  });
+
 
                   // g.append("defs")
                   //    .append('pattern')
@@ -411,6 +469,7 @@ function generateVisualization() {
                       d3.select(this).style('fill-opacity', '0.5');
                   })
                   .on('mouseover', function(d,i){
+                    console.log(d.type)
                       if(d.type.indexOf("bedeutung") >= 0){
                         img_tooltip.show();
                         img_tooltip.html('<img src="'+root.children[root.children.length-1-i].photoURL+'" />');
@@ -430,6 +489,13 @@ function generateVisualization() {
           function transition(d) {
 
               img_tooltip.hide();
+
+              if(d.type.indexOf("bedeutung") >= 0){
+                root.name = ".";
+              }
+              else if(d.type.indexOf("root") >= 0){
+                root.name = "Contexts containing: "+boxString;
+              }
 
               if (transitioning || !d)
                   return;
@@ -561,6 +627,10 @@ function generateVisualization() {
                     else {
                       return "black";
                     }
+                  })
+                  .style('pointer-events', function(d){
+                    if(d.type.indexOf("bedeutung") >= 0 || d.type.indexOf("root") >= 0){return "auto";}
+                    else{return "none";}
                   })
                   .on('click', leafClicked)
                   .on('mouseout', function(){

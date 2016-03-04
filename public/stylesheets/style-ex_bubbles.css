@@ -177,9 +177,56 @@ rect {
 	background-color: black;
 	overflow: hidden;
 	border: 1px solid black;
+	border-radius: 3px;
 }
 
 #imgTooltip > img {
 	width: 180px;
+}
+
+#lemmaTooltip {
+	position: fixed;
+	width: 240px;
+	border: 1px solid black;
+	border-radius: 3px;
+	font-size: 0.8em;
+	background-color: white;
+}
+
+#lemmaTooltip > .title {
+	text-align: center;
+	font-weight: 500;
+	padding: 4px;
+	background-color: black;
+	color: white;
+}
+
+#lemmaTooltip > .box {
+	padding: 6px;
+	vertical-align: top;
+	font-size: .9em;
+}
+
+#lemmaTooltip > .box > .left-side {
+	width: 100px;
+	padding: 0px 4px;
+	float: left;
+	display: block;
+	text-align: right;
+	vertical-align: top;
+	font-weight: 600;
+}
+
+#lemmaTooltip > .box > .right-side {
+	width: 100px;
+	padding: 0px 8px;
+	float: right;
+	display: block;
+	vertical-align: top;
+	border-left: 1px dotted #ddd;
+}
+
+#lemmaTooltip > .box > .clearfix {
+	clear: both;
 }
 
