@@ -10,7 +10,7 @@ body {
 	color: #595959;
 	border-bottom: 1px solid gainsboro;
 	text-align: center;
-	padding: 20px 0;
+	padding: 20px 150px;
 	margin-bottom: 20px;
 }
 
@@ -19,6 +19,12 @@ h1 {
 }
 
 h2 {
+	font-size: .8em;
+	font-weight: 300;
+	color: darkgrey;
+}
+
+h3 {
 	font-size: .8em;
 	font-weight: 300;
 	color: darkgrey;

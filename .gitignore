@@ -68,3 +68,5 @@ npm-debug.log
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 bower_components
+config/production.json
+config/stage.json

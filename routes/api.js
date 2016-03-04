@@ -2,6 +2,22 @@ var express = require('express');
 var router = express.Router();
 
 var config = require('config');
+
+var flickrConfig = config.get('flickr');
+var flickrClient;
+var Flickr = require("flickrapi"),
+    flickrOptions = {
+      api_key: flickrConfig.apiKey,
+      secret: flickrConfig.apiSecret,
+      user_id: flickrConfig.userId,
+      access_token: flickrConfig.accessToken,
+      access_token_secret: flickrConfig.accessTokenSecret
+    };
+
+Flickr.authenticate(flickrOptions, function(error, flickr) {
+  flickrClient = flickr;
+});
+
 var mysqlConfig = config.get('mysql');
 
 var MySQL      = require('mysql');
@@ -18,6 +34,29 @@ dbClient.connect(function(err) {
         return;
     }
     console.log('connected as id ' + dbClient.threadId);
+});
+
+// var serverIP = 'http:\/\/'+'exploreat.usal.es';
+// var elasticsearch = require('elasticsearch');
+// var elasticsearchClient = new elasticsearch.Client({
+//   hosts: serverIP+":9200"
+// });
+
+router.get('/flickr/:queryText', function(req, res, next) {
+
+    console.log("querying")
+
+  flickrClient.photos.search({
+    text: req.params.queryText,
+    page: 1,
+    per_page: 1
+  }, function(err, result) {
+    if(err){
+      res.send(err);
+    }
+    res.send(result);
+  });
+
 });
 
 
@@ -111,6 +150,26 @@ router.get('/words/:table', function(req, res, next) {
   }
 });
 
+router.get('/lemmas', function(req, res, next) {
+    dbClient.query('SELECT lemma.id as id, '+
+    'lemma.dbo as dbo, '+
+    'belegzettel.lade as lade, '+
+    'lemma.lemma_wortart_id as partOfSpeech '+
+    'FROM lemma, belegzettel, belegzettel_beleg  '+
+    'WHERE lemma.dbo LIKE \'%%\'  '+
+    'AND lemma.dbo NOT LIKE \'%jost nickel%\'  '+
+    'AND belegzettel.id = belegzettel_beleg.belegzettel_id '+
+    'AND belegzettel_beleg.belegzettel_id IS NOT NULL '+
+    'AND belegzettel_beleg.hauptlemma_id IS NOT NULL '+
+    'AND belegzettel_beleg.hauptlemma_id = lemma.id '+
+    'LIMIT 500',
+        function(err, rows) {
+            if (err)
+                throw err;
+            // `rows.info.metadata` contains the metadata
+            res.json({rows: rows});
+        });
+});
 
 router.get('/colorLemma/:name', function(req, res, next) {
     dbClient.query('SELECT person.vorname,person.nachname,GISort.the_geom '+
@@ -123,5 +182,33 @@ router.get('/colorLemma/:name', function(req, res, next) {
         res.json({rows: rows});
     });
 });
+
+// router.get('/es/bedeutung/:inputString', function(req, res, next) {
+//   elasticsearchClient.search({
+//     index: 'dboe-beleg_bedeutung_lemma_v10',
+//     body: {
+//         query : {
+//           bool: {
+//             must: [
+//               { wildcard: { "dbo" : req.params.inputString }},
+//               { not: { match: { "bedeutung.raw" : "--"  }}}
+//             ]
+//           }
+//         },
+//         // Get all the BEDEUTUNGs first
+//         aggs: {
+//             aggregation: {
+//                 terms: {
+//                   field: "bedeutung.raw", "size": 10
+//                 }
+//             }
+//         }
+//     }
+//   }).then(function (resp) {
+//         res(resp);
+//     });
+// });
+
+
 
 module.exports = router;

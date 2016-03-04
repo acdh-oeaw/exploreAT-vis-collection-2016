@@ -1,0 +1,61 @@
+{
+    "type" : "jdbc",
+    "jdbc" : {
+        "url" : "jdbc:mysql://localhost:3306/dboe_1",
+        "user" : "root",
+        "password" : "***REMOVED***",
+        "sql" :  "SELECT lemma.dbo as dbo, belegzettel_beleg.beleg as beleg, frage.originalfrage as originalfrage, fragebogen.nummer as fragebogen_nummer, fragebogen.titel as fragebogen_titel  FROM belegzettel_beleg inner join lemma on belegzettel_beleg.hauptlemma_id = lemma.id inner join frage on belegzettel_beleg.frage_id = frage.id inner join fragebogen on frage.fragebogen_id = fragebogen.id",
+        "index" : "dboe-beleg-frage-fragebogen-lemma",
+        "type" : "beleg-frage-fragebogen-lemma",
+        "type_mapping": {
+            "beleg-frage-fragebogen-lemma" : {
+                "properties" : {
+                    "dbo" : {
+                        "type": "string",
+                        "fields": {
+                            "raw" : {
+                                "type" : "string", 
+                                "index" : "not_analyzed"
+                            }
+                        }
+                    },
+                    "originalfrage" : {
+                        "type": "string",
+                        "fields": {
+                            "raw" : {
+                                "type" : "string", 
+                                "index" : "not_analyzed"
+                            }
+                        }
+                    },
+                    "titel" : {
+                        "type": "string",
+                        "fields": {
+                            "raw" : {
+                                "type" : "string", 
+                                "index" : "not_analyzed"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "ignore_null_values" : "true",
+        "fetchsize" : "min",
+        "treat_binary_as_string" : false,
+        "max_bulk_actions" : 20000,
+        "max_concurrent_bulk_requests" : 10,
+        "metrics" : {
+            "enabled" : true,
+            "logger" : {
+                "plain" : true,
+                "json" : true
+            },
+            "interval" : "1s"
+        },
+        "elasticsearch" : {
+            "cluster" : "exploreat",
+            "autodiscover" : true
+        }
+    }
+}
