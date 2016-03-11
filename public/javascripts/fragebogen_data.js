@@ -8,61 +8,28 @@ var originalRoot = root;
 
 var boxString = "";
 
-var indexV = "11";
+// var ip = 'http:\/\/'+'exploreat.usal.es';
+// var esClient = new $.es.Client({
+//   hosts: ip+"/elasticsearch"
+// });
 
-var ip = 'http:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
-  // hosts: ip+"/elasticsearch"
-  hosts: "http:\/\/localhost:9200"
+  hosts: "http:\/\/localhost:9200\/"
 });
 
-var img_tooltip = $('#imgTooltip');
-var lemma_tooltip = $('#lemmaTooltip');
-
-function setupFloatingDivs() {
-    img_tooltip.hide();
-    lemma_tooltip.hide();
-
-    $(document).mousemove(function(e){
-        img_tooltip.css({'top': e.pageY-100,'left': e.pageX+20});
-        lemma_tooltip.css({'top': e.pageY-100,'left': e.pageX+20});
-    });
-}
-
-setupFloatingDivs();
-
-// At first add the listener to the generation button
-
-$('#errorMessage').hide();
-
-$('#generateTreeButton').on("click", function(){
-  $('#errorMessage').hide();
-  if($('#filterField').val().length > 0 || $('#filterField').val() != ""){
-    root = {
-     "name": "root",
-     "type": "root",
-     "children": []
-    };
-    miRoot = root;
-    originalRoot = root;
-    $('#content').html('<div id="chart"></div>')
-    createWords($('#filterField').val());
-  }
-  else{
-    $('#errorMessage').show();
-  }
+$('#generateButton').on("click", function(){
+    createWords("*");
 });
 
-// Use elasticsearch to generate the data structure and then the visualization
+$('#filterField').keyup(function(){
+  createWords($('#filterField').val());
+});
+
 function createWords(inputString) {
 
-  var searchOption = "";
-  if(inputString.indexOf("*") >= 0){searchOption = "wildcard";}
-  else{searchOption = "match";}
+  $('#content').html('');
 
-  inputString = "*"+inputString+"*";
-
-  boxString = inputString.replace(/\*/g, '');
+  inputString = inputString.toLowerCase();
 
   // $.ajax({
   //   type: "GET",
@@ -71,26 +38,70 @@ function createWords(inputString) {
   //   async: true,
   //   success: function (resp) {
   esClient.search({
-    index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
+    index: 'dboe-beleg-frage-fragebogen-lemma',
+    size: 1000,
     body: {
-        query : {
-          bool: {
-            must: [
-              { wildcard: { "dbo" : inputString.toLowerCase() }},
-              { not: { match: { "bedeutung.raw" : "--"  }}}
-            ]
-          }
-        },
-        // Get all the BEDEUTUNGs first
-        aggs: {
-            aggregation: {
-                terms: {
-                  field: "bedeutung.raw", "size": 10
-                }
-            }
+      query : {
+        bool: {
+          must: [
+            { wildcard: { "frages.lemmas.dbo.raw" : "*"+inputString+"*" }}
+          ]
         }
-    }
+      }
+    },
+    sort: "fragebogen_nummer:asc"
   }).then(function (resp) {
+
+    for(var i=0; i<resp.hits.hits.length && i<800; i++){
+
+      $('#content').append(function(){
+          var html = "";
+          html += '<div class="frageholder">';
+          html += '<div class="fragebogen top">'
+          html += 'FRAGEBOGEN: ';
+          html += resp.hits.hits[i]._source.fragebogen_nummer+" - "+resp.hits.hits[i]._source.fragebogen_titel;
+          html += '</div>';
+          html += '<div class="fragebogen bottom">'
+          for(var j=0; j<resp.hits.hits[i]._source.frages.length && j<2000; j++){
+            if(resp.hits.hits[i]._source.frages[j] != undefined){
+              for(var k=0; k<resp.hits.hits[i]._source.frages[j].lemmas.length && k<2000; k++){
+                // Append the frage only if it contains the lemma
+                if(resp.hits.hits[i]._source.frages[j].lemmas[k].dbo.toLowerCase().indexOf(inputString.replace(/\*/g , "")) > -1){
+                  html += '<div class="frage">';
+                  html += '<div class="box-title">';
+                  html += ' - FRAGE: ';
+                  html += resp.hits.hits[i]._source.frages[j].originalFrage;
+                  html += '</div>';
+                  for(var k=0; k<resp.hits.hits[i]._source.frages[j].lemmas.length && k<2000; k++){
+                    if(resp.hits.hits[i]._source.frages[j].lemmas[k] != undefined){
+                      //if(resp.hits.hits[i]._source.frages[j].lemmas[k].dbo.toLowerCase().indexOf(inputString.replace(/\*/g , "")) > -1){
+                        html += '<div class="lemma">';
+                        html += ' - - LEMMA: ';
+                        if(resp.hits.hits[i]._source.frages[j].lemmas[k].dbo.toLowerCase().indexOf(inputString.replace(/\*/g , "")) > -1){
+                          html += '<span class="yellow">';
+                          html += resp.hits.hits[i]._source.frages[j].lemmas[k].dbo;
+                          html += '</span>';
+                        }
+                        else{
+                          html += resp.hits.hits[i]._source.frages[j].lemmas[k].dbo;
+                        }
+                        html += '</div>';
+                      //}
+                    }
+                  }
+                  html += '</div>';
+                  break;
+                }
+              }
+            }
+          }
+          html += '</div>';
+          html += '</div>';
+          return html;
+      })
+    }
+
+    return;
 
     root.name = "Contexts where lemmas containing \""+boxString+"\" appear in";
 
