@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>ExploreAT! | Lemma Context Exploration</title>
+    <title>ExploreAT! | Hierarchical Questionnaire Tree</title>
 
     <link href="bower_components/noUiSlider-ms/jquery.nouislider.css" rel="stylesheet">
     <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
@@ -30,11 +30,16 @@
     <div id="header">
       <div class="title">ExploreAT!</div>
       <div id="filter-bar">
-        <input type="text" id="filterField" placeholder="Word..." value="">
+        <div class="filter-row"><div class="filter-row-label"><strong>Fragebogen</strong> Filter</div><input type="text" id="filterFragebogen" placeholder="Fragebogen title containing..." value=""></div>
+        <div class="filter-row"><div class="filter-row-label"><strong>Frage</strong> Filter</div><input type="text" id="filterFrage" placeholder="Frage containing..." value=""></div>
+        <div class="filter-row"><div class="filter-row-label"><strong>Lemma</strong> Filter</div><input type="text" id="filterLemma" placeholder="Lemma containing..." value=""></div>
         <div id="generateButton" class="load-block">Generate <b>HTML</b></div>
       </div>
     </div>
     <div id="content">
+      <div id="spinner" class="hidden">
+        <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+      </div>
       <div id="chart"></div>
     </div>
   </div>
@@ -42,7 +47,7 @@
   <div id="imgTooltip"></div>
   <div id="lemmaTooltip"></div>
 
-  <script src="javascripts/fragebogen_data.js"></script>
+  <script src="javascripts/fragebogen_data_tree.js"></script>
 
 </body>
 

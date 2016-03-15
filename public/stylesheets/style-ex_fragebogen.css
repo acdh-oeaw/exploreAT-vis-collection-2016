@@ -26,7 +26,13 @@ h2 {
 
 #content {
 	padding: 20px;
+	padding-top: 12px;
 	font-size: .8em;
+	color: #aaa;
+}
+
+#spinner {
+	text-align: center;
 }
 
 #header > div.title {
@@ -36,11 +42,28 @@ h2 {
     margin-bottom: 18px;
 }
 
+#filter-bar > .filter-row {
+	font-size: .8em;
+	margin: 4px 0;
+}
+
+#filter-bar > .filter-row > .filter-row-label{
+	width: 180px;
+	display: inline-block;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#filter-bar > .filter-row > input{
+	width: 180px;
+}
+
 .load-block {
     cursor: pointer;
     border: 1px solid #bbbbbb;
     border-radius: 3px;
     margin: 0px 10px;
+    margin-top: 10px;
     padding: 4px 8px;
     display: inline-block;
     font-size: .7em;
@@ -57,7 +80,6 @@ h2 {
 	background-color: #fcfcfc;
 	border: 1px solid #aaaaaa;
 }
-
 
 .frageholder {
 	border: 1px solid black;
@@ -102,5 +124,36 @@ span.yellow {
 }
 
 
+////////
+
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+.hidden {
+	display: none;
+}
 
 

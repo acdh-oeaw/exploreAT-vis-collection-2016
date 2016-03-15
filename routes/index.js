@@ -31,8 +31,16 @@ router.get('/ex_word_treemap', function(req,res) {
     res.render('ex_word_treemap');
 });
 
-router.get('/ex_fragebogen_data', function(req,res) {
-    res.render('ex_fragebogen_data');
+router.get('/ex_fragebogen_data_div', function(req,res) {
+    res.render('ex_fragebogen_data_div');
+});
+
+router.get('/ex_fragebogen_data_tree', function(req,res) {
+    res.render('ex_fragebogen_data_tree');
+});
+
+router.get('/ex_fragebogen_data_circles', function(req,res) {
+    res.render('ex_fragebogen_data_circles');
 });
 
 // router.get('/ex_colors', function(req,res) {
