@@ -70,3 +70,4 @@ npm-debug.log
 bower_components
 config/production.json
 config/stage.json
+results.json

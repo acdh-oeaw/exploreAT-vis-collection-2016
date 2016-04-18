@@ -110,11 +110,19 @@ if(fs.statSync(process.argv[2]).isFile()) {
         var leftLemma = rawLemma.match(/\((.*?)\)/);
 
         if (leftLemma == 'undefined' || leftLemma == null || leftLemma.length == 0) {
+            if (rawLemma.length == 0 || rawLemma.length == 1 || rawLemma == 'undefined') {
+                console.log(i);
+                continue;
+            }
             body['mainLemma'] = rawLemma;
             body['isMain'] = true;
         } else {
             leftLemma = leftLemma[1];
             rawLemma = rawLemma.split(')')[1];
+            if (rawLemma.length == 0 || rawLemma.length == 1 || rawLemma == 'undefined') {
+                console.log(i);
+                continue;
+            }
             body['mainLemma'] = rawLemma;
             body['leftLemma'] = leftLemma;
         }

@@ -43,6 +43,10 @@ router.get('/ex_fragebogen_data_circles', function(req,res) {
     res.render('ex_fragebogen_data_circles');
 });
 
+router.get('/ex_tustep_matrix', function(req,res) {
+    res.render('ex_tustep_matrix');
+});
+
 // router.get('/ex_colors', function(req,res) {
 //     res.render('ex_colors');
 // });
