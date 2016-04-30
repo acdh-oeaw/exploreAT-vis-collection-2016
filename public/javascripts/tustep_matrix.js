@@ -42,6 +42,7 @@ esClient.search({
     }
   }
 }).then(function (resp) {
+  console.log("asdf");
   console.log(resp);
 
   var letters = genCharArray('a', 'z');
