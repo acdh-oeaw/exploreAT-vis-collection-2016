@@ -13,6 +13,7 @@ var indexV = "11";
 var ip = 'http:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
   hosts: ip+"/elasticsearch"
+  // hosts: "http:\/\/localhost:9200"
 });
 
 var img_tooltip = $('#imgTooltip');

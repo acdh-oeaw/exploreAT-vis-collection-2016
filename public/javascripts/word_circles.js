@@ -27,10 +27,12 @@ var originalRoot = root;
 
 var circle;
 
-var ip = 'http:\/\/'+'172.20.1.95';
+var ip = 'http:\/\/'+'exploreat.usal.es';
 var client = new $.es.Client({
-  hosts: ip+":9200"
+  hosts: ip+"/elasticsearch"
+  // hosts: "http:\/\/localhost:9200"
 });
+
 
 createWords();
 
