@@ -1,0 +1,83 @@
+{
+    "type" : "jdbc",
+    "jdbc" : {
+        "url" : "jdbc:mysql://localhost:3306/dboe_1",
+        "user" : "root",
+        "password" : "***REMOVED***",
+        "sql" :  "SELECT fragebogen.id as _id, lemma.dbo as \"fragebogen.frage.dbo\", belegzettel_beleg.beleg as \"fragebogen.frage.beleg\", frage.originalfrage as \"fragebogen.frage.originalfrage\", fragebogen.nummer as \"fragebogen.fragebogen_nummer\", fragebogen.titel as \"fragebogen.fragebogen_titel\"  FROM belegzettel_beleg inner join lemma on belegzettel_beleg.hauptlemma_id = lemma.id inner join frage on belegzettel_beleg.frage_id = frage.id inner join fragebogen on frage.fragebogen_id = fragebogen.id",
+        "index" : "dboe-beleg-frage-fragebogen-lemma",
+        "type" : "beleg-frage-fragebogen-lemma",
+        "type_mapping": {
+            "beleg-frage-fragebogen-lemma": {
+                "properties": {
+                    "fragebogen": {
+                        "type": "nested",
+                        "properties": {
+                            "frage": {
+                                "type": "nested",
+                                "properties": {
+                                    "dbo": {
+                                        "type": "string",
+                                        "fields": {
+                                            "raw": {
+                                                "type": "string",
+                                                "index": "not_analyzed"
+                                            }
+                                        }
+                                    },
+                                    "beleg": {
+                                        "type": "string"
+                                    },
+                                    "originalfrage": {
+                                        "type": "string",
+                                        "fields": {
+                                            "raw": {
+                                                "type": "string",
+                                                "index": "not_analyzed"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "fragebogen_titel": {
+                                "type": "string",
+                                "fields": {
+                                    "raw": {
+                                        "type": "string",
+                                        "index": "not_analyzed"
+                                    }
+                                }
+                            },
+                             "fragebogen_nummer": {
+                                "type": "string",
+                                "fields": {
+                                    "raw": {
+                                        "type": "string",
+                                        "index": "not_analyzed"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "ignore_null_values" : "true",
+        "fetchsize" : "min",
+        "treat_binary_as_string" : false,
+        "max_bulk_actions" : 20000,
+        "max_concurrent_bulk_requests" : 10,
+        "metrics" : {
+            "enabled" : true,
+            "logger" : {
+                "plain" : true,
+                "json" : true
+            },
+            "interval" : "1s"
+        },
+        "elasticsearch" : {
+            "cluster" : "exploreat",
+            "autodiscover" : true
+        }
+    }
+}

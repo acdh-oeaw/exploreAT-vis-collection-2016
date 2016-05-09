@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>ExploreAT! | Alphabetical-Yearly Word Distribution</title>
+
+    <link href="bower_components/noUiSlider-ms/jquery.nouislider.css" rel="stylesheet">
+    <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="stylesheets/style-ex_scatter.css" rel="stylesheet">
+
+    <script src="bower_components/d3/d3.min.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>-->
+    <script src="bower_components/d3-queue/d3-queue.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+    <script src="bower_components/wellknown/wellknown.js"></script>
+    <script src="bower_components/Wicket/wicket.js"></script>
+    <script src="bower_components/noUiSlider-ms/jquery.nouislider.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+</head>
+
+<body>
+
+<div id="page-wrapper">
+    <div id="header">
+        <div class="title">ExploreAT!</div>
+        <div id="filter-bar">
+            <div class="filter-row"><div class="filter-row-label"><strong>Main Lemma</strong> Filter</div><input type="text" id="filterMainLemma" placeholder="..." value=""></div>
+            <div class="filter-row"><div class="filter-row-label"><strong>Aux Lemma</strong> Filter</div><input type="text" id="filterLeftLemma" placeholder="..." value=""></div>
+            <div class="filter-row"><div class="filter-row-label"><strong>Min Year</strong> Filter</div><input type="number" id="filterMinYear" placeholder="..." value="1070"></div>
+            <div class="filter-row"><div class="filter-row-label"><strong>Max Year</strong> Filter</div><input type="number" id="filterMaxYear" placeholder="..." value="1989"></div>
+        </div>
+    </div>
+    <div id="content">
+        <div id="spinner" class="hidden">
+            <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+        </div>
+        <div id="chart">
+            <svg></svg>
+        </div>
+    </div>
+</div>
+
+<script src="javascripts/tustep_scatter.js"></script>
+
+</body>
+
+</html>
