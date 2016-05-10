@@ -15,6 +15,9 @@ var xml2js = Promise.promisifyAll(require('xml2js')); // example: xml2js
 
 storage.initSync();
 
+var gisOrtDict = {};
+var gisGemDict = {};
+
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
@@ -51,21 +54,67 @@ contents.forEach(function(content) {
 
 console.log('Found ' + JSON.stringify(subdirs));
 
-// var promises = [];
+var promises = [];
+var discardedLemmas = {},
+    unmatchedPlaces = {},
+    placesWithNoResults = {};
 
-// for (var i = 0; i < subdirs.length; i++) {
-//     processDirectory(subdirs[i]).then(function(result))
-// }
+for (var i = 0; i < subdirs.length; i++) {
+    promises.push(processDirectory(subdirs[i]));
+}
 
-Promise.each(subdirs, processDirectory)
+Promise.all(promises)
     .then(function(result) {
         console.log('All directories processed');
-        process.exit(0);
+
+        var noresultsArray = [];
+        _.each(placesWithNoResults, function(value, key) {
+            noresultsArray.push({"name": key, "count": value.count, "params": value.params});
+        });
+        noresultsArray = _.sortBy(noresultsArray, "count");
+
+
+        fs.writeFile('noresults.json', JSON.stringify(noresultsArray, null, 2), function(err) {
+            if (err) throw err;
+
+            var unmatchedPlacesArray = [];
+            _.each(unmatchedPlaces, function(value, key) {
+                unmatchedPlacesArray.push({"name": key, "count": value});
+            });
+            unmatchedPlacesArray = _.sortBy(unmatchedPlacesArray, "count");
+
+            fs.writeFile('unmatched.json', JSON.stringify(unmatchedPlacesArray, null, 2), function(err) {
+                if (err) throw err;
+
+                var discardedLemmasArray = [];
+                _.each(discardedLemmas, function(value, key) {
+                    discardedLemmasArray.push({"name": key, "count": value});
+                });
+                discardedLemmasArray = _.sortBy(discardedLemmasArray, "count");
+
+                fs.writeFile('discarded-lemmas.json', JSON.stringify(discardedLemmasArray, null, 2), function(err) {
+                    if (err) throw err;
+                    console.log('It\'s saved!');
+                    process.exit(0);
+                });
+
+            });
+        });
     })
     .catch(function(err) {
-        console.error(err);
+        console.error(err.stack);
         process.exit(1);
     });
+
+// Promise.each(subdirs, processDirectory)
+//     .then(function(result) {
+//         console.log('All directories processed');
+//         process.exit(0);
+//     })
+//     .catch(function(err) {
+//         console.error(err.stack);
+//         process.exit(1);
+//     });
 
 
 function processDirectory(directory) {
@@ -85,7 +134,6 @@ function processDirectory(directory) {
     //     console.log('Failed to process file. Reason: '  + err);
     // });
 }
-var currentLemmas = [];
 
 function processFile(file) {
     console.log(file);
@@ -97,17 +145,14 @@ function processFile(file) {
         .then(function (result) {
             if (result.hasOwnProperty("records")) {
                 if (result.records.hasOwnProperty("record")) {
-                    return Promise.each(result.records.record, processRecord).then(function(fileResults) {
+                    return Promise.mapSeries(result.records.record, processRecord).then(function(fileResults) {
                         console.log('Finished processing file, indexing...');
-                        return indexResults(currentLemmas);
+                        return indexResults(fileResults.filter(function(item) { return item !== undefined}));
                     });
                 }
             } else {
                 return Promise.resolve();
             }
-        })
-        .then(function () {
-            currentLemmas = [];
         });
 }
 
@@ -129,7 +174,7 @@ function processRecord(record) {
         theField = _.find(record["field"], function(aField) {
             return aField["$"].name == "QDB";
         });
-        if (theField && lemma && lemma !== 'undefined' && lemma.length > 1)
+        if (theField && lemma && lemma !== undefined)
             lemma = processQDBField(theField, lemma);
         if (lemma.ortName == undefined) {
             theField = _.find(record["field"], function(aField) {
@@ -144,55 +189,85 @@ function processRecord(record) {
             var placeMatch = localizedPlaces.filter(function (aPlace) {
                 return aPlace.name == lemma.ortName
             })[0];
-            if (placeMatch !== undefined) {
+            if (placeMatch && placeMatch !== undefined) {
                 var query,
                     params;
                 if (placeMatch.ort_id > -1) {
-                    query = "SELECT ST_AsGeoJSON(GISort.the_geom) AS gisort, " +
-                        "ST_AsGeoJSON(GISgemeinde.the_geom) AS gisgemeinde " +
-                        "FROM GISort LEFT JOIN ort ON GISort.id = ort.gis_ort_id, " +
-                        "GISgemeinde LEFT JOIN gemeinde ON GISgemeinde.id = gemeinde.gis_gemeinde_id " +
-                        "WHERE ort.id = ?";
-                    if (placeMatch.gemeinde_id > -1) {
-                        query += ' AND gemeinde.id = ?';
-                        params = [placeMatch.ort_id, placeMatch.gemeinde_id];
-                    } else
-                        params = [placeMatch.ort_id];
-
+                    if (gisOrtDict.hasOwnProperty(placeMatch.ort_id)) {
+                        lemma.gisOrt = gisOrtDict[placeMatch.ort_id];
+                        if (placeMatch.gemeinde_id > - 1 &&
+                            gisGemDict.hasOwnProperty(placeMatch.gemeinde_id)) {
+                            lemma.gisGemeinde = gisGemDict[placeMatch.gemeinde_id];
+                        }
+                        return Promise.resolve(lemma);
+                    } else {
+                        query = "SELECT ST_AsGeoJSON(GISort.the_geom) AS gisort, " +
+                            "ST_AsGeoJSON(GISgemeinde.the_geom) AS gisgemeinde " +
+                            "FROM GISort LEFT JOIN ort ON GISort.id = ort.gis_ort_id, " +
+                            "GISgemeinde LEFT JOIN gemeinde ON GISgemeinde.id = gemeinde.gis_gemeinde_id " +
+                            "WHERE ort.id = ?";
+                        if (placeMatch.gemeinde_id > -1) {
+                            query += ' AND gemeinde.id = ?';
+                            params = [placeMatch.ort_id, placeMatch.gemeinde_id];
+                        } else
+                            params = [placeMatch.ort_id];
+                    }
                 } else if (placeMatch.gemeinde_id > -1) {
+                    if (gisGemDict.hasOwnProperty(placeMatch.gemeinde_id)) {
+                        lemma.gisGemeinde = gisGemDict[placeMatch.gemeinde_id];
+                        return Promise.resolve(lemma);
+                    }
                     query = "SELECT ST_AsGeoJSON(GISgemeinde.the_geom) AS gisgemeinde " +
                         "FROM GISgemeinde LEFT JOIN gemeinde ON GISgemeinde.id = gemeinde.gis_gemeinde_id " +
                         "WHERE gemeinde.id = ?";
                     params = [placeMatch.gemeinde_id];
                 } else {
-                    currentLemmas.push(lemma);
-                    return;
+                    return Promise.resolve(lemma);
                 }
-
+                if (query == undefined)
+                    console.log('Stop');
                 return pool.query(query, params)
                     .then(function (rows) {
                         if (rows.length !== 0) {
                             var result = rows[0];
-                            if (result.gisgemeinde !== undefined) {
-                                lemma.gisGemeinde = result.gisgemeinde;
-                            }
                             if (result.gisort !== undefined) {
-                                lemma.gisOrt = result.gisort;
+                                var ortArray = JSON.parse(result.gisort)["coordinates"];
+                                var ortObj = {"lat" : ortArray[1], "lon" : ortArray[0]};
+                                lemma.gisOrt = ortObj;
+                                gisOrtDict[params[0]] = ortObj;
+                            }
+                            if (result.gisgemeinde !== undefined) {
+                                result.gisgemeinde = result.gisgemeinde.replace('P', 'p');
+                                var gemObj = JSON.parse(result.gisgemeinde);
+                                lemma.gisGemeinde = gemObj
+                                var index = params.length > 1 ? 1 : 0;
+                                gisGemDict[params[index]] = gemObj;
+                            }
+                        } else {
+                            if (placesWithNoResults.hasOwnProperty(lemma.ortName)) {
+                                placesWithNoResults[lemma.ortName]["count"] += 1;
+                            } else {
+                                placesWithNoResults[lemma.ortName] = {"params": params, "count" : 1};
                             }
                         }
-                        currentLemmas.push(lemma);
-                        // return Promise.resolve(lemma);
+                        return Promise.resolve(lemma);
                     })
                     .catch(function (err) {
                         return Promise.reject(err);
                     });
 
             } else {
-                currentLemmas.push(lemma);
+                if (unmatchedPlaces.hasOwnProperty(lemma.ortName)) {
+                    unmatchedPlaces[lemma.ortName] += 1;
+                } else {
+                    unmatchedPlaces[lemma.ortName] = 1;
+                }
+
+                return Promise.resolve(lemma);
                 // return lemma;
             }
         } else {
-            currentLemmas.push(lemma);
+            return Promise.resolve(lemma);
             // return lemma;
         }
     } else {
@@ -207,9 +282,13 @@ function processHLField(theField) {
 
     var rawLemma = theField["_"];
     var finalLemma = {};
+    if (!rawLemma) {
+        console.log('rawLemma is undefined ' + JSON.stringify(theField));
+        return;
+    }
 
     var test = rawLemma.match(/:\d/g);
-    if (test !== undefined) {
+    if (test && test !== undefined) {
         var typeName = wordTypeNameForType(test[0].charAt(1));
         rawLemma = rawLemma.replace(/:\d/g, "");
         finalLemma.wordType = typeName;
@@ -226,7 +305,8 @@ function processHLField(theField) {
 
     if (leftLemma == 'undefined' || leftLemma == null || leftLemma.length == 0) {
         if (rawLemma.length == 0 || rawLemma.length == 1 || rawLemma == 'undefined') {
-            console.log('Bad lemma format');
+            // console.log('Bad lemma format');
+            insertDiscardedLemma(rawLemma);
         } else {
             finalLemma['mainLemma'] = rawLemma;
             finalLemma['isMain'] = true;
@@ -235,7 +315,9 @@ function processHLField(theField) {
         leftLemma = leftLemma[1];
         rawLemma = rawLemma.split(')')[1];
         if (rawLemma.length == 0 || rawLemma.length == 1 || rawLemma == 'undefined') {
-            console.log('Bad lemma format');
+            // console.log('Bad lemma format');
+            // discardedLemmas.push(rawLemma);
+            insertDiscardedLemma(rawLemma);
         } else {
             finalLemma['mainLemma'] = rawLemma;
             finalLemma['leftLemma'] = leftLemma;
@@ -243,6 +325,14 @@ function processHLField(theField) {
     }
 
     return finalLemma;
+}
+
+function insertDiscardedLemma(lemma) {
+    if (discardedLemmas.hasOwnProperty(lemma)) {
+        discardedLemmas[lemma] += 1;
+    } else {
+        discardedLemmas[lemma] = 1;
+    }
 }
 
 function processQDBField(theField, lemma) {
@@ -256,36 +346,43 @@ function processQDBField(theField, lemma) {
         }
     }
 
-    var match = theField["_"].match(/\d{4}/);
-    if (match !== undefined && match.length > 0)
-        lemma.year = match[0];
+    var years = extractYearFromText(theField["_"]);
+    if (!years && theField.part !== undefined && theField.part.length > 0) {
+        years = extractYearFromText(theField.part[0]);
+    }
+
+    if (!years)
+        return lemma;
+
+    lemma.startYear = years[0];
+    lemma.endYear = years[1];
 
     return lemma;
+
 }
 
-
-
-
-
-
-// var placesArray = [];
-//
-// _.each(places, function(value, key) {
-//     placesArray.push({"name": key, "count": value});
-// });
-//
-// placesArray = _.sortBy(placesArray, "count");
-//
-// fs.writeFile('places.json', JSON.stringify(placesArray, null, 2), function(err) {
-//         if (err) throw err;
-//         console.log('It\'s saved!');
-//         process.exit(0);
-// });
-// fs.writeFile('results.json', JSON.stringify(lemmas),  function(err) {
-//     if (err) throw err;
-//     console.log('It\'s saved!');
-//     process.exit(0);
-// });
+function extractYearFromText(text) {
+    var re = /(1\d{3})(-\d{2})*|(1\d{1}.x):(\d{2})*-(\d{2})*/g;
+    var match = re.exec(text);
+    var years = [];
+    if (match && match.length > 0) {
+        if (match[2] == undefined) {
+            years.push(match[1], match[1]);
+        } else if (match[3] == undefined) {
+            years.push(match[1]);
+            years.push(match[2].replace("-", match[1].slice(0, 2)));
+        } else if (match[4] == undefined) {
+            years.push(match[1].slice(0,2) + match[2]);
+            years.push(match[1].slice(0,2) + match[3]);
+        } else {
+            console.log('Problem');
+            return null;
+        }
+        return years;
+    } else {
+        return null;
+    }
+}
 
 
 function indexResults(results) {
@@ -337,24 +434,3 @@ function wordTypeNameForType(type) {
     }
     return typeName;
 }
-
-
-
-
-// lemmas.forEach(function (lemma) {
-//     client.index({
-//         index: 'tustep',
-//         type: 'tweet',
-//         body: {"name" : lemma,
-//             "files" : lemmas[lemma]}
-//     }, function (err, resp) {
-//         // console.log(resp);
-//         if (err) throw err;
-//     });
-// });
-
-
-
-
-
-
