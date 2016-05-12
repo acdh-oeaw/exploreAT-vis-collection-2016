@@ -51,6 +51,10 @@ router.get('/ex_tustep_scatter', function(req,res) {
     res.render('ex_tustep_scatter');
 });
 
+router.get('/ex_tustep_map', function(req,res) {
+    res.render('ex_tustep_map');
+});
+
 // router.get('/ex_colors', function(req,res) {
 //     res.render('ex_colors');
 // });
