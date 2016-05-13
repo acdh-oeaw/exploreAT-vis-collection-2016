@@ -8,19 +8,21 @@
     var geohashBuckets = [];
 
     var geohashFeatures;
-    var d3_features;
 
 
     var map = L.map('map').setView([47.333333, 13.333333], 7);
     var mapLink =
         '<a href="http://openstreetmap.org">OpenStreetMap</a>';
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://exploreat.usal.es">ExploreAT!</a>',
         subdomains: 'abcd',
         maxZoom: 14,
         minZoom: 7,
         detectRetina: true
     }).addTo(map);
+
+    L.control.scale().addTo(map);
+
 
     /* Initialize the SVG layer */
     map._initPathRoot();
@@ -29,7 +31,7 @@
     var svg = d3.select("#map").select("svg"),
         g = svg.append("g");
 
-    map.setMaxBounds(map.getBounds());
+    //map.setMaxBounds(map.getBounds());
 
 
     d3.json("data/austria.json", function (json) {
@@ -57,27 +59,26 @@
         // }
     });
 
-    esClient.search({
-        index: 'tustepgeo2',
-        body: {
-            "size": 0,
-            "query": {
-                "match_all": {}
-            },
-            "aggs": {
-                "buckets": {
-                    "geohash_grid": {
-                        "field": "gisOrt",
-                        "precision": 3
-                    }
-                }
-            }
-        }
-    }).then(function (resp) {
-        console.log(resp.aggregations.buckets.length);
+    // getDataForZoomLevel(map.getZoom())
+    //     .then(function (resp) {
+    //
+    //     });
+
+    map.on("viewreset", update);
+    map.on("zoomstart", function () {
+        g.style("opacity", .0)
+
+    });
+    map.on("zoomend", function () {
+
+    });
+    update();
+
+
+    function generateFeatures(resp) {
         geohashBuckets = resp.aggregations.buckets.buckets;
 
-        geohashFeatures = _.map(geohashBuckets, function(hash_bucket) {
+        return _.map(geohashBuckets, function (hash_bucket) {
             var coordsObj = Geohash.decode(hash_bucket.key);
             var coords = [coordsObj.lat, coordsObj.lon];
 
@@ -93,33 +94,78 @@
                 }
             };
         });
+    }
 
-
-        // create path elements for each of the features
-        d3_features = g.selectAll("circle")
-            .data(geohashFeatures)
-            .enter().append("circle");
-
-        map.on("viewreset", update);
-        update();
-    });
 
 
     function update() {
+        getDataForZoomLevel(map.getZoom())
+            .then(function(resp) {
+                var features = generateFeatures(resp);
+                var d3_features = g.selectAll("circle").data(features);
 
-        console.log(map.getZoom());
+                var minDocCount = _.min(features, function(el) {
+                    return el.properties.doc_count;
+                }).properties.doc_count;
+                var maxDocCount = _.max(features, function(el) {
+                    return el.properties.doc_count;
+                }).properties.doc_count;
 
-        d3_features.attr("transform",
-            function(d) {
-                return "translate("+
-                    map.latLngToLayerPoint(d.geometry.coordinates).x +","+
-                    map.latLngToLayerPoint(d.geometry.coordinates).y +")";
-            }
-        ).style("stroke", "black")
-            .style("opacity", .6)
-            .style("fill", "red")
-            .attr("r", 20);
+                var sizeInPixels = map.getSize(map.getZoom());
 
+                var radiusScale = d3.scale.linear()
+                    .domain([minDocCount, maxDocCount])
+                    .range([sizeInPixels.x * 0.01, sizeInPixels.x * 0.03]);
+
+
+                d3_features.attr("transform",
+                    function(d) {
+                        return "translate("+
+                            map.latLngToLayerPoint(d.geometry.coordinates).x +","+
+                            map.latLngToLayerPoint(d.geometry.coordinates).y +")";
+                    })
+                    .attr("r", function(d){return radiusScale(d.properties.doc_count);});
+
+                d3_features
+                    .enter()
+                    .append("circle")
+                    .attr("transform",
+                        function(d) {
+                            return "translate("+
+                                map.latLngToLayerPoint(d.geometry.coordinates).x +","+
+                                map.latLngToLayerPoint(d.geometry.coordinates).y +")";
+                        }
+                    ).style("stroke", "black")
+                    .style("opacity", .6)
+                    .style("fill", "red")
+                    .attr("r", function(d){return radiusScale(d.properties.doc_count);});
+
+                g.style("opacity", 1);
+
+                d3_features.exit().remove();
+            });
     }
+
+    function getDataForZoomLevel(zoomLevel) {
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: {
+                "size": 0,
+                "query": {
+                    "match_all": {}
+                },
+                "aggs": {
+                    "buckets": {
+                        "geohash_grid": {
+                            "field": "gisOrt",
+                            "precision": zoomLevel - 4
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 
 })();
