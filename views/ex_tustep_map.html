@@ -32,47 +32,43 @@
 <body>
 
 <div id="content">
-    <div id="header">
-        <div class="title">ExploreAT!</div>
-        <div id="loader-wrapper">
-            <div id="loadFromLemma" class="load-block">Load <b>Lemma</b> Data</div>
-            <div id="loadFromBeleg" class="load-block">Load <b>Beleg</b> Data</div>
-            <div id="spinner" class="hidden">
-                <span>Loading data from the database...<br>This may take some time.</span>
-                <br><br>
-                <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
-            </div>
-        </div>
-        <div id="fieldFilter" class="filter-box hidden">
-            <h1>Word Filter</h1>
-            <h2>Find words containing what you type</h2>
-            <input type="text" id="searchField" placeholder="Word...">
-            <!-- <button type="button" id="searchFieldButton">Search</button> -->
-            <button type="button" id="clearFieldButton">Clear</button>
-        </div>
-        <div id="speechFilter" class="filter-box hidden">
-            <h1>Part Of Speech Filter</h1>
-            <h2>Click to highlight any particular kind of word</h2>
-        </div>
-        <div id="yearFilter" class="filter-box hidden">
-            <h1>Year Filter</h1>
-            <h2>Show only words sourced between the selected years</h2>
-            <div id="sliderWrapper">
-                <div id="sliderYears"></div>
-                <span id="minYearLabel" class="yearLabel"></span>
-                <span id="maxYearLabel" class="yearLabel"></span>
-            </div>
-            <div id="checkYearWrapper">
-                <input id="checkYear" type="checkbox" name="checkYear" value="checkYear" checked> Show words without a registered date
-            </div>
-        </div>
-        <br>
-    </div>
+    <!--<div id="header">-->
+        <!--<div class="title">ExploreAT!</div>-->
+        <!--<div id="loader-wrapper">-->
+            <!--<div id="loadFromLemma" class="load-block">Load <b>Lemma</b> Data</div>-->
+            <!--<div id="loadFromBeleg" class="load-block">Load <b>Beleg</b> Data</div>-->
+            <!--<div id="spinner" class="hidden">-->
+                <!--<span>Loading data from the database...<br>This may take some time.</span>-->
+                <!--<br><br>-->
+                <!--<i class="fa fa-circle-o-notch fa-spin fa-2x"></i>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div id="fieldFilter" class="filter-box hidden">-->
+            <!--<h1>Word Filter</h1>-->
+            <!--<h2>Find words containing what you type</h2>-->
+            <!--<input type="text" id="searchField" placeholder="Word...">-->
+            <!--&lt;!&ndash; <button type="button" id="searchFieldButton">Search</button> &ndash;&gt;-->
+            <!--<button type="button" id="clearFieldButton">Clear</button>-->
+        <!--</div>-->
+        <!--<div id="speechFilter" class="filter-box hidden">-->
+            <!--<h1>Part Of Speech Filter</h1>-->
+            <!--<h2>Click to highlight any particular kind of word</h2>-->
+        <!--</div>-->
+        <!--<div id="yearFilter" class="filter-box hidden">-->
+            <!--<h1>Year Filter</h1>-->
+            <!--<h2>Show only words sourced between the selected years</h2>-->
+            <!--<div id="sliderWrapper">-->
+                <!--<div id="sliderYears"></div>-->
+                <!--<span id="minYearLabel" class="yearLabel"></span>-->
+                <!--<span id="maxYearLabel" class="yearLabel"></span>-->
+            <!--</div>-->
+            <!--<div id="checkYearWrapper">-->
+                <!--<input id="checkYear" type="checkbox" name="checkYear" value="checkYear" checked> Show words without a registered date-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<br>-->
+    <!--</div>-->
     <div id="map"></div>
-</div>
-
-<div id="info-tooltip">
-    Tooltip
 </div>
 
 <script src="javascripts/tustep_map.js"></script>
