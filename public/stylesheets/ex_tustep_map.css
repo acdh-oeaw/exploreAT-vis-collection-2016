@@ -75,7 +75,15 @@ h2 {
     fill: rgba(0,0,0,0);
     stroke-width: 1px;
     stroke: gray;
-    cursor: pointer;
+    cursor: default;
+    pointer-events: none;
+}
+
+.featureLayer {
+  fill: rgba(0,0,0,0);
+  stroke-width: 1px;
+  stroke: red;
+  cursor: pointer;
 }
 
 .subunit {
@@ -295,7 +303,7 @@ text {
 	font-size: .7em;
 	font-weight: 300;
 	text-align: center;
-	
+
 	-webkit-transition: all .2s linear;
 	-moz-transition: all .2s linear;
 	-o-transition: all .2s linear;

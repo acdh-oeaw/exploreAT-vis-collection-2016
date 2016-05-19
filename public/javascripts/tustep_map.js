@@ -6,11 +6,10 @@ var cartoMap;
         hosts: "http:\/\/localhost:9200\/"
     });
 
-    var geohashBuckets = [];
-    var zoom = 8;
+    var zoom = 7;
 
     var svg,
-        featureLayer;
+        geoFeaturesLayer;
 
 
     cartoMap = d3.carto.map();
@@ -22,7 +21,6 @@ var cartoMap;
         } else zoom -= 1;
 
         update();
-
     });
 
 
@@ -31,13 +29,13 @@ var cartoMap;
     terrainLayer
         .path('light_all')
         .tileType("cartodb")
-        .label("Terrain");
+        .label("Map Tiles");
 
 
     var geojsonLayer = d3.carto.layer.geojson();
     geojsonLayer
         .path("data/austria.json")
-        .label("GeoBorders")
+        .label("Country Borders")
         .visibility(true)
         .cssClass("countryborders")
         .renderMode("svg");
@@ -45,7 +43,7 @@ var cartoMap;
     cartoMap.addCartoLayer(terrainLayer);
     cartoMap.addCartoLayer(geojsonLayer);
 
-    cartoMap.setScale(6);
+    cartoMap.setScale(5);
 
     cartoMap.centerOn([13.333333, 47.333333],"latlong");
 
@@ -55,31 +53,31 @@ var cartoMap;
     function update() {
         getDataForZoomLevel(zoom)
             .then(function(resp) {
-                var features = generateFeatures(resp);
+                var geoFeatures = generateGeoFeatures(resp);
 
-                if (featureLayer == undefined) {
-                    featureLayer = d3.carto.layer.featureArray().label("SVG Features")
+                if (geoFeaturesLayer == undefined) {
+                    geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
                         .cssClass("featureLayer")
-                        .features(features)
+                        .features(geoFeatures)
                         .renderMode("svg");
-                    cartoMap.addCartoLayer(featureLayer);
+                    cartoMap.addCartoLayer(geoFeaturesLayer);
                 } else {
-                    featureLayer.features(features);
-                    cartoMap.refreshCartoLayer(featureLayer);
+                    geoFeaturesLayer.features(geoFeatures);
+                    cartoMap.refreshCartoLayer(geoFeaturesLayer);
                 }
 
-                var minDocCount = _.min(features, function(el) {
+                var minDocCount = _.min(geoFeatures, function(el) {
                     return el.properties.doc_count;
                 }).properties.doc_count;
-                var maxDocCount = _.max(features, function(el) {
+                var maxDocCount = _.max(geoFeatures, function(el) {
                     return el.properties.doc_count;
                 }).properties.doc_count;
             });
     }
 
 
-    function generateFeatures(resp) {
-        geohashBuckets = resp.aggregations.buckets.buckets;
+    function generateGeoFeatures(resp) {
+        geohashBuckets = resp.aggregations.ortMain.buckets;
 
         return _.map(geohashBuckets, function (hash_bucket) {
             // var coordsObj = Geohash.decode(hash_bucket.key);
@@ -116,23 +114,51 @@ var cartoMap;
 
     function getDataForZoomLevel(zoomLevel) {
 
-        return esClient.search({
-            index: 'tustepgeo2',
-            body: {
-                "size": 0,
-                "query": {
-                    "match_all": {}
-                },
-                "aggs": {
-                    "buckets": {
-                        "geohash_grid": {
-                            "field": "gisOrt",
-                            "precision": zoomLevel - 5
-                        }
+      return esClient.search({
+          index: 'tustepgeo2',
+          body: {
+              "size": 0,
+              "query": {
+                  "match_all": {}
+              },
+              "aggs": {
+                "ortMain": {
+                  "geohash_grid": {
+                    "buckets_path": "years",
+                    "field": "gisOrt",
+                    "precision": zoomLevel - 4
+                  },
+                  "aggs": {
+                    "years": {
+                      "date_histogram": {
+                        "field": "startYear",
+                        "interval": "1826d",
+                        "time_zone": "Europe/Berlin",
+                        "min_doc_count": 1
+                      }
                     }
+                  }
+                },
+                "yearsMain": {
+                  "date_histogram": {
+                    "field": "startYear",
+                    "interval": "1826d",
+                    "time_zone": "Europe/Berlin",
+                    "min_doc_count": 1
+                  },
+                  "aggs": {
+                    "ort": {
+                      "geohash_grid": {
+                        "buckets_path": "years",
+                        "field": "gisOrt",
+                        "precision": 4
+                      }
+                    }
+                  }
                 }
-            }
-        });
+              }
+          }
+      });
     }
 
 
