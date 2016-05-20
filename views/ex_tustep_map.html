@@ -29,6 +29,7 @@
     <script src="bower_components/d3-carto-map/d3.carto.map.js"></script>
     <script src="bower_components/crossfilter/crossfilter.js"></script>
     <script src="bower_components/dcjs/dc.js"></script>
+    <script src="bower_components/reductio/reductio.js"></script>
     <script src="bower_components/colorbrewer/colorbrewer.js"></script>
 </head>
 
@@ -72,7 +73,10 @@
         <!--<br>-->
     <!--</div>-->
     <div id="map"></div>
-    <div id="timeline" class="dc-chart"></div>
+    <div id="timeline-holder" class="overmap">
+      <span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>
+      <div id="timeline" class="dc-chart"></div>
+    </div>
 </div>
 
 <script src="javascripts/tustep_map.js"></script>

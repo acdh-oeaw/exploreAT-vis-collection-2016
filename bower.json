@@ -38,5 +38,8 @@
   },
   "resolutions": {
     "d3": "^3.5.14"
+  },
+  "devDependencies": {
+    "reductio": "^0.5.4"
   }
 }

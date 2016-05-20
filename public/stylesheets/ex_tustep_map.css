@@ -1,9 +1,10 @@
 textarea, input { outline: none; }
 
-body {
+body, html {
   font-family: Helvetica, Arial, sans-serif;
   margin: 0px;
   padding: 0px;
+  height: 100%;
 }
 
 .background {
@@ -20,6 +21,12 @@ h2 {
 	font-weight: 300;
 	color: darkgrey;
 	margin-bottom: 20px;
+}
+
+#content {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .tooltip {
@@ -67,8 +74,8 @@ h2 {
 /*MAP*/
 
 #map {
-    height: 600px;
-    width: 70%;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 .countryborders {
@@ -374,4 +381,25 @@ text {
 
 .hidden {
 	display: none;
+}
+
+#timeline-holder {
+  position: absolute;
+  bottom: 0px;
+  padding-top: 10px;
+  width: 100%;
+  background-color: rgba(250, 250, 250, .75);
+  pointer-events: auto;
+}
+
+.reset-holder {
+  cursor: pointer;
+  margin-left: 50px;
+  font-size: .8em;
+  text-decoration: underline;
+  color: #2EBAE8;
+}
+
+.overmap {
+  z-index: 999!important;
 }
