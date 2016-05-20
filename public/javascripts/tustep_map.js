@@ -67,49 +67,7 @@ var cartoMap;
 
             createDataStructure(resp);
             refreshCrossfilter();
-
-            // var geoFeatures = generateGeoFeatures(resp);
-            var geoFeatures = generateCrossGeoFeatures();
-            //generateTimeline(resp);
-
-            var minDocCount = _.min(geoFeatures, function(el) {
-                return el.properties.doc_count;
-            }).properties.doc_count;
-
-            var docCountMean = d3.mean(geoFeatures, function (el) {
-                return el.properties.doc_count;
-            });
-
-            var maxDocCount = _.max(geoFeatures, function(el) {
-                return el.properties.doc_count;
-            }).properties.doc_count;
-
-            function colorByCount(minDoc, mean, maxDoc) {
-                mean = mean || docCountMean;
-                minDoc = minDoc || minDocCount;
-                maxDoc = maxDoc || maxDocCount;
-                var colorScale = d3.scale.linear()
-                    .range(colorbrewer.OrRd[3])
-                    .domain([minDoc, mean, maxDoc]);
-                d3.selectAll("path.featureLayer")
-                    .style("fill", function (d) { return colorScale(d.properties.doc_count);});
-            }
-
-            if (geoFeaturesLayer == undefined) {
-                geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
-                    .cssClass("featureLayer")
-                    .features(geoFeatures)
-                    .renderMode("svg")
-                    .on("load", colorByCount)
-                    .clickableFeatures(true);
-                cartoMap.addCartoLayer(geoFeaturesLayer);
-            } else {
-                geoFeaturesLayer
-                    .features(geoFeatures)
-                    .clickableFeatures(true);
-                cartoMap.refreshCartoLayer(geoFeaturesLayer);
-                colorByCount(minDocCount, docCountMean,     maxDocCount);
-            }
+              refreshGeoFeatures();
         });
   }
 
@@ -149,7 +107,7 @@ var cartoMap;
       appendTimeline();
     }
     else{
-      //resetCrossfilterData();
+      resetCrossfilterData();
     }
   }
 
@@ -159,7 +117,7 @@ var cartoMap;
     ndx.remove();
     timelineChart.filter([timelineFilters]);
     ndx.add(tustepData);
-    dc.redrawAll();
+    // dc.redrawAll();
   }
 
   function appendTimeline(){
@@ -194,9 +152,48 @@ var cartoMap;
   }
 
   function refreshGeoFeatures(){
-    var geoFeatures = generateCrossGeoFeatures();
-    geoFeaturesLayer.features(geoFeatures);
-    cartoMap.refreshCartoLayer(geoFeaturesLayer);
+      // var geoFeatures = generateGeoFeatures(resp);
+      var geoFeatures = generateCrossGeoFeatures();
+      //generateTimeline(resp);
+
+      var minDocCount = _.min(geoFeatures, function(el) {
+          return el.properties.doc_count;
+      }).properties.doc_count;
+
+      var docCountMean = d3.mean(geoFeatures, function (el) {
+          return el.properties.doc_count;
+      });
+
+      var maxDocCount = _.max(geoFeatures, function(el) {
+          return el.properties.doc_count;
+      }).properties.doc_count;
+
+      function colorByCount(minDoc, mean, maxDoc) {
+          mean = mean || docCountMean;
+          minDoc = minDoc || minDocCount;
+          maxDoc = maxDoc || maxDocCount;
+          var colorScale = d3.scale.linear()
+              .range(colorbrewer.OrRd[3])
+              .domain([minDoc, mean, maxDoc]);
+          d3.selectAll("path.featureLayer")
+              .style("fill", function (d) { return colorScale(d.properties.doc_count);});
+      }
+
+      if (geoFeaturesLayer == undefined) {
+          geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
+              .cssClass("featureLayer")
+              .features(geoFeatures)
+              .renderMode("svg")
+              .on("load", colorByCount)
+              .clickableFeatures(true);
+          cartoMap.addCartoLayer(geoFeaturesLayer);
+      } else {
+          geoFeaturesLayer
+              .features(geoFeatures)
+              .clickableFeatures(true);
+          cartoMap.refreshCartoLayer(geoFeaturesLayer);
+          colorByCount(minDocCount, docCountMean,     maxDocCount);
+      }
   }
 
   function generateCrossGeoFeatures() {
