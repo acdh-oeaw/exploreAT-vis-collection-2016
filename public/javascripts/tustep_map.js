@@ -85,10 +85,13 @@ var cartoMap;
                         .cssClass("featureLayer")
                         .features(geoFeatures)
                         .renderMode("svg")
-                        .on("load", colorByCount);
+                        .on("load", colorByCount)
+                        .clickableFeatures(true);
                     cartoMap.addCartoLayer(geoFeaturesLayer);
                 } else {
-                    geoFeaturesLayer.features(geoFeatures);
+                    geoFeaturesLayer
+                        .features(geoFeatures)
+                        .clickableFeatures(true);
                     cartoMap.refreshCartoLayer(geoFeaturesLayer);
                     colorByCount(minDocCount, docCountMean,     maxDocCount);
                 }
@@ -119,6 +122,7 @@ var cartoMap;
 
             return {
                 "type": "Feature",
+                "label": hash_bucket.doc_count,
                 "properties": {
                     "key": hash_bucket.key,
                     "doc_count": hash_bucket.doc_count
