@@ -53,31 +53,51 @@ var cartoMap;
     function update() {
         getDataForZoomLevel(zoom)
             .then(function(resp) {
+
                 var geoFeatures = generateGeoFeatures(resp);
+
+                var minDocCount = _.min(geoFeatures, function(el) {
+                    return el.properties.doc_count;
+                }).properties.doc_count;
+                
+                var docCountMean = d3.mean(geoFeatures, function (el) {
+                    return el.properties.doc_count;
+                });
+
+                var maxDocCount = _.max(geoFeatures, function(el) {
+                    return el.properties.doc_count;
+                }).properties.doc_count;
+
+
+                function colorByCount(minDoc, mean, maxDoc) {
+                    mean = mean || docCountMean;
+                    minDoc = minDoc || minDocCount;
+                    maxDoc = maxDoc || maxDocCount;
+                    var colorScale = d3.scale.linear()
+                        .range(colorbrewer.OrRd[3])
+                        .domain([minDoc, mean, maxDoc]);
+                    d3.selectAll("path.featureLayer")
+                        .style("fill", function (d) { return colorScale(d.properties.doc_count);});
+                }
 
                 if (geoFeaturesLayer == undefined) {
                     geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
                         .cssClass("featureLayer")
                         .features(geoFeatures)
-                        .renderMode("svg");
+                        .renderMode("svg")
+                        .on("load", colorByCount);
                     cartoMap.addCartoLayer(geoFeaturesLayer);
                 } else {
                     geoFeaturesLayer.features(geoFeatures);
                     cartoMap.refreshCartoLayer(geoFeaturesLayer);
+                    colorByCount(minDocCount, docCountMean,     maxDocCount);
                 }
-
-                var minDocCount = _.min(geoFeatures, function(el) {
-                    return el.properties.doc_count;
-                }).properties.doc_count;
-                var maxDocCount = _.max(geoFeatures, function(el) {
-                    return el.properties.doc_count;
-                }).properties.doc_count;
             });
     }
 
 
     function generateGeoFeatures(resp) {
-        geohashBuckets = resp.aggregations.ortMain.buckets;
+        var geohashBuckets = resp.aggregations.ortMain.buckets;
 
         return _.map(geohashBuckets, function (hash_bucket) {
             // var coordsObj = Geohash.decode(hash_bucket.key);
