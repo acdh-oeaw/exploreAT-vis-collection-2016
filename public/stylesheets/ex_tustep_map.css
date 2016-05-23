@@ -392,6 +392,17 @@ text {
   pointer-events: auto;
 }
 
+#livesearch-box {
+    position: absolute;
+    top: 0px;
+    left: 40%;
+    width: 450px;
+}
+
+#live-search {
+    margin: auto;
+}
+
 .reset-holder {
   cursor: pointer;
   margin-left: 50px;
