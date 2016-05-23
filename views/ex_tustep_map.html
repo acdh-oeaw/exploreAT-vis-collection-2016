@@ -76,8 +76,31 @@
     <div id="livesearch-box" class="overmap">
     </div>
     <div id="timeline-holder" class="overmap">
-      <span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>
+      <div id="timeline-info-holder">
+        <div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>
+        <div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>
+        <span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>
+      </div>
+      <div id="timeline-resolution-holder">
+        <div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>
+        <select name="timeline-resolution-selector" id="timeline-resolution-selector">
+          <option value="1" selected>Per Year</option>
+          <option value="5">Per 5 Years</option>
+          <option value="10">Per 10 Years</option>
+          <option value="25">Per 25 Years</option>
+        </select>
+      </div>
       <div id="timeline" class="dc-chart"></div>
+    </div>
+    <div id="bucket-holder" class="overmap">
+      <div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>
+      <select name="bucket-resolution-selector" id="bucket-resolution-selector">
+        <option value="7" selected>1st Level</option>
+        <option value="8">2nd Level</option>
+        <option value="9">3rd Level</option>
+        <option value="10">4th Level</option>
+        <option value="11">5th Level</option>
+      </select>
     </div>
 </div>
 
