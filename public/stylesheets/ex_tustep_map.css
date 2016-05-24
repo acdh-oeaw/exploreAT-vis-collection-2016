@@ -383,6 +383,37 @@ text {
 	display: none;
 }
 
+
+
+
+
+
+
+#livesearch-holder {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 30px;
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(250, 250, 250, .75);
+    pointer-events: auto;
+    font-size: .8em;
+    font-weight: 600;
+}
+
+#live-search {
+    margin: auto;
+    vertical-align: -webkit-baseline-middle;
+}
+
+#live-search > input {
+    vertical-align: -webkit-baseline-middle;
+}
+
+
+
 #timeline {
   margin-top: 5px;
 }
@@ -425,17 +456,6 @@ text {
 
 #timeline-filter-start, #timeline-filter-end, #timeline-lemma-count {
   font-weight: 600;
-}
-
-#livesearch-box {
-    position: absolute;
-    top: 0px;
-    left: 40%;
-    width: 450px;
-}
-
-#live-search {
-    margin: auto;
 }
 
 .reset-holder {

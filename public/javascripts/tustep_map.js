@@ -15,18 +15,31 @@ var cartoMap;
 
     var allDim, yearDim;
     var groupOfDocsPerYear;
+    var minYear, maxYear;
+    var selectedMinYear, selectedMaxYear;
+    var timelineYaxisNeedsUpdate = false;
+
+    var minDocCount, maxDocCount, docCountMean;
+
+    // LEMMA SEARCH VARIABLES
+
+    var filterMain, filterLeft;
+
+    d3.select("#livesearch-holder")
+        .on("keyup", function() {
+            update();
+        });
+
+    filterMain = $("#filterMain");
+    filterLeft = $("#filterLeft");
+
 
     // MAP VARIABLES + INITIALIZATION
 
-    var zoom = 7;
+    var bucketResolution = 7;
+    var yearResolution = 1;
     var svg;
     var geoFeaturesLayer;
-
-
-    var filterMain,
-        filterLeft;
-
-
 
     cartoMap = d3.carto.map();
     d3.select("#map").call(cartoMap);
@@ -35,17 +48,17 @@ var cartoMap;
 
     var terrainLayer = d3.carto.layer.tile();
     terrainLayer
-        .path('light_all')
-        .tileType("cartodb")
-        .label("Map Tiles");
+    .path('light_all')
+    .tileType("cartodb")
+    .label("Map Tiles");
 
     var geojsonLayer = d3.carto.layer.geojson();
     geojsonLayer
-        .path("data/austria.json")
-        .label("Country Borders")
-        .visibility(true)
-        .cssClass("countryborders")
-        .renderMode("svg");
+    .path("data/austria.json")
+    .label("Country Borders")
+    .visibility(true)
+    .cssClass("countryborders")
+    .renderMode("svg");
 
     cartoMap.addCartoLayer(terrainLayer);
     cartoMap.addCartoLayer(geojsonLayer);
@@ -55,44 +68,24 @@ var cartoMap;
 
     // GEO BUCKETS SCALE/PRECISION CONTROL
 
-    $('.zoomcontrol').bind('click', function() {
-        if (this.innerHTML == '+') {
-            zoom += 1;
-        } else zoom -= 1;
-
+    $("#bucket-resolution-selector").change(function() {
+        bucketResolution = parseInt($("#bucket-resolution-selector option:selected").val());
         update();
     });
 
     // APP START (First update)
-    d3.select("#livesearch-box").append("form")
-        .attr("id", "live-search")
-        .attr("class", "searchBox")
-        .attr("class", "overmap")
-        .html("<fieldset> " +
-            "<input type=\"text\" class=\"text-input\" id=\"filterMain\" placeholder=\"Search by main lemma\" value=\"\" style=\"width: 200px\"/> " +
-            "<input type=\"text\" class=\"text-input\" id=\"filterLeft\" placeholder=\"Search by left lemma\" value=\"\" style=\"width: 200px\"/>" +
-            "</fieldset>")
-        .on("keyup", function() {
-            console.log(filterMain.val());
-            console.log(filterLeft.val());
-            update();
-        });
-
-    filterMain = $("#filterMain");
-    filterLeft = $("#filterLeft");
-
 
     update();
 
     function update() {
-        getDataForZoomLevel()
-            .then(function(resp) {
-                if (resp.aggregations.length !== 0) {
-                    createDataStructure(resp);
-                    refreshCrossfilter();
-                    refreshGeoFeatures();
-                }
-            });
+        getDataFromElastic()
+        .then(function(resp) {
+            if (resp.aggregations.length !== 0) {
+                createDataStructure(resp);
+                refreshCrossfilter();
+                refreshGeoFeatures();
+            }
+        });
     }
 
     function createDataStructure(resp) {
@@ -105,6 +98,12 @@ var cartoMap;
                 tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
             });
         });
+
+        console.log("TUSTEPDATA");
+        console.log(tustepData);
+
+        minYear = _.min(tustepData, function(reg){return parseInt(reg.year);}).year;
+        maxYear = _.max(tustepData, function(reg){return parseInt(reg.year);}).year;
     }
 
     function refreshCrossfilter(){
@@ -112,6 +111,7 @@ var cartoMap;
         if(ndx == null){
             ndx = crossfilter(tustepData);
 
+            if(yearDim == null || yearDim == undefined)
             yearDim = ndx.dimension(dc.pluck('year'));
             // hashDim = ndx.dimension(dc.pluck('hash')),
             // docCountDim = ndx.dimension(dc.pluck('docs')),
@@ -125,12 +125,11 @@ var cartoMap;
             var reducer = reductio()
             // .count(true)
             // .avg(true)
-                .sum(function(d) { return d.docs; });
+            .sum(function(d) { return d.docs; });
             reducer(groupOfDocsPerYear);
 
             appendTimeline();
-
-
+            timelineYaxisNeedsUpdate = true; // Update the scale for the first time
         }
         else{
             resetCrossfilterData();
@@ -141,40 +140,114 @@ var cartoMap;
         var timelineFilters = timelineChart.filters();
         timelineChart.filter(null);
         ndx.remove();
-        timelineChart.filter([timelineFilters]);
+        //timelineChart.filter([timelineFilters]);
         ndx.add(tustepData);
-        // dc.redrawAll();
+        timelineChart.filterAll();
+        dc.redrawAll();
+        //timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
     }
 
     function appendTimeline(){
-        var margins = {top: 10, right: 60, bottom: 20, left: 60};
-        timelineChart
-            .width(parseInt(d3.select('#timeline-holder').style('width'), 10))
-            .height(100)
-            .dimension(yearDim)
-            .group(groupOfDocsPerYear)
-            .valueAccessor(function(p) { return p.value.sum; })
-            .x(d3.scale.linear().domain([
-                yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year, // minYear
-                yearDim.top(Infinity)[1].year // maxYear
-            ]))
-            //.elasticY(true)
-            .centerBar(true)
-            .barPadding(2)
-            .margins(margins);
-        timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort().filter(function(el, index) {return index % 20 === 1;}));
-        //yearChart.yAxis().tickValues(0);
 
-        timelineChart.on('renderlet', function () {
-            refreshGeoFeatures();
+        var margins = {top: 10, right: 60, bottom: 40, left: 60};
+        timelineChart
+        .width(parseInt(d3.select('#timeline-holder').style('width'), 10))
+        .height(100)
+        .dimension(yearDim)
+        .group(groupOfDocsPerYear)
+        .valueAccessor(function(p) { return p.value.sum; })
+        .x(d3.scale.linear().domain([
+            yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year, // minYear
+            yearDim.top(Infinity)[0].year // maxYear
+        ]))
+        .centerBar(true)
+        .margins(margins);
+        timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort());
+        //timelineChart.yAxis().tickValues(0);
+
+        timelineChart.on("preRedraw", function (chart) {
+            chart.rescale();
+        });
+        timelineChart.on("preRender", function (chart) {
+            chart.rescale();
         });
 
+        // Update the map after any brushing action
+        timelineChart.on('renderlet', function () {
+            refreshGeoFeatures();
+            timelineChart.selectAll('g.x text')
+            .attr('transform', 'translate(-10,10) rotate(315)');
+        });
+
+        // Reset == Remove filters and redraw
         d3.selectAll('a#timeline-reset').on('click', function () {
             timelineChart.filterAll();
             dc.redrawAll();
         });
 
+        // Set the timeline resolution change listener
+        $("#timeline-resolution-selector").change(function() {
+            yearResolution = parseInt($("#timeline-resolution-selector option:selected").val());
+            update();
+        });
+
+        // Draw all for the first time
         dc.renderAll();
+    }
+
+    function updateTimelineInfoLabels(geoFeatures){
+
+        // Year labels
+        selectedMinYear = yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year;
+        selectedMaxYear = yearDim.top(Infinity)[0].year;
+        $("#timeline-filter-start").html(selectedMinYear);
+        $("#timeline-filter-end").html(selectedMaxYear);
+
+        // Lemma labels
+        var totalLemmas = 0;
+        _.forEach(geoFeatures, function(feature){
+            totalLemmas += feature.properties.doc_count;
+        });
+        $("#timeline-lemma-count").html(totalLemmas);
+
+        var years = [];
+        for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
+        if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        dc.redrawAll();
+    }
+
+    function updateTimelineYscale(geoFeatures){
+
+        // Get min/mean/max docCounts and update the Y axis of the chart
+
+        // This gets done only once per data update, so the chart remains the same
+        // no matter if the user brushes it, until another dataset is loaded (detail changed)
+
+        getMinMaxMeanDocCounts(geoFeatures);
+
+        timelineChart.y(d3.scale.linear().domain([0, docCountMean/5, maxDocCount]));
+        timelineChart.yAxis().tickValues([0, docCountMean/5, maxDocCount]);
+        dc.redrawAll();
+
+        timelineYaxisNeedsUpdate = false;
+    }
+
+    function getMinMaxMeanDocCounts(geoFeatures){
+
+        minDocCount = _.min(geoFeatures, function(el) {
+            return el.properties.doc_count;
+        }).properties.doc_count;
+
+        docCountMean = d3.mean(geoFeatures, function (el) {
+            return el.properties.doc_count;
+        });
+
+        maxDocCount = _.max(geoFeatures, function(el) {
+            return el.properties.doc_count;
+        }).properties.doc_count;
     }
 
     function refreshGeoFeatures(){
@@ -182,49 +255,49 @@ var cartoMap;
         var geoFeatures = generateCrossGeoFeatures();
         //generateTimeline(resp);
 
+        console.log("GEOFEATURES");
+        console.log(geoFeatures);
+
         if (geoFeatures && geoFeatures.length > 0) {
-            var minDocCount = _.min(geoFeatures, function(el) {
-                return el.properties.doc_count;
-            }).properties.doc_count;
 
-            var docCountMean = d3.mean(geoFeatures, function (el) {
-                return el.properties.doc_count;
-            });
-
-            var maxDocCount = _.max(geoFeatures, function(el) {
-                return el.properties.doc_count;
-            }).properties.doc_count;
+            getMinMaxMeanDocCounts(geoFeatures);
 
             function colorByCount(minDoc, mean, maxDoc) {
                 mean = mean || docCountMean;
                 minDoc = minDoc || minDocCount;
                 maxDoc = maxDoc || maxDocCount;
                 var colorScale = d3.scale.linear()
-                    .range(colorbrewer.OrRd[3])
-                    .domain([minDoc, mean, maxDoc]);
+                .range(colorbrewer.OrRd[3])
+                .domain([minDoc, mean, maxDoc]);
                 d3.selectAll("path.featureLayer")
-                    .style("fill", function (d) {
-                        return colorScale(d.properties.doc_count);
-                    })
-                    .style("opacity", 0.8);
+                .style("fill", function (d) {
+                    return colorScale(d.properties.doc_count);
+                })
+                .style("opacity", 0.8);
             }
-        }
 
-        if (geoFeaturesLayer == undefined) {
-            geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
+            if (geoFeaturesLayer == undefined) {
+                geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
                 .cssClass("featureLayer")
                 .features(geoFeatures)
                 .renderMode("svg")
                 .on("load", colorByCount)
                 .clickableFeatures(true);
-            cartoMap.addCartoLayer(geoFeaturesLayer);
-        } else {
-            geoFeaturesLayer
+                cartoMap.addCartoLayer(geoFeaturesLayer);
+            } else {
+                geoFeaturesLayer
                 .features(geoFeatures)
                 .clickableFeatures(true);
-            cartoMap.refreshCartoLayer(geoFeaturesLayer);
-            if (geoFeatures.length > 0)
-                colorByCount(minDocCount, docCountMean, maxDocCount);
+                cartoMap.refreshCartoLayer(geoFeaturesLayer);
+                if (geoFeatures.length > 0)
+                colorByCount(minDocCount,docCountMean,maxDocCount);
+            }
+
+            // Update the lemma count
+            updateTimelineInfoLabels(geoFeatures);
+            // Update timeline Y axis scale
+            if(timelineYaxisNeedsUpdate)
+            updateTimelineYscale(geoFeatures);
         }
     }
 
@@ -246,7 +319,7 @@ var cartoMap;
             });
 
             if(geoObject.doc_count > 0)
-                geohashBuckets.push(geoObject);
+            geohashBuckets.push(geoObject);
         });
 
         return _.map(geohashBuckets, function (hash_bucket) {
@@ -277,13 +350,65 @@ var cartoMap;
         });
     }
 
+    function getDataFromElastic() {
+
+        var body = {
+            "aggs": {
+                "ortMain": {
+                    "geohash_grid": {
+                        "buckets_path": "years",
+                        "field": "gisOrt",
+                        "precision": bucketResolution - 4
+                    },
+                    "aggs": {
+                        "years": {
+                            "date_histogram": {
+                                "field": "startYear",
+                                "interval": (365*yearResolution)+"d",
+                                "time_zone": "Europe/Berlin",
+                                "min_doc_count": 0
+                            }
+                        }
+                    }
+                },
+                "yearsMain": {
+                    "date_histogram": {
+                        "field": "startYear",
+                        "interval": (365*yearResolution)+"d",
+                        "time_zone": "Europe/Berlin",
+                        "min_doc_count": 0
+                    },
+                    "aggs": {
+                        "ort": {
+                            "geohash_grid": {
+                                "buckets_path": "years",
+                                "field": "gisOrt",
+                                "precision": bucketResolution - 4
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
+
+        if (filterMain.val() && filterLeft.val() == 0)
+            body["size"] = 0;
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: body
+        });
+    }
+
     function getQueryObjectForParams(mainLemma, leftLemma, category) {
 
         if (mainLemma == undefined || mainLemma.length == 0)
-            mainLemma = "*";
+        mainLemma = "*";
 
         if (leftLemma == undefined || leftLemma.length == 0)
-            leftLemma = "*";
+        leftLemma = "*";
 
         return {
             "bool": {
@@ -303,59 +428,6 @@ var cartoMap;
                 ]
             }
         };
-
-    }
-
-    function getDataForZoomLevel() {
-
-        var body = {
-            "aggs": {
-                "ortMain": {
-                    "geohash_grid": {
-                        "buckets_path": "years",
-                        "field": "gisOrt",
-                        "precision": zoom - 4
-                    },
-                    "aggs": {
-                        "years": {
-                            "date_histogram": {
-                                "field": "startYear",
-                                "interval": "365d",
-                                "time_zone": "Europe/Berlin",
-                                "min_doc_count": 0
-                            }
-                        }
-                    }
-                },
-                "yearsMain": {
-                    "date_histogram": {
-                        "field": "startYear",
-                        "interval": "1826d",
-                        "time_zone": "Europe/Berlin",
-                        "min_doc_count": 0
-                    },
-                    "aggs": {
-                        "ort": {
-                            "geohash_grid": {
-                                "buckets_path": "years",
-                                "field": "gisOrt",
-                                "precision": zoom - 4
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
-
-        if (filterMain.val() && filterLeft.val() == 0)
-            body["size"] = 0;
-
-        return esClient.search({
-            index: 'tustepgeo2',
-            body: body
-        });
     }
 
 
