@@ -65,7 +65,7 @@ var cartoMap;
     cartoMap.addCartoLayer(geojsonLayer);
 
     cartoMap.setScale(5);
-    cartoMap.centerOn([13.333333, 47.333333],"latlong");
+    cartoMap.centerOn([13.333333, 46.333333],"latlong");
 
     // GEO BUCKETS SCALE/PRECISION CONTROL
 
@@ -94,7 +94,7 @@ var cartoMap;
                     // No geofeatures == remove layer
                     geoFeaturesLayer
                     .features([])
-                    .clickableFeatures(true);
+                    //.clickableFeatures(true);
                     cartoMap.refreshCartoLayer(geoFeaturesLayer);
 
                     // Update counters to show no data was found
@@ -159,6 +159,11 @@ var cartoMap;
         ndx.add(tustepData);
         timelineChart.filterAll();
         dc.redrawAll();
+
+        timelineChart.selectAll('rect.bar').each(function(dBar){
+            d3.select(this).transition().duration(500).style("fill", "black");
+        });
+
         // timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
     }
 
@@ -381,23 +386,52 @@ var cartoMap;
                 colorByCount(minDocCount,docCountMean,maxDocCount);
             }
 
-            $("g.featureLayer").unbind('click');
-            d3.selectAll("g.featureLayer").data(geoFeatures)
-            .on("click",function(d,i){
-                console.log(d.properties.doc_count);
-            });
-
-            $("g.featureLayer").unbind('mouseover');
-            d3.selectAll("g.featureLayer").data(geoFeatures)
-            .on("mouseover",function(d,i){
-                console.log(d);
-            });
+            bindGeoFeaturesActions(geoFeatures);
 
             // Update the lemma count
             updateTimelineInfoLabels(geoFeatures);
             // Update timeline Y axis scale
             updateTimelineYscale(geoFeatures);
         }
+    }
+
+    function bindGeoFeaturesActions(geoFeatures){
+
+        $("g.featureLayer").unbind('click');
+        d3.selectAll("g.featureLayer").data(geoFeatures)
+        .on("click",function(d,i){
+
+            if(bucketResolution < 11){
+                var delay = 2000;
+                cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,delay);
+                setTimeout(
+                    function() {
+                        bucketResolution +=1;
+                        $("#bucket-resolution-selector").val(bucketResolution);
+                        update();
+                  }, delay-500
+                );
+            }
+        });
+
+        $("g.featureLayer").unbind('mouseover');
+        $("g.featureLayer").unbind('mouseout');
+        d3.selectAll("g.featureLayer").data(geoFeatures)
+        .on("mouseover",function(dFeature,i){
+            timelineChart.selectAll('rect.bar').each(function(dBar){
+                if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
+                    d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                }
+                else {
+                    d3.select(this).transition().duration(500).style("fill", "black");
+                }
+            });
+        })
+        .on("mouseout",function(dFeature,i){
+            timelineChart.selectAll('rect.bar').each(function(dBar){
+                d3.select(this).transition().duration(500).style("fill", "black");
+            });
+        });
     }
 
     function generateCrossGeoFeatures() {
@@ -450,7 +484,8 @@ var cartoMap;
                 "properties": {
                     "key": hash_bucket.key,
                     "doc_count": hash_bucket.doc_count,
-                    "years": hash_bucket.years
+                    "years": hash_bucket.years,
+                    "bounds": geohashBounds
                 },
                 "geometry": {
                     "type": "Polygon",
@@ -540,5 +575,19 @@ var cartoMap;
         };
     }
 
+
+
+    function getBoundingBoxCenterLatLon(bbox) {
+        var ne = bbox.ne;
+        var sw = bbox.sw;
+        var center = [ne.lon - (ne.lon-sw.lon)/2, sw.lat - (sw.lat-ne.lat)/2];
+        return center;
+    }
+    function getBoundingBoxLatLon(bbox) {
+        var ne = bbox.ne;
+        var sw = bbox.sw;
+        var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
+        return latLonBox;
+    }
 
 })();
