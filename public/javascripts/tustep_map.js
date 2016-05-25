@@ -45,7 +45,15 @@ var cartoMap;
     cartoMap = d3.carto.map();
     d3.select("#map").call(cartoMap);
 
-    // TILES + COUNTRY BORDERS
+
+    $('.zoomcontrol').bind('click', function() {
+        console.log(cartoMap.projection());
+        var projection = cartoMap.projection();
+        console.log(JSON.stringify(projection.invert(40, 10)));
+        console.log(JSON.stringify(cartoMap.zoom().translate()));
+    });
+
+        // TILES + COUNTRY BORDERS
 
     var terrainLayer = d3.carto.layer.tile();
     terrainLayer

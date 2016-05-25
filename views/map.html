@@ -1,0 +1,24 @@
+<div id="map"></div>
+<div id="livesearch-holder" class="holder overmap">
+    <form id="live-search" class="searchBox overmap">
+        <input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">
+        <input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">
+    </form>
+</div>
+<div id="bucket-holder" class="holder overmap">
+    <div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>
+    <select name="bucket-resolution-selector" id="bucket-resolution-selector">
+        <option value="7" selected>1st Level</option>
+        <option value="8">2nd Level</option>
+        <option value="9">3rd Level</option>
+        <option value="10">4th Level</option>
+        <option value="11">5th Level</option>
+    </select>
+</div>
+<div id="lemma-list-holder" class="holder overmap collapsed">
+    <div id="lemma-list-handle" class="holder">&laquo;</div>
+    <div class="lemma-list-label">Contained Lemmas</div>
+    <div id="lemma-list-table">
+
+    </div>
+</div>

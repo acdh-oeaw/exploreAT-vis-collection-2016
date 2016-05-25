@@ -11,12 +11,14 @@
     <link href="bower_components/d3-carto-map/d3map.css" rel="stylesheet">
     <link href="bower_components/dcjs/dc.css" rel="stylesheet">
     <link href="bower_components/colorbrewer/colorbrewer.css" rel="stylesheet">
+    <link href="bower_components/w2ui/w2ui-1.4.3.css" rel="stylesheet">
     <link href="stylesheets/ex_tustep_map.css" rel="stylesheet">
 
     <script src="bower_components/d3/d3.min.js"></script>
     <script src="bower_components/d3-plugins/geo/tile/tile.js"></script>
     <script src="bower_components/topojson/topojson.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/w2ui/w2ui-1.4.3.js"></script>
     <script src="bower_components/d3-queue/d3-queue.js"></script>
     <script src="bower_components/d3-tip/index.js"></script>
     <script src="bower_components/wellknown/wellknown.js"></script>
@@ -34,7 +36,8 @@
 </head>
 
 <body>
-<div id="content">
+
+<div id="content" style="height: 100%">
     <!--<div id="header">-->
         <!--<div class="title">ExploreAT!</div>-->
         <!--<div id="loader-wrapper">-->
@@ -71,52 +74,90 @@
         <!--</div>-->
         <!--<br>-->
     <!--</div>-->
-    <div id="map"></div>
-    <div id="livesearch-holder" class="holder overmap">
-        <form id="live-search" class="searchBox overmap">
-            <input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">
-            <input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">
-        </form>
-    </div>
-    <div id="timeline-holder" class="holder overmap">
-      <div id="timeline-info-holder">
-        <div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>
-        <div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>
-        <span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>
-      </div>
-      <div id="timeline-resolution-holder">
-        <div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>
-        <select name="timeline-resolution-selector" id="timeline-resolution-selector">
-          <option value="1" selected>Per Year</option>
-          <option value="5">Per 5 Years</option>
-          <option value="10">Per 10 Years</option>
-          <option value="25">Per 25 Years</option>
-        </select>
-      </div>
-      <div id="timeline" class="dc-chart"></div>
-    </div>
-    <div id="bucket-holder" class="holder overmap">
-      <div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>
-      <select name="bucket-resolution-selector" id="bucket-resolution-selector">
-        <option value="7" selected>1st Level</option>
-        <option value="8">2nd Level</option>
-        <option value="9">3rd Level</option>
-        <option value="10">4th Level</option>
-        <option value="11">5th Level</option>
-      </select>
-    </div>
-    <div id="lemma-list-holder" class="holder overmap collapsed">
-        <div id="lemma-list-handle" class="holder">&laquo;</div>
-        <div class="lemma-list-label">Contained Lemmas</div>
-        <div id="lemma-list-table">
-            
-        </div>
-    </div>
-</div>
-
-<script src="javascripts/tustep_map.js"></script>
+    <!--<div id="map"></div>-->
+    <!--<div id="livesearch-holder" class="holder overmap">-->
+        <!--<form id="live-search" class="searchBox overmap">-->
+            <!--<input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">-->
+            <!--<input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">-->
+        <!--</form>-->
+    <!--</div>-->
+    <!--<div id="timeline-holder" class="holder overmap">-->
+      <!--<div id="timeline-info-holder">-->
+        <!--<div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>-->
+        <!--<div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>-->
+        <!--<span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>-->
+      <!--</div>-->
+      <!--<div id="timeline-resolution-holder">-->
+        <!--<div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>-->
+        <!--<select name="timeline-resolution-selector" id="timeline-resolution-selector">-->
+          <!--<option value="1" selected>Per Year</option>-->
+          <!--<option value="5">Per 5 Years</option>-->
+          <!--<option value="10">Per 10 Years</option>-->
+          <!--<option value="25">Per 25 Years</option>-->
+        <!--</select>-->
+      <!--</div>-->
+      <!--<div id="timeline" class="dc-chart"></div>-->
+    <!--</div>-->
+    <!--<div id="bucket-holder" class="holder overmap">-->
+      <!--<div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>-->
+      <!--<select name="bucket-resolution-selector" id="bucket-resolution-selector">-->
+        <!--<option value="7" selected>1st Level</option>-->
+        <!--<option value="8">2nd Level</option>-->
+        <!--<option value="9">3rd Level</option>-->
+        <!--<option value="10">4th Level</option>-->
+        <!--<option value="11">5th Level</option>-->
+      <!--</select>-->
+    <!--</div>-->
+    <!--<div id="lemma-list-holder" class="holder overmap collapsed">-->
+        <!--<div id="lemma-list-handle" class="holder">&laquo;</div>-->
+        <!--<div class="lemma-list-label">Contained Lemmas</div>-->
+        <!--<div id="lemma-list-table">-->
+            <!---->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 
 
 </body>
+
+<!--<script src="javascripts/tustep_map.js"></script>-->
+
+<script>
+    $(function () {
+        $('#content').w2layout({
+            name: 'content',
+            panels: [
+                { type: 'top', size: 40, content: 'top' },
+                { type: 'left', size: '10%'},
+                { type: 'bottom', size: 160, content:
+                        '<div id="timeline-holder" class="holder overmap">' +
+                        '<div id="timeline-info-holder">' +
+                        '<div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>' +
+                        '<div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>' +
+                        '<span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>' +
+                        '</div>' +
+                '<div id="timeline-resolution-holder">' +
+                        '<div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>' +
+                        '<select name="timeline-resolution-selector" id="timeline-resolution-selector">' +
+                        '<option value="1" selected>Per Year</option>' +
+                '<option value="5">Per 5 Years</option>' +
+                '<option value="10">Per 10 Years</option>' +
+                '<option value="25">Per 25 Years</option>' +
+                '</select>' +
+                '</div>' +
+                '<div id="timeline" class="dc-chart"></div>' +
+                        '</div>'},
+                { type: 'main' }
+            ]
+        });
+
+        w2ui['content'].load('main','map', '', function () {
+            $.getScript("javascripts/tustep_map.js", function(){
+
+            });
+        });
+});
+
+</script>
 
 </html>
