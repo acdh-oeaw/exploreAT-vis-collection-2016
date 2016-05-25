@@ -480,7 +480,7 @@ var cartoMap;
 
         body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
 
-        if (filterMain.val() && filterLeft.val() == 0)
+        if (!filterMain.val() && !filterLeft.val())
             body["size"] = 0;
 
         return esClient.search({
