@@ -39,11 +39,28 @@ var cartoMap;
 
     var bucketResolution = 7;
     var yearResolution = 1;
-    var svg;
-    var geoFeaturesLayer;
+    var svg,
+        geoFeaturesLayer,
+        geohashBuckets;
 
     cartoMap = d3.carto.map();
     d3.select("#map").call(cartoMap);
+
+
+    $('#closeLeft').click(function(e) {
+        w2ui['content'].toggle('left');
+        setTimeout(function () {
+            cartoMap.refresh();
+        }, 1000)
+    });
+
+    var closeBottom = $('<div id="closeBottom" class="closer"></div>').appendTo('div#content>div');
+    closeBottom.click(function(e) {
+        w2ui['content'].toggle('bottom');
+        setTimeout(function () {
+            cartoMap.refresh();
+        }, 1000)
+    });
 
 
     $('.zoomcontrol').bind('click', function() {
@@ -103,11 +120,11 @@ var cartoMap;
                 }
                 else {
                     // Clear the timeline
-                    d3.selectAll("rect.bar").remove()
+                    d3.selectAll("rect.bar").remove();
 
                     // No geofeatures == remove layer
                     geoFeaturesLayer
-                    .features([])
+                    .features([]);
                     //.clickableFeatures(true);
                     cartoMap.refreshCartoLayer(geoFeaturesLayer);
 
@@ -275,8 +292,8 @@ var cartoMap;
 
         getMinMaxMeanDocCountsOverall();
 
-        timelineChart.y(d3.scale.linear().domain([0,maxDocCountOverall]));
-        timelineChart.yAxis().tickValues([0,maxDocCountOverall]);
+        timelineChart.y(d3.scale.linear().domain([minDocCountOverall, maxDocCountOverall]));
+        timelineChart.yAxis().tickValues([minDocCountOverall, maxDocCountOverall]);
         dc.redrawAll();
 
         // timelineYaxisNeedsUpdate = false;
@@ -388,12 +405,12 @@ var cartoMap;
                 .cssClass("featureLayer")
                 .features(geoFeatures)
                 .renderMode("svg")
-                .on("load", colorByCount)
+                .on("load", colorByCount);
                 //.clickableFeatures(true);
                 cartoMap.addCartoLayer(geoFeaturesLayer);
             } else {
                 geoFeaturesLayer
-                .features(geoFeatures)
+                .features(geoFeatures);
                 //.clickableFeatures(true);
                 cartoMap.refreshCartoLayer(geoFeaturesLayer);
                 if (geoFeatures.length > 0)

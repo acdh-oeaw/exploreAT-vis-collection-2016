@@ -36,8 +36,8 @@
 </head>
 
 <body>
+<div id="content" style="height: 100%"></div>
 
-<div id="content" style="height: 100%">
     <!--<div id="header">-->
         <!--<div class="title">ExploreAT!</div>-->
         <!--<div id="loader-wrapper">-->
@@ -127,34 +127,49 @@
         $('#content').w2layout({
             name: 'content',
             panels: [
-                { type: 'top', size: 40, content: 'top' },
-                { type: 'left', size: '10%'},
-                { type: 'bottom', size: 160, content:
+                { type: 'top', size: 40, content:
+                        '<div id="livesearch-holder" class="holder overmap">' +
+                            '<form id="live-search" class="searchBox overmap">' +
+                                '<input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">' +
+                                    '<input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">' +
+                            '</form>' +
+                        '</div>'},
+                { type: 'left', size: '30%', hidden: true},
+                { type: 'bottom', size: 170, content:
                         '<div id="timeline-holder" class="holder overmap">' +
-                        '<div id="timeline-info-holder">' +
-                        '<div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>' +
-                        '<div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>' +
-                        '<span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>' +
-                        '</div>' +
-                '<div id="timeline-resolution-holder">' +
-                        '<div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>' +
-                        '<select name="timeline-resolution-selector" id="timeline-resolution-selector">' +
-                        '<option value="1" selected>Per Year</option>' +
-                '<option value="5">Per 5 Years</option>' +
-                '<option value="10">Per 10 Years</option>' +
-                '<option value="25">Per 25 Years</option>' +
-                '</select>' +
-                '</div>' +
-                '<div id="timeline" class="dc-chart"></div>' +
+                            '<div id="timeline-info-holder">' +
+                                '<div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>' +
+                                '<div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>' +
+                                '<span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>' +
+                            '</div>' +
+                            '<div id="timeline-resolution-holder">' +
+                                '<div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>' +
+                                '<select name="timeline-resolution-selector" id="timeline-resolution-selector">' +
+                                    '<option value="1" selected>Per Year</option>' +
+                                    '<option value="5">Per 5 Years</option>' +
+                                    '<option value="10">Per 10 Years</option>' +
+                                    '<option value="25">Per 25 Years</option>' +
+                                '</select>' +
+                            '</div>' +
+                            '<div id="timeline" class="dc-chart"></div>' +
                         '</div>'},
                 { type: 'main' }
             ]
         });
 
         w2ui['content'].load('main','map', '', function () {
-            $.getScript("javascripts/tustep_map.js", function(){
 
-            });
+            $.ajax({
+                crossDomain: true,
+                dataType: "script",
+                url: "javascripts/tustep_map.js",
+                success: function(){
+                    console.log('Success');
+                },
+                error: function(){
+                    console.log('ohps');
+                }
+            })
         });
 });
 

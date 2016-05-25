@@ -389,7 +389,7 @@ text {
     top: 0px;
     left: 0px;
     width: 100%;
-    height: 34px;
+    height: 100%;
     padding-top: 4px;
     text-align: center;
     background-color: rgba(255, 255, 255, .9);
@@ -432,8 +432,7 @@ text {
 }
 
 #timeline-holder {
-  position: absolute;
-  bottom: 0px;
+  height: 100%;
   padding-top: 10px;
   width: 100%;
   background-color: rgba(255, 255, 255, .9);
@@ -603,6 +602,28 @@ text {
   top: 190px;
   right: 68px;
   visibility: hidden;
+}
+
+
+.closer {
+    position: fixed;
+    background: rgba(65,64,66,.85);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.closer#closeLeft {
+    top: 40px;
+    left: 0;
+    width: 15px;
+    border-right: 1px solid rgba(35,31,32,.85);
+    bottom: 0px;
+}
+
+.closer#closeBottom {
+    height: 15px;
+    width: 100%;
+    bottom: 0;
 }
 
 /*#d3MapPanBox > button, #d3MapZoomBox > button {
