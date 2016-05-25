@@ -72,13 +72,13 @@
         <!--<br>-->
     <!--</div>-->
     <div id="map"></div>
-    <div id="livesearch-holder" class="overmap">
+    <div id="livesearch-holder" class="holder overmap">
         <form id="live-search" class="searchBox overmap">
             <input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">
             <input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">
         </form>
     </div>
-    <div id="timeline-holder" class="overmap">
+    <div id="timeline-holder" class="holder overmap">
       <div id="timeline-info-holder">
         <div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>
         <div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>
@@ -95,7 +95,7 @@
       </div>
       <div id="timeline" class="dc-chart"></div>
     </div>
-    <div id="bucket-holder" class="overmap">
+    <div id="bucket-holder" class="holder overmap">
       <div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>
       <select name="bucket-resolution-selector" id="bucket-resolution-selector">
         <option value="7" selected>1st Level</option>
@@ -104,6 +104,13 @@
         <option value="10">4th Level</option>
         <option value="11">5th Level</option>
       </select>
+    </div>
+    <div id="lemma-list-holder" class="holder overmap collapsed">
+        <div id="lemma-list-handle" class="holder">&laquo;</div>
+        <div class="lemma-list-label">Contained Lemmas</div>
+        <div id="lemma-list-table">
+            
+        </div>
     </div>
 </div>
 

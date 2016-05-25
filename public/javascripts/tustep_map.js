@@ -27,9 +27,9 @@ var cartoMap;
     var filterMain, filterLeft;
 
     d3.select("#livesearch-holder")
-        .on("keyup", function() {
-            update();
-        });
+    .on("keyup", function() {
+        update();
+    });
 
     filterMain = $("#filterMain");
     filterLeft = $("#filterLeft");
@@ -72,6 +72,12 @@ var cartoMap;
     $("#bucket-resolution-selector").change(function() {
         bucketResolution = parseInt($("#bucket-resolution-selector option:selected").val());
         update();
+    });
+
+    // LEMMA LIST HANDLE
+
+    $("#lemma-list-handle").on("click", function() {
+        showHideLemmaList();
     });
 
     // APP START (First update)
@@ -196,7 +202,7 @@ var cartoMap;
         timelineChart.on('filtered', function () {
             refreshGeoFeatures();
             timelineChart.selectAll('g.x text')
-                .attr('transform', 'translate(-10,10) rotate(315)');
+            .attr('transform', 'translate(-10,10) rotate(315)');
         });
 
         // Reset == Remove filters and redraw
@@ -401,6 +407,7 @@ var cartoMap;
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("click",function(d,i){
 
+            // Zoom and rise resolution
             if(bucketResolution < 11){
                 var delay = 2000;
                 cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,delay);
@@ -409,15 +416,55 @@ var cartoMap;
                         bucketResolution +=1;
                         $("#bucket-resolution-selector").val(bucketResolution);
                         update();
-                  }, delay-500
+                    }, delay-850
                 );
             }
+
+            // Show lemmas contained in the bucket
+            $('#lemma-list-table').html("");
+            for(var i=0; i<5/*d.doc_count*/; i++){
+                $('#lemma-list-table').append(function(){
+                    var html = '<div class="lemma-list-row">';
+                    html += "Lemma #"+Math.floor(Math.random() * 500) + 1  
+                    html += '</div>'
+                    return html;
+                });
+            }
+
+            showHideLemmaList(true);
         });
 
         $("g.featureLayer").unbind('mouseover');
         $("g.featureLayer").unbind('mouseout');
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("mouseover",function(dFeature,i){
+
+            var w = 30, h = 30, r = 50;
+            var color = d3.scale.category20c();
+
+            var data = [{"label":"Feature", "value":dFeature.properties.doc_count},
+            {"label":"All", "value":parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count}];
+
+            var vis = d3.select(this).append("svg:svg").data([data]).attr("class","vis").attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+            var pie = d3.layout.pie().value(function(d){return d.value;});
+
+            // declare an arc generator function
+            var arc = d3.svg.arc().outerRadius(r);
+
+            // select paths, use arc generator to draw
+            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+            arcs.append("svg:path")
+            .attr("fill", function(d, i){
+                return color(i);
+            })
+            .attr("d", function (d) {
+                return arc(d);
+            });
+
+
+
+
+            // Highlight related years in timeline
             timelineChart.selectAll('rect.bar').each(function(dBar){
                 if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
                     d3.select(this).transition().duration(500).style("fill", "#2b91fc");
@@ -539,7 +586,7 @@ var cartoMap;
         body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
 
         if (!filterMain.val() && !filterLeft.val())
-            body["size"] = 0;
+        body["size"] = 0;
 
         return esClient.search({
             index: 'tustepgeo2',
@@ -576,6 +623,24 @@ var cartoMap;
     }
 
 
+    function showHideLemmaList(show){
+        if(show){
+            if(d3.select("#lemma-list-holder").classed("collapsed") == true){
+                d3.select("#lemma-list-holder").classed("collapsed",false);
+                $("#lemma-list-handle").html("&raquo;");
+            }
+        }
+        else{
+            if(d3.select("#lemma-list-holder").classed("collapsed") == true){
+                d3.select("#lemma-list-holder").classed("collapsed",false);
+                $("#lemma-list-handle").html("&raquo;");
+            }
+            else{
+                d3.select("#lemma-list-holder").classed("collapsed",true);
+                $("#lemma-list-handle").html("&laquo;");
+            }
+        }
+    }
 
     function getBoundingBoxCenterLatLon(bbox) {
         var ne = bbox.ne;
