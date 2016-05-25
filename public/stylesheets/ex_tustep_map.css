@@ -81,7 +81,7 @@ h2 {
 .countryborders {
     fill: rgba(0,0,0,0);
     stroke-width: 1px;
-    stroke: gray;
+    stroke: #2b91fc;
     cursor: default;
     pointer-events: none;
 }
@@ -397,7 +397,7 @@ text {
     height: 30px;
     padding: 10px;
     text-align: center;
-    background-color: rgba(250, 250, 250, .75);
+    background-color: rgba(255, 255, 255, .75);
     pointer-events: auto;
     font-size: .8em;
     font-weight: 600;
@@ -441,7 +441,7 @@ text {
   bottom: 0px;
   padding-top: 10px;
   width: 100%;
-  background-color: rgba(250, 250, 250, .75);
+  background-color: rgba(255, 255, 255, .75);
   pointer-events: auto;
   font-size: .8em;
 }
@@ -471,7 +471,7 @@ text {
   top: 50px;
   padding: 10px 20px 10px 30px;
   width: auto;
-  background-color: rgba(250, 250, 250, .75);
+  background-color: rgba(255, 255, 255, .75);
   pointer-events: auto;
   font-size: .8em;
   font-weight: 600;
@@ -498,7 +498,7 @@ text {
   top: 50px;
   padding: 10px 20px;
   height: auto;
-  background-color: rgba(250, 250, 250, .75);
+  background-color: rgba(255, 255, 255, .75);
   pointer-events: auto;
   font-size: .8em;
 }
@@ -518,7 +518,7 @@ text {
   top: 150px;
   padding: 10px 20px;
   height: auto;
-  background-color: rgba(250, 250, 250, .75);
+  background-color: rgba(255, 255, 255, .75);
   pointer-events: auto;
   font-size: .8em;
 }

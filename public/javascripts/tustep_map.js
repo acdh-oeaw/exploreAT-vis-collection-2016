@@ -17,9 +17,10 @@ var cartoMap;
     var groupOfDocsPerYear;
     var minYear, maxYear;
     var selectedMinYear, selectedMaxYear;
-    var timelineYaxisNeedsUpdate = false;
+    // var timelineYaxisNeedsUpdate = false;
 
     var minDocCount, maxDocCount, docCountMean;
+    var minDocCountOverall, maxDocCountOverall, docCountMeanOverall;
 
     // LEMMA SEARCH VARIABLES
 
@@ -48,8 +49,8 @@ var cartoMap;
 
     var terrainLayer = d3.carto.layer.tile();
     terrainLayer
-    .path('light_all')
-    .tileType("cartodb")
+    .path('toner-lite')
+    .tileType("stamen")
     .label("Map Tiles");
 
     var geojsonLayer = d3.carto.layer.geojson();
@@ -82,8 +83,23 @@ var cartoMap;
         .then(function(resp) {
             if (resp.aggregations.length !== 0) {
                 createDataStructure(resp);
-                refreshCrossfilter();
-                refreshGeoFeatures();
+                if(tustepData.length > 0) {
+                    refreshCrossfilter();
+                    refreshGeoFeatures();
+                }
+                else {
+                    // Clear the timeline
+                    d3.selectAll("rect.bar").remove()
+
+                    // No geofeatures == remove layer
+                    geoFeaturesLayer
+                    .features([])
+                    .clickableFeatures(true);
+                    cartoMap.refreshCartoLayer(geoFeaturesLayer);
+
+                    // Update counters to show no data was found
+                    $("#timeline-lemma-count").html(0);
+                }
             }
         });
     }
@@ -100,7 +116,6 @@ var cartoMap;
         });
 
         console.log("TUSTEPDATA");
-        console.log(tustepData);
 
         minYear = _.min(tustepData, function(reg){return parseInt(reg.year);}).year;
         maxYear = _.max(tustepData, function(reg){return parseInt(reg.year);}).year;
@@ -129,7 +144,7 @@ var cartoMap;
             reducer(groupOfDocsPerYear);
 
             appendTimeline();
-            timelineYaxisNeedsUpdate = true; // Update the scale for the first time
+            // timelineYaxisNeedsUpdate = true; // Update the scale for the first time
         }
         else{
             resetCrossfilterData();
@@ -144,7 +159,7 @@ var cartoMap;
         ndx.add(tustepData);
         timelineChart.filterAll();
         dc.redrawAll();
-        //timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
+        // timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
     }
 
     function appendTimeline(){
@@ -162,7 +177,7 @@ var cartoMap;
         ]))
         .centerBar(true)
         .margins(margins);
-        timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort());
+        timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort().filter(function(el, index) {return index % 10 === 1;}));
         //timelineChart.yAxis().tickValues(0);
 
         timelineChart.on("preRedraw", function (chart) {
@@ -173,10 +188,10 @@ var cartoMap;
         });
 
         // Update the map after any brushing action
-        timelineChart.on('renderlet', function () {
+        timelineChart.on('filtered', function () {
             refreshGeoFeatures();
             timelineChart.selectAll('g.x text')
-            .attr('transform', 'translate(-10,10) rotate(315)');
+                .attr('transform', 'translate(-10,10) rotate(315)');
         });
 
         // Reset == Remove filters and redraw
@@ -193,13 +208,21 @@ var cartoMap;
 
         // Draw all for the first time
         dc.renderAll();
+        resetCrossfilterData();
     }
 
     function updateTimelineInfoLabels(geoFeatures){
 
         // Year labels
-        selectedMinYear = yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year;
-        selectedMaxYear = yearDim.top(Infinity)[0].year;
+
+        if(timelineChart.filters()[0] != undefined){
+            selectedMinYear = parseInt(timelineChart.filters()[0][0]);
+            selectedMaxYear = parseInt(timelineChart.filters()[0][1]);
+        } else{
+            selectedMinYear = yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year;
+            selectedMaxYear = yearDim.top(Infinity)[0].year;
+        }
+
         $("#timeline-filter-start").html(selectedMinYear);
         $("#timeline-filter-end").html(selectedMaxYear);
 
@@ -209,6 +232,11 @@ var cartoMap;
             totalLemmas += feature.properties.doc_count;
         });
         $("#timeline-lemma-count").html(totalLemmas);
+
+        console.log(yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year); // minYear
+        console.log(yearDim.top(Infinity)[0].year); // maxYear
+
+        timelineChart.x(d3.scale.linear().domain([minYear,maxYear]));
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
@@ -226,13 +254,13 @@ var cartoMap;
         // This gets done only once per data update, so the chart remains the same
         // no matter if the user brushes it, until another dataset is loaded (detail changed)
 
-        getMinMaxMeanDocCounts(geoFeatures);
+        getMinMaxMeanDocCountsOverall();
 
-        timelineChart.y(d3.scale.linear().domain([0, docCountMean/5, maxDocCount]));
-        timelineChart.yAxis().tickValues([0, docCountMean/5, maxDocCount]);
+        timelineChart.y(d3.scale.linear().domain([0,maxDocCountOverall]));
+        timelineChart.yAxis().tickValues([0,maxDocCountOverall]);
         dc.redrawAll();
 
-        timelineYaxisNeedsUpdate = false;
+        // timelineYaxisNeedsUpdate = false;
     }
 
     function getMinMaxMeanDocCounts(geoFeatures){
@@ -250,13 +278,73 @@ var cartoMap;
         }).properties.doc_count;
     }
 
+    function getMinMaxMeanDocCountsOverall(){
+
+        geohashBuckets = [];
+        var hashStringArray = _.unique(_.pluck(tustepData,"hash"));
+
+        _.each(hashStringArray,function(hash){
+            var entriesForHash = _.filter(tustepData, function(entry){
+                return entry.hash == hash;
+            });
+
+            var geoObject = {};
+            geoObject.key = hash;
+            geoObject.doc_count = 0;
+            _.each(entriesForHash, function(entry){
+                geoObject.doc_count += parseInt(entry.docs);
+            });
+
+            if(geoObject.doc_count > 0)
+            geohashBuckets.push(geoObject);
+        });
+
+        var geoFeaturesOverall = _.map(geohashBuckets, function (hash_bucket) {
+
+            var geohashBounds = Geohash.bounds(hash_bucket.key);
+            var swCoords = geohashBounds.sw;
+            var neCoords = geohashBounds.ne;
+
+            var polygonVertex = [[]];
+
+            polygonVertex[0][0] = [swCoords.lon, neCoords.lat];
+            polygonVertex[0][1] = [neCoords.lon, neCoords.lat];
+            polygonVertex[0][2] = [neCoords.lon, swCoords.lat];
+            polygonVertex[0][3] = [swCoords.lon, swCoords.lat];
+            polygonVertex[0][4] = [swCoords.lon, neCoords.lat];
+
+            return {
+                "type": "Feature",
+                "properties": {
+                    "key": hash_bucket.key,
+                    "doc_count": hash_bucket.doc_count
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": polygonVertex
+                }
+            };
+        });
+
+        minDocCountOverall = _.min(geoFeaturesOverall, function(el) {
+            return el.properties.doc_count;
+        }).properties.doc_count;
+
+        docCountMeanOverall = d3.mean(geoFeaturesOverall, function (el) {
+            return el.properties.doc_count;
+        });
+
+        maxDocCountOverall = _.max(geoFeaturesOverall, function(el) {
+            return el.properties.doc_count;
+        }).properties.doc_count;
+    }
+
     function refreshGeoFeatures(){
         // var geoFeatures = generateGeoFeatures(resp);
         var geoFeatures = generateCrossGeoFeatures();
         //generateTimeline(resp);
 
         console.log("GEOFEATURES");
-        console.log(geoFeatures);
 
         if (geoFeatures && geoFeatures.length > 0) {
 
@@ -296,7 +384,6 @@ var cartoMap;
             // Update the lemma count
             updateTimelineInfoLabels(geoFeatures);
             // Update timeline Y axis scale
-            if(timelineYaxisNeedsUpdate)
             updateTimelineYscale(geoFeatures);
         }
     }
