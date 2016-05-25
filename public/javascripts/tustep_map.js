@@ -115,7 +115,7 @@ var cartoMap;
             });
         });
 
-        console.log("TUSTEPDATA");
+        // console.log("TUSTEPDATA");
 
         minYear = _.min(tustepData, function(reg){return parseInt(reg.year);}).year;
         maxYear = _.max(tustepData, function(reg){return parseInt(reg.year);}).year;
@@ -233,8 +233,8 @@ var cartoMap;
         });
         $("#timeline-lemma-count").html(totalLemmas);
 
-        console.log(yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year); // minYear
-        console.log(yearDim.top(Infinity)[0].year); // maxYear
+        // console.log(yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year); // minYear
+        // console.log(yearDim.top(Infinity)[0].year); // maxYear
 
         timelineChart.x(d3.scale.linear().domain([minYear,maxYear]));
 
@@ -280,7 +280,7 @@ var cartoMap;
 
     function getMinMaxMeanDocCountsOverall(){
 
-        geohashBuckets = [];
+        var newGeohashBuckets = [];
         var hashStringArray = _.unique(_.pluck(tustepData,"hash"));
 
         _.each(hashStringArray,function(hash){
@@ -296,10 +296,10 @@ var cartoMap;
             });
 
             if(geoObject.doc_count > 0)
-            geohashBuckets.push(geoObject);
+            newGeohashBuckets.push(geoObject);
         });
 
-        var geoFeaturesOverall = _.map(geohashBuckets, function (hash_bucket) {
+        var geoFeaturesOverall = _.map(newGeohashBuckets, function (hash_bucket) {
 
             var geohashBounds = Geohash.bounds(hash_bucket.key);
             var swCoords = geohashBounds.sw;
@@ -344,7 +344,7 @@ var cartoMap;
         var geoFeatures = generateCrossGeoFeatures();
         //generateTimeline(resp);
 
-        console.log("GEOFEATURES");
+        // console.log("GEOFEATURES");
 
         if (geoFeatures && geoFeatures.length > 0) {
 
@@ -370,16 +370,28 @@ var cartoMap;
                 .features(geoFeatures)
                 .renderMode("svg")
                 .on("load", colorByCount)
-                .clickableFeatures(true);
+                //.clickableFeatures(true);
                 cartoMap.addCartoLayer(geoFeaturesLayer);
             } else {
                 geoFeaturesLayer
                 .features(geoFeatures)
-                .clickableFeatures(true);
+                //.clickableFeatures(true);
                 cartoMap.refreshCartoLayer(geoFeaturesLayer);
                 if (geoFeatures.length > 0)
                 colorByCount(minDocCount,docCountMean,maxDocCount);
             }
+
+            $("g.featureLayer").unbind('click');
+            d3.selectAll("g.featureLayer").data(geoFeatures)
+            .on("click",function(d,i){
+                console.log(d.properties.doc_count);
+            });
+
+            $("g.featureLayer").unbind('mouseover');
+            d3.selectAll("g.featureLayer").data(geoFeatures)
+            .on("mouseover",function(d,i){
+                console.log(d);
+            });
 
             // Update the lemma count
             updateTimelineInfoLabels(geoFeatures);
@@ -390,7 +402,7 @@ var cartoMap;
 
     function generateCrossGeoFeatures() {
 
-        geohashBuckets = [];
+        var newGeoHashBuckets = [];
         var hashStringArray = _.unique(_.pluck(yearDim.top(Infinity),"hash"));
 
         _.each(hashStringArray,function(hash){
@@ -401,15 +413,25 @@ var cartoMap;
             var geoObject = {};
             geoObject.key = hash;
             geoObject.doc_count = 0;
+            geoObject.years = [];
+
+            geohashBuckets.forEach(function(bucket){
+                if(bucket.key == hash && bucket.years != undefined){
+                    bucket.years.buckets.forEach(function(yearBucket){
+                        geoObject.years.push(parseInt(yearBucket.key_as_string));
+                    });
+                }
+            });
+
             _.each(entriesForHash, function(entry){
                 geoObject.doc_count += parseInt(entry.docs);
             });
 
             if(geoObject.doc_count > 0)
-            geohashBuckets.push(geoObject);
+            newGeoHashBuckets.push(geoObject);
         });
 
-        return _.map(geohashBuckets, function (hash_bucket) {
+        return _.map(newGeoHashBuckets, function (hash_bucket) {
 
             var geohashBounds = Geohash.bounds(hash_bucket.key);
             var swCoords = geohashBounds.sw;
@@ -427,7 +449,8 @@ var cartoMap;
                 "type": "Feature",
                 "properties": {
                     "key": hash_bucket.key,
-                    "doc_count": hash_bucket.doc_count
+                    "doc_count": hash_bucket.doc_count,
+                    "years": hash_bucket.years
                 },
                 "geometry": {
                     "type": "Polygon",
