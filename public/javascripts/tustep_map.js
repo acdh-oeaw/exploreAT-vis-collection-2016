@@ -26,8 +26,8 @@ var cartoMap;
 
     var filterMain, filterLeft;
 
-    d3.select("#livesearch-holder")
-    .on("keyup", function() {
+    $("#livesearch-holder > form > input")
+    .on("input", function() {
         update();
     });
 
@@ -40,12 +40,14 @@ var cartoMap;
     var bucketResolution = 7;
     var yearResolution = 1;
     var svg,
-        geoFeaturesLayer,
-        geohashBuckets;
+    geoFeaturesLayer,
+    geoGridLayer,
+    geohashBuckets;
 
     cartoMap = d3.carto.map();
     d3.select("#map").call(cartoMap);
 
+    // LEFT + BOTTOM PANELS HANDLERS
 
     $('#closeLeft').click(function(e) {
         w2ui['content'].toggle('left');
@@ -62,6 +64,7 @@ var cartoMap;
         }, 1000)
     });
 
+    // ZOOM CONTROLS HANDLER
 
     $('.zoomcontrol').bind('click', function() {
         console.log(cartoMap.projection());
@@ -70,7 +73,7 @@ var cartoMap;
         console.log(JSON.stringify(cartoMap.zoom().translate()));
     });
 
-        // TILES + COUNTRY BORDERS
+    // TILES + COUNTRY BORDERS + GRID BASE
 
     var terrainLayer = d3.carto.layer.tile();
     terrainLayer
@@ -86,8 +89,14 @@ var cartoMap;
     .cssClass("countryborders")
     .renderMode("svg");
 
+    geoGridLayer = d3.carto.layer.featureArray().label("Bucket Grid")
+    .cssClass("bucketGrid")
+    .features([])
+    .renderMode("svg");
+
     cartoMap.addCartoLayer(terrainLayer);
     cartoMap.addCartoLayer(geojsonLayer);
+    cartoMap.addCartoLayer(geoGridLayer);
 
     cartoMap.setScale(5);
     cartoMap.centerOn([13.333333, 46.333333],"latlong");
@@ -99,10 +108,22 @@ var cartoMap;
         update();
     });
 
+    // TOOLTIP SHOW CONTROL INITIAL ACTIVATION
+    $('#tooltip-checkbox').val($(this).is(':checked'));
+
     // LEMMA LIST HANDLE
 
     $("#lemma-list-handle").on("click", function() {
         showHideLemmaList();
+    });
+
+    // MAP TOOLTIP
+
+    var tooltip = $('#tooltip');
+    tooltip.hide();
+    $(document).mousemove(function(e){
+        var tooltipW = 150, tooltipH = 150;
+        tooltip.css({'top': e.pageY - tooltip.height()/2,'left': e.pageX - tooltip.width()/2});
     });
 
     // APP START (First update)
@@ -116,11 +137,13 @@ var cartoMap;
                 createDataStructure(resp);
                 if(tustepData.length > 0) {
                     refreshCrossfilter();
+                    refreshGridFeatures();
                     refreshGeoFeatures();
                 }
                 else {
+                    console.log("no results")
                     // Clear the timeline
-                    d3.selectAll("rect.bar").remove();
+                    timelineChart.selectAll("rect.bar").remove();
 
                     // No geofeatures == remove layer
                     geoFeaturesLayer
@@ -191,9 +214,7 @@ var cartoMap;
         timelineChart.filterAll();
         dc.redrawAll();
 
-        timelineChart.selectAll('rect.bar').each(function(dBar){
-            d3.select(this).transition().duration(500).style("fill", "black");
-        });
+        resetTimelineColor();
 
         // timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
     }
@@ -375,10 +396,23 @@ var cartoMap;
         }).properties.doc_count;
     }
 
+    function refreshGridFeatures(){
+        getGridDataFromElastic()
+        .then(function(resp) {
+
+            var gridFeatures = generateGridFeatures(resp);
+
+            console.log(gridFeatures.length + " grid features")
+
+            geoGridLayer
+            .features(gridFeatures);
+            cartoMap.refreshCartoLayer(geoGridLayer);
+        });
+    }
+
     function refreshGeoFeatures(){
-        // var geoFeatures = generateGeoFeatures(resp);
+
         var geoFeatures = generateCrossGeoFeatures();
-        //generateTimeline(resp);
 
         // console.log("GEOFEATURES");
 
@@ -406,12 +440,10 @@ var cartoMap;
                 .features(geoFeatures)
                 .renderMode("svg")
                 .on("load", colorByCount);
-                //.clickableFeatures(true);
                 cartoMap.addCartoLayer(geoFeaturesLayer);
             } else {
                 geoFeaturesLayer
                 .features(geoFeatures);
-                //.clickableFeatures(true);
                 cartoMap.refreshCartoLayer(geoFeaturesLayer);
                 if (geoFeatures.length > 0)
                 colorByCount(minDocCount,docCountMean,maxDocCount);
@@ -432,8 +464,12 @@ var cartoMap;
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("click",function(d,i){
 
+            // Hide tooltip
+            tooltip.hide();
+
             // Zoom and rise resolution
             if(bucketResolution < 11){
+                resetTimelineColor();
                 var delay = 2000;
                 cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,delay);
                 setTimeout(
@@ -450,7 +486,7 @@ var cartoMap;
             for(var i=0; i<5/*d.doc_count*/; i++){
                 $('#lemma-list-table').append(function(){
                     var html = '<div class="lemma-list-row">';
-                    html += "Lemma #"+Math.floor(Math.random() * 500) + 1  
+                    html += "Lemma #"+Math.floor(Math.random() * 500) + 1
                     html += '</div>'
                     return html;
                 });
@@ -464,30 +500,61 @@ var cartoMap;
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("mouseover",function(dFeature,i){
 
-            var w = 30, h = 30, r = 50;
-            var color = d3.scale.category20c();
+            // Only if the user wants to see the tooltip
+            if($("#tooltip-checkbox").is(":checked")) {
 
-            var data = [{"label":"Feature", "value":dFeature.properties.doc_count},
-            {"label":"All", "value":parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count}];
+                var featureCount = dFeature.properties.doc_count;
+                var restCount = parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count;
 
-            var vis = d3.select(this).append("svg:svg").data([data]).attr("class","vis").attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
-            var pie = d3.layout.pie().value(function(d){return d.value;});
+                tooltip.html(function(){
+                    var html = '<div id="tooltip-lemma-counter">';
+                    html += '<strong>'+featureCount+' lemmas</strong><br>'
+                    html += 'out of <strong>'+restCount+'</strong>';
+                    html += '</div>';
+                    return html;
+                });
 
-            // declare an arc generator function
-            var arc = d3.svg.arc().outerRadius(r);
+                // tooltip.css({
+                //     'top': $(this).position().top - $(this).height()/2,
+                //     'left': $(this).offset().left - $(this).width()/2,
+                //     'width': $(this).width(),
+                //     'height': $(this).height()
+                // });
 
-            // select paths, use arc generator to draw
-            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-            arcs.append("svg:path")
-            .attr("fill", function(d, i){
-                return color(i);
-            })
-            .attr("d", function (d) {
-                return arc(d);
-            });
+                var w = 24, h = 24, r = 12;
+                var color = d3.scale.category20c();
+                var color = d3.scale.ordinal()
+                .domain([featureCount,restCount])
+                .range(["#2b91fc", "#d6eaff"]);
 
+                var data = [{"label":"Feature", "value":featureCount},
+                {"label":"All", "value":restCount}];
 
+                var vis = d3.select("#tooltip")
+                .insert("svg:svg",":first-child")
+                .data([data])
+                .attr("class","vis")
+                .attr("width", w)
+                .attr("height", h)
+                .append("svg:g")
+                .attr("transform", "translate(" + r + "," + r + ")");
+                var pie = d3.layout.pie().value(function(d){return d.value;});
 
+                // declare an arc generator function
+                var arc = d3.svg.arc().outerRadius(r);
+
+                // select paths, use arc generator to draw
+                var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+                arcs.append("svg:path")
+                .attr("fill", function(d, i){
+                    return color(i);
+                })
+                .attr("d", function (d) {
+                    return arc(d);
+                });
+
+                tooltip.show();
+            }
 
             // Highlight related years in timeline
             timelineChart.selectAll('rect.bar').each(function(dBar){
@@ -500,9 +567,9 @@ var cartoMap;
             });
         })
         .on("mouseout",function(dFeature,i){
-            timelineChart.selectAll('rect.bar').each(function(dBar){
-                d3.select(this).transition().duration(500).style("fill", "black");
-            });
+            resetTimelineColor();
+            tooltip.hide();
+            console.log("mouseout");
         });
     }
 
@@ -557,6 +624,38 @@ var cartoMap;
                     "key": hash_bucket.key,
                     "doc_count": hash_bucket.doc_count,
                     "years": hash_bucket.years,
+                    "bounds": geohashBounds
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": polygonVertex
+                }
+            };
+        });
+    }
+
+    function generateGridFeatures(resp){
+
+        var gridGeoHashBuckets = resp.aggregations.ortMain.buckets;
+
+        return _.map(gridGeoHashBuckets, function (hash_bucket) {
+
+            var geohashBounds = Geohash.bounds(hash_bucket.key);
+            var swCoords = geohashBounds.sw;
+            var neCoords = geohashBounds.ne;
+
+            var polygonVertex = [[]];
+
+            polygonVertex[0][0] = [swCoords.lon, neCoords.lat];
+            polygonVertex[0][1] = [neCoords.lon, neCoords.lat];
+            polygonVertex[0][2] = [neCoords.lon, swCoords.lat];
+            polygonVertex[0][3] = [swCoords.lon, swCoords.lat];
+            polygonVertex[0][4] = [swCoords.lon, neCoords.lat];
+
+            return {
+                "type": "Feature",
+                "properties": {
+                    "key": hash_bucket.key,
                     "bounds": geohashBounds
                 },
                 "geometry": {
@@ -647,6 +746,34 @@ var cartoMap;
         };
     }
 
+    function getGridDataFromElastic() {
+
+        var body = {
+            "size": 0,
+            "query": {
+                "match_all": {}
+            },
+            "aggs": {
+                "ortMain": {
+                    "geohash_grid": {
+                        "field": "gisOrt",
+                        "precision": bucketResolution - 5
+                    },
+                }
+            }
+        };
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: body
+        });
+    }
+
+    function resetTimelineColor(){
+        timelineChart.selectAll('rect.bar').each(function(dBar){
+            d3.select(this).transition().duration(500).style("fill", "black");
+        });
+    }
 
     function showHideLemmaList(show){
         if(show){

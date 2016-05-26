@@ -94,6 +94,14 @@ h2 {
   pointer-events: auto;
 }
 
+.bucketGrid {
+  fill: rgba(0,0,0,0);
+  stroke-width: 1px;
+  stroke: rgba(0,0,0,.5);
+  cursor: auto;
+  pointer-events: none;
+}
+
 .subunit {
     fill: #fff;
     stroke: #333;
@@ -390,7 +398,7 @@ text {
     left: 0px;
     width: 100%;
     height: 100%;
-    padding-top: 4px;
+    padding-top: 6px;
     text-align: center;
     background-color: rgba(255, 255, 255, .9);
     pointer-events: auto;
@@ -405,6 +413,8 @@ text {
 
 #live-search > input {
     vertical-align: -webkit-baseline-middle;
+    margin: 0 4px;
+    border-left: 4px solid #2b91fc;
 }
 
 
@@ -463,12 +473,30 @@ text {
 #bucket-holder {
   position: absolute;
   top: 34px;
+  left: -1px;
   padding: 10px 20px 10px 30px;
   width: auto;
   background-color: rgba(255, 255, 255, .9);
   pointer-events: auto;
   font-size: .8em;
   font-weight: 600;
+}
+
+#tooltip-check-holder {
+  position: absolute;
+  top: 100px;
+  left: -1px;
+  padding: 10px 20px 10px 30px;
+  width: 200px;
+  background-color: rgba(255, 255, 255, .9);
+  pointer-events: auto;
+  font-size: .8em;
+}
+
+#tooltip-check-holder > input {
+    display: inline-block;;
+    margin-top: 4px;
+    padding-top: 4px;
 }
 
 #data-split-info {
@@ -489,10 +517,10 @@ text {
 
 #lemma-list-holder {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  top: 240px;
+  right: -1px;
   padding-top: 10px;
-  width: 130px;
+  width: 180px;
   max-height: 500px;
   background-color: rgba(255, 255, 255, .9);
   pointer-events: auto;
@@ -506,7 +534,7 @@ text {
 }
 
 #lemma-list-holder.collapsed {
-    right: -172px;
+    right: -180px;
 }
 
 
@@ -514,8 +542,8 @@ text {
     font-size: 1.5em;
     position: absolute;
     top: -1px;
-    right: 170px;
-    width: 20px;
+    right: 178px;
+    width: 30px;
     height: 20px;
     background-color: #2b91fc;
     color: white;
@@ -529,7 +557,6 @@ text {
     font-weight: 600;
     margin-bottom: 10px;
 }
-
 
 .overmap {
   z-index: 999!important;
@@ -546,9 +573,9 @@ text {
   border: 1px solid rgba(0,0,0,.2);
   position: absolute;
   background: white;
-  width: 150px;
+  width: 180px;
   color: black;
-  right: 0px;
+  right: -1px;
   left: auto;
   top: 34px;
   padding: 10px 20px;
@@ -567,9 +594,9 @@ text {
   border: 1px solid rgba(0,0,0,.2);
   position: absolute;
   background: white;
-  width: 150px;
+  width: 180px;
   color: black;
-  right: 0px;
+  right: -1px;
   left: auto;
   top: 150px;
   padding: 10px 20px;
@@ -607,23 +634,44 @@ text {
 
 .closer {
     position: fixed;
-    background: rgba(65,64,66,.85);
+    background: #2b91fc;
     z-index: 1000;
     cursor: pointer;
+    -moz-box-shadow:    inset 0 0 5px rgba(0,0,0,.45);
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,.45);
+    box-shadow:         inset 0 0 5px rgba(0,0,0,.45);
 }
 
 .closer#closeLeft {
     top: 40px;
     left: 0;
-    width: 15px;
-    border-right: 1px solid rgba(35,31,32,.85);
+    width: 10px;
+    /*border-right: 1px solid rgba(35,31,32,.85);*/
     bottom: 0px;
 }
 
 .closer#closeBottom {
-    height: 15px;
+    height: 10px;
     width: 100%;
     bottom: 0;
+}
+
+#tooltip {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: .6em;
+    border: 1px solid rgba(0, 0, 0, .75);
+    z-index: 92929292;
+    pointer-events: none;
+    text-align: center;
+}
+
+#tooltip-lemma-counter {
+    padding-top: 4px;
+    border-top: 1px dotted #2b91fc;
+    margin-top: 4px;
 }
 
 /*#d3MapPanBox > button, #d3MapZoomBox > button {
