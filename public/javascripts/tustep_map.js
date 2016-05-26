@@ -459,8 +459,8 @@ var cartoMap;
     }
 
     function bindGeoFeaturesActions(geoFeatures){
-
-        $("g.featureLayer").unbind('click');
+        var featureLayer = $("g.featureLayer");
+        featureLayer.unbind('click');
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("click",function(d,i){
 
@@ -481,22 +481,32 @@ var cartoMap;
                 );
             }
 
+
+
             // Show lemmas contained in the bucket
-            $('#lemma-list-table').html("");
-            for(var i=0; i<5/*d.doc_count*/; i++){
-                $('#lemma-list-table').append(function(){
-                    var html = '<div class="lemma-list-row">';
-                    html += "Lemma #"+Math.floor(Math.random() * 500) + 1
-                    html += '</div>'
-                    return html;
-                });
-            }
+            var lemmaListTable = $('#lemma-list-table');
+            lemmaListTable.html("");
 
-            showHideLemmaList(true);
+            getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
+                console.log(resp.aggregations.total);
+
+                // generateLemmaGraphFromAggregations(resp.aggregations);
+
+                for(var i = 0; i<5/*d.doc_count*/; i++){
+                    lemmaListTable.append(function(){
+                        var html = '<div class="lemma-list-row">';
+                        html += resp.aggregations.mainLemma.buckets[i].key;
+                        html += '</div>';
+                        return html;
+                    });
+                }
+
+                showHideLemmaList(true);
+
+            });
         });
-
-        $("g.featureLayer").unbind('mouseover');
-        $("g.featureLayer").unbind('mouseout');
+        featureLayer.unbind('mouseover');
+        featureLayer.unbind('mouseout');
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("mouseover",function(dFeature,i){
 
@@ -716,6 +726,37 @@ var cartoMap;
             index: 'tustepgeo2',
             body: body
         });
+    }
+
+
+    function getLemmasInGeoHashBucket(geo_hash) {
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: {
+                "size": 0,
+                "query": {
+                    "prefix": {
+                        "gisOrt.geohash": geo_hash
+                    }
+                },
+                "aggs": {
+                    "mainLemma": {
+                        "terms": {
+                            "field": "mainLemma.raw",
+                            "size": 2000
+                        },
+                        "aggs": {
+                            "leftLemma": {
+                                "terms": {
+                                    "field": "leftLemma.raw"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     function getQueryObjectForParams(mainLemma, leftLemma, category) {
