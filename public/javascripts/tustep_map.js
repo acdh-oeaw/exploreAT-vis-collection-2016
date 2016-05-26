@@ -425,7 +425,7 @@ var cartoMap;
                 minDoc = minDoc || minDocCount;
                 maxDoc = maxDoc || maxDocCount;
                 var colorScale = d3.scale.linear()
-                .range(colorbrewer.OrRd[3])
+                .range(colorbrewer.Blues[3])
                 .domain([minDoc, mean, maxDoc]);
                 d3.selectAll("path.featureLayer")
                 .style("fill", function (d) {
@@ -481,28 +481,47 @@ var cartoMap;
                 );
             }
 
-
-
             // Show lemmas contained in the bucket
             var lemmaListTable = $('#lemma-list-table');
             lemmaListTable.html("");
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
-                console.log(resp.aggregations.total);
 
                 // generateLemmaGraphFromAggregations(resp.aggregations);
 
-                for(var i = 0; i<5/*d.doc_count*/; i++){
+                var wordBuckets = resp.aggregations.mainLemma.buckets;
+
+                for(var i = 0; i<10/*d.doc_count*/; i++){
                     lemmaListTable.append(function(){
                         var html = '<div class="lemma-list-row">';
-                        html += resp.aggregations.mainLemma.buckets[i].key;
+                        html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                        html += '<div class="lemma-list-actions">';
+                        html += '<div class="lemma-button relations">Plot Relations</div>';
+                        html += '<div class="lemma-button map">Plot in Map</div>';
+                        html += '</div>';
                         html += '</div>';
                         return html;
                     });
                 }
 
-                showHideLemmaList(true);
+                // Lemma List Listeners
 
+                d3.selectAll(".lemma-button.relations").data(wordBuckets)
+                .on("click",function(lemmaBucket,i){
+                    console.log("Plot relations of "+lemmaBucket.key);
+
+                    w2ui['content'].toggle('left');
+                    setTimeout(function () {
+                        cartoMap.refresh();
+                    }, 1000)
+                });
+
+                d3.selectAll(".lemma-button.map").data(wordBuckets)
+                .on("click",function(lemmaBucket,i){
+                    console.log("Plot map for "+lemmaBucket.key);
+                });
+
+                showHideLemmaList(true);
             });
         });
         featureLayer.unbind('mouseover');
@@ -519,7 +538,7 @@ var cartoMap;
                 tooltip.html(function(){
                     var html = '<div id="tooltip-lemma-counter">';
                     html += '<strong>'+featureCount+' lemmas</strong><br>'
-                    html += 'out of <strong>'+restCount+'</strong>';
+                    html += 'out of <strong>'+(restCount+featureCount)+'</strong>';
                     html += '</div>';
                     return html;
                 });
@@ -579,7 +598,6 @@ var cartoMap;
         .on("mouseout",function(dFeature,i){
             resetTimelineColor();
             tooltip.hide();
-            console.log("mouseout");
         });
     }
 

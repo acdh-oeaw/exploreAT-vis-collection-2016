@@ -521,7 +521,7 @@ text {
   right: -1px;
   padding-top: 10px;
   width: 180px;
-  max-height: 500px;
+  max-height: 200px;
   background-color: rgba(255, 255, 255, .9);
   pointer-events: auto;
   font-size: .8em;
@@ -536,7 +536,6 @@ text {
 #lemma-list-holder.collapsed {
     right: -180px;
 }
-
 
 #lemma-list-handle {
     font-size: 1.5em;
@@ -556,6 +555,54 @@ text {
 .lemma-list-label {
     font-weight: 600;
     margin-bottom: 10px;
+}
+
+#lemma-list-table {
+    max-height: 150px;
+    overflow: scroll;
+}
+
+.lemma-list-actions{
+    display: none;
+}
+
+.lemma-list-row {
+    display: block;
+    pointer-events: all;
+    margin: 0;
+    padding: 0;
+
+    -webkit-transition: all ease-in-out .35s;
+      -moz-transition: all ease-in-out .35s;
+      -o-transition: all ease-in-out .35s;
+      transition: all ease-in-out .35s;
+}
+
+.lemma-list-row:hover {
+    padding: 2px 0;
+    margin: 2px 0;
+    border-top: 1px dotted #2b91fc;
+    border-bottom: 1px dotted #2b91fc;
+}
+
+.lemma-list-row:hover > .lemma-list-actions {
+    display: block;
+}
+
+.lemma-list-actions {
+    margin-top: 2px;
+}
+
+.lemma-list-actions > .lemma-button {
+    background-color: #2b91fc;
+    padding: 2px 4px;
+    color: white;
+    margin: 2px;
+    margin-left: 0px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: .8em;
+    width: auto;
 }
 
 .overmap {
