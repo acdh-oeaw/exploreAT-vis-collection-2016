@@ -487,7 +487,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                // generateLemmaGraphFromAggregations(resp.aggregations);
+                generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets;
 
@@ -692,6 +692,109 @@ var cartoMap;
                 }
             };
         });
+    }
+
+
+    function generateLemmaGraphFromAggregations(resp_aggregations) {
+        var nodes = [],
+            links = [];
+
+        _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
+
+            var minRelationships = 0, maxRelationShips = 0,
+                minValue = 0, maxValue = 0;
+
+            if (bucket.leftLemma.buckets.length == 0)
+                return; //Skip
+
+            var bucketIndex = _.findIndex(nodes, function (node) {
+                return node.lemma == bucket.key;
+            });
+            if (bucketIndex == -1) {
+                bucketIndex = nodes.push({
+                        "lemma": bucket.key,
+                        "relationships" : bucket.doc_count
+                    }) - 1;
+            } else {
+                nodes[bucketIndex].relationships += bucket.doc_count;
+            }
+            _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
+                var leftLemmaIndex = _.findIndex(nodes, function (node) {
+                   return node.lemma == bucket_leftLemma.key;
+                });
+                if (leftLemmaIndex == -1) {
+                    leftLemmaIndex = nodes.push({
+                            "lemma": bucket_leftLemma.key,
+                            "relationships": 1
+                        }) - 1;
+
+                } else {
+                    nodes[leftLemmaIndex].relationships += 1;
+                }
+                var linkIndex = _.findIndex(links, function(link) {
+                    return link.source == bucketIndex &&
+                            link.target == leftLemmaIndex;
+                });
+
+                if (linkIndex !== -1) {
+                    links[linkIndex].value += bucket_leftLemma.doc_count;
+                } else {
+                    links.push({
+                        "source":   bucketIndex,
+                        "target":   leftLemmaIndex,
+                        "value":     bucket_leftLemma.doc_count
+                    });
+                }
+            });
+        });
+
+
+        var force = d3.layout.force()
+            .charge(-10)
+            .linkDistance(5)
+            .size([300, 600])
+            .nodes(nodes).
+            links(links)
+            .start();
+
+        $("#lemma-graph").html("");
+
+        w2ui['content'].show('left');
+
+
+
+        var svg = d3.select("#lemma-graph").append("svg")
+            .attr("width", '100%')
+            .attr("height", '100%');
+
+        var link = svg.selectAll(".link")
+            .data(links)
+            .enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width",1)
+            .style("stroke","black");
+
+        var node = svg.selectAll(".node")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("r", 3)
+            .style("fill", "black")
+            .call(force.drag);
+
+        node.append("title")
+            .text(function(d) { return d.lemma; });
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            node.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+
+        console.log(resp_aggregations);
     }
 
     function getDataFromElastic() {
