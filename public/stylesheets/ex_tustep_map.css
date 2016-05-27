@@ -415,6 +415,12 @@ text {
     vertical-align: -webkit-baseline-middle;
     margin: 0 4px;
     border-left: 4px solid #2b91fc;
+    width: 200px;
+}
+
+#lemma-and-or-selector {
+    vertical-align: inherit;
+    vertical-align: -webkit-baseline-middle;
 }
 
 
@@ -703,6 +709,15 @@ text {
     bottom: 0;
 }
 
+
+#lemma-graph {
+    height: 100%;
+    background-color: white;
+    border-right: 1px solid rgba(0,0,0,.2);
+}
+
+
+
 #tooltip {
     position: fixed;
     background-color: rgba(255, 255, 255, 0.75);
@@ -737,3 +752,48 @@ text {
   color: white;
   background: darkgray;
 }*/
+
+
+
+
+
+/* TREE CSS */
+
+.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      background-color:#EEE;
+  }
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node text {
+    font-size:10px;
+    font-family:sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+
+  .templink {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
