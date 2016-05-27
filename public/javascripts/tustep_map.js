@@ -487,7 +487,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                generateLemmaGraphFromAggregations(resp.aggregations);
+                //generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets;
 
@@ -509,11 +509,7 @@ var cartoMap;
                 d3.selectAll(".lemma-button.relations").data(wordBuckets)
                 .on("click",function(lemmaBucket,i){
                     console.log("Plot relations of "+lemmaBucket.key);
-
-                    w2ui['content'].toggle('left');
-                    setTimeout(function () {
-                        cartoMap.refresh();
-                    }, 1000)
+                    w2ui['content'].show('left');
                 });
 
                 d3.selectAll(".lemma-button.map").data(wordBuckets)
@@ -838,7 +834,14 @@ var cartoMap;
             }
         };
 
-        body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
+        if ((filterMain.val() == undefined || filterMain.val().length == 0) && (filterLeft.val() == undefined || filterLeft.val().length == 0)){
+            body["query"] = {
+                "match_all": {}
+            };
+        }
+        else{
+            body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val());
+        }
 
         if (!filterMain.val() && !filterLeft.val())
         body["size"] = 0;
