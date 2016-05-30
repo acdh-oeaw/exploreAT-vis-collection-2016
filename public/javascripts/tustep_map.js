@@ -500,7 +500,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                //generateLemmaGraphFromAggregations(resp.aggregations);
+                generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets;
 
@@ -731,9 +731,9 @@ var cartoMap;
             });
             if (bucketIndex == -1) {
                 bucketIndex = nodes.push({
-                    "lemma": bucket.key,
-                    "relationships" : bucket.doc_count
-                }) - 1;
+                        "name": bucket.key,
+                        "relationships" : bucket.doc_count
+                    }) - 1;
             } else {
                 nodes[bucketIndex].relationships += bucket.doc_count;
             }
@@ -743,9 +743,9 @@ var cartoMap;
                 });
                 if (leftLemmaIndex == -1) {
                     leftLemmaIndex = nodes.push({
-                        "lemma": bucket_leftLemma.key,
-                        "relationships": 1
-                    }) - 1;
+                            "name": bucket_leftLemma.key,
+                            "relationships": 1
+                        }) - 1;
 
                 } else {
                     nodes[leftLemmaIndex].relationships += 1;
@@ -767,53 +767,22 @@ var cartoMap;
             });
         });
 
-
-        var force = d3.layout.force()
-        .charge(-10)
-        .linkDistance(5)
-        .size([300, 600])
-        .nodes(nodes).
-        links(links)
-        .start();
-
+        $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
         $("#lemma-graph").html("");
+
+        d3.lemmaGraph('#lemma-graph')
+            .links(links)
+            .nodes(nodes)
+            .update();
 
         w2ui['content'].show('left');
 
-
-
-        var svg = d3.select("#lemma-graph").append("svg")
-        .attr("width", '100%')
-        .attr("height", '100%');
-
-        var link = svg.selectAll(".link")
-        .data(links)
-        .enter().append("line")
-        .attr("class", "link")
-        .style("stroke-width",1)
-        .style("stroke","black");
-
-        var node = svg.selectAll(".node")
-        .data(nodes)
-        .enter().append("circle")
-        .attr("class", "node")
-        .attr("r", 3)
-        .style("fill", "black")
-        .call(force.drag);
-
-        node.append("title")
-        .text(function(d) { return d.lemma; });
-        force.on("tick", function() {
-            link.attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
-
-            node.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-        });
-
-        console.log(resp_aggregations);
+        // var graphDiv = $('#lemma-graph');
+        // graphDiv.append('<li>');
+        // _.forEach(nodes, function(node) {
+        //     graphDiv.append('<ul>' + node.lemma + '</ul>');
+        // });
+        // graphDiv.append('</li>');
     }
 
 
