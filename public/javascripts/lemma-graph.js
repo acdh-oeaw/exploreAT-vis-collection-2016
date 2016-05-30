@@ -14,10 +14,15 @@
     var lemmaGraph = function (domElement) {
         "use strict";
 
+        var selection = d3.select(domElement);
+        var bbox = selection.node().getBoundingClientRect();
+
+
         color = d3.scale.category20();
         force  = d3.layout.force()
-            .charge(-10)
-            .linkDistance(15);
+            .charge(-20)
+            .linkDistance(30)
+            .size([bbox.width, bbox.height]);
 
         d3.select(domElement).append("input")
             .attr("id", "cluster_slider")
@@ -47,7 +52,9 @@
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
 
-            svg.selectAll(".node").attr("cx", function(d) { return d.x; })
+            svg.selectAll(".node").attr("cx", function(d) {
+                return d.x;
+            })
                 .attr("cy", function(d) { return d.y; });
 
             svg.selectAll(".label").attr("x", function(d) { return d.x; })
@@ -199,18 +206,6 @@
             if (!arguments.length) return links;
             links = someLinks;
             return lemmaGraph;
-        };
-
-        lemmaGraph.width = function(x) {
-            if (!arguments.length) return width;
-            width = x;
-            return box;
-        };
-
-        lemmaGraph.height = function(y) {
-            if (!arguments.length) return height;
-            height = y;
-            return box;
         };
 
         lemmaGraph.update = function(){

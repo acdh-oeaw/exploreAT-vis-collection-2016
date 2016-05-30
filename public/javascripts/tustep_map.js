@@ -770,19 +770,14 @@ var cartoMap;
         $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
         $("#lemma-graph").html("");
 
-        d3.lemmaGraph('#lemma-graph')
-            .links(links)
-            .nodes(nodes)
-            .update();
-
         w2ui['content'].show('left');
 
-        // var graphDiv = $('#lemma-graph');
-        // graphDiv.append('<li>');
-        // _.forEach(nodes, function(node) {
-        //     graphDiv.append('<ul>' + node.lemma + '</ul>');
-        // });
-        // graphDiv.append('</li>');
+        setTimeout(function () {
+            d3.lemmaGraph('#lemma-graph')
+                .links(links)
+                .nodes(nodes)
+                .update();
+        }, 1000);
     }
 
 
