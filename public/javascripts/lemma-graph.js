@@ -9,14 +9,32 @@
         _howDeep = 2,
         _nthCluster = 0,
         nodes,
-        links;
+        links,
+        communities;
 
     var lemmaGraph = function (domElement) {
         "use strict";
+        var min_zoom = 0.1;
+        var max_zoom = 7;
+        var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]).on("zoom", function () {
+            svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        });
+
+
+        // var drag = d3.behavior.drag()
+        //     .origin(function(d) { return d; })
+        //     .on("dragstart", function () {
+        //         d3.event.sourceEvent.stopPropagation();
+        //     })
+        //     .on("drag", function () {
+        //         svg.attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
+        //     })
+        //     .on("dragend", function () {
+        //
+        //     });
 
         var selection = d3.select(domElement);
         var bbox = selection.node().getBoundingClientRect();
-
 
         color = d3.scale.category20();
         force  = d3.layout.force()
@@ -33,13 +51,16 @@
             .on("change", function() {
                 _shouldCluster=true;
                 _howDeep=+this.value;
-                update();
+                lemmaGraph.update();
             });
 
 
         svg = d3.select(domElement).append("svg")
             .attr("width", '100%')
-            .attr("height", '100%');
+            .attr("height", '100%')
+            .call(zoom)
+            .append("g")
+            .style("pointer-events", "all");
 
         _shouldCluster = false,
             _currentNode   = null,
@@ -103,7 +124,7 @@
                             weight: 1,
                             x: x1,
                             y: y1,
-                            fixed:true,
+                            fixed:false,
                             group:15
                         };
                         nodes.push(node.cluster);
@@ -123,9 +144,7 @@
                         _currentNode.cluster=node.cluster;
                         return true;
                     }
-                    if (node.leaf)
-                        return true;
-                    return false;
+                    return !!node.leaf;
                 }
                 return true;
             };
@@ -190,7 +209,6 @@
                                 target: o.target.cluster
                             });
                     }
-
                 }
             });
             return links;
@@ -205,6 +223,15 @@
         lemmaGraph.links = function (someLinks) {
             if (!arguments.length) return links;
             links = someLinks;
+            return lemmaGraph;
+        };
+
+        lemmaGraph.communities = function (someCommunities) {
+            if (!arguments.length) return communities;
+            communities = someCommunities;
+            _.forEach(communities, function (com) {
+                console.log('Community ' + com.id + ' has ' + com.population + ' members');
+            });
             return lemmaGraph;
         };
 
@@ -233,6 +260,13 @@
                 .attr("class", "node")
                 .call(force.drag);
 
+            node.on("mouseover", function(d) {
+            })
+                .on("mousedown", function(d) { d3.event.stopPropagation();
+
+                }	).on("mouseout", function(d) {
+            }	);
+
             var theLabels = svg.selectAll(".label")
                 .data(data_nodes)
                 .text(function(d) {
@@ -249,12 +283,11 @@
             theLabels.exit().remove();
 
             theNodes.attr("r", function(d) {
-                return 2.5* Math.sqrt((d.isCluster)?d.nodes.length:1);
-            })
-                .style("fill", function(d) { return color(d.group); });
+                return 4* Math.sqrt((d.isCluster)?d.nodes.length:1);
+            }).style("fill", function(d) { return color(d.community); });
 
-            // node.append("title")
-            //     .text(function(d) { return d.isCluster ? d.cluster.name : d.lemma; });
+            node.append("title")
+                .text(function(d) { return d.community });
 
             theNodes.exit().remove();
         };
@@ -264,3 +297,22 @@
     d3.lemmaGraph = lemmaGraph;
 
 })();
+
+
+/*var allowedIndexes = [];
+
+ var filteredNodes = _.filter(nodes, function (node, idx) {
+ if (node.relationships > 1) {
+ allowedIndexes.push(idx);
+ return true;
+ } else return false;
+ });
+
+ var filteredLinks = _.filter(links, function (link) {
+ return _.indexOf(allowedIndexes, link.source) !== -1 &&
+ _.indexOf(allowedIndexes, link.target) !== -1;
+ }).map(function(link) {
+ link.source = _.indexOf(allowedIndexes, link.source);
+ link.target = _.indexOf(allowedIndexes, link.target);
+ return link;
+ });*/

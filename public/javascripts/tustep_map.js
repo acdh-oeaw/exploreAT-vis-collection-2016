@@ -716,35 +716,43 @@ var cartoMap;
 
     function generateLemmaGraphFromAggregations(resp_aggregations) {
         var nodes = [],
-        links = [];
+            links = [],
+            groupCounter = 0;
 
         _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
 
             var minRelationships = 0, maxRelationShips = 0,
             minValue = 0, maxValue = 0;
 
+            var currentGroup;
+
             if (bucket.leftLemma.buckets.length == 0)
             return; //Skip
 
             var bucketIndex = _.findIndex(nodes, function (node) {
-                return node.lemma == bucket.key;
+                return node.name == bucket.key;
             });
             if (bucketIndex == -1) {
+                currentGroup = groupCounter++;
                 bucketIndex = nodes.push({
                         "name": bucket.key,
-                        "relationships" : bucket.doc_count
+                        "group" : currentGroup,
+                        "mainLemma" : true
                     }) - 1;
             } else {
                 nodes[bucketIndex].relationships += bucket.doc_count;
+                currentGroup = nodes[bucketIndex].group;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
+                if (bucket_leftLemma.key == "ab")
+                    console.log('Stop');
                 var leftLemmaIndex = _.findIndex(nodes, function (node) {
-                    return node.lemma == bucket_leftLemma.key;
+                    return node.name == bucket_leftLemma.key;
                 });
                 if (leftLemmaIndex == -1) {
                     leftLemmaIndex = nodes.push({
                             "name": bucket_leftLemma.key,
-                            "relationships": 1
+                            "group": currentGroup
                         }) - 1;
 
                 } else {
@@ -761,21 +769,57 @@ var cartoMap;
                     links.push({
                         "source":   bucketIndex,
                         "target":   leftLemmaIndex,
-                        "value":     bucket_leftLemma.doc_count
+                        "weight":     bucket_leftLemma.doc_count
                     });
                 }
             });
         });
 
-        $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
+
+        var comNodes = _.map(nodes, function (node) {
+           return node.name;
+        });
+
+        var comLinks = _.map(links, function (link) {
+            return {
+                "source": comNodes[link.source],
+                "target": comNodes[link.target],
+                "weight": link.weight
+            };
+        });
+
+
+        var community = jLouvain().nodes(comNodes).edges(comLinks);
+        var result = community();
+
+        nodes = _.map(nodes, function (node) {
+            node.community = result[node.name];
+            return node;
+        });
+
+        var minCom = d3.min(nodes, function(d){ return d.community});
+        var maxCom = d3.max(nodes, function(d){ return d.community});
+
+        var communities = [];
+        for(var i = minCom; i<=maxCom; i++) {
+            communities.push({
+                id: i,
+                population: _.filter(nodes, function(node){ return node.community == i;}).length
+            });
+        }
+        communities = _.sortBy(communities, "population");
+
+        // $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
         $("#lemma-graph").html("");
 
         w2ui['content'].show('left');
 
+
         setTimeout(function () {
             d3.lemmaGraph('#lemma-graph')
-                .links(links)
                 .nodes(nodes)
+                .links(links)
+                .communities(communities)
                 .update();
         }, 1000);
     }
@@ -1563,6 +1607,8 @@ function showHideLemmaList(show){
     }
 }
 
+    
+
 function getBoundingBoxCenterLatLon(bbox) {
     var ne = bbox.ne;
     var sw = bbox.sw;
@@ -1575,5 +1621,6 @@ function getBoundingBoxLatLon(bbox) {
     var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
     return latLonBox;
 }
+
 
 })();
