@@ -520,6 +520,17 @@ text {
   margin-top: 5px;
 }
 
+#reset-map-button {
+    padding: 3px 8px;
+    background-color: #2b91fc;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: .8em;
+    display: inline-block;
+    margin-left: 4px;
+}
+
 
 #lemma-list-holder {
   position: absolute;
@@ -755,7 +766,35 @@ text {
 
 
 
+#info-tree {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    z-index: 999;
+    font-size: .8em;
+}
 
+#toggle-tree {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    z-index: 999;
+    font-size: .7em;
+    font-weight: 600;
+}
+
+#toggle-tree > div {
+    width: 84px;
+    padding: 4px 8px;
+    background-color: #2b91fc;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+}
 
 /* TREE CSS */
 
@@ -763,8 +802,11 @@ text {
     cursor: pointer;
   }
 
-  .overlay{
+  .overlaysvg{
       background-color:#EEE;
+      position: absolute;
+      top: 0px;
+      z-index: 998;
   }
 
   .node circle {
