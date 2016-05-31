@@ -29,10 +29,12 @@ var cartoMap;
 
     $("#livesearch-holder > form > input")
     .on("input", function() {
+        resetTimelineColor();
         update();
     });
 
     $("#lemma-and-or-selector").change(function(){
+        resetTimelineColor();
         update();
     });
 
@@ -119,12 +121,14 @@ var cartoMap;
 
     $("#reset-map-button").on("click", function() {
         w2ui['content'].hide('left');
-        cartoMap.refresh();
         setTimeout(function () {
-            cartoMap.zoomTo(
-                [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
-                "latlong",1,zoomDelay
-            );
+            cartoMap.refresh();
+            setTimeout(function () {
+                cartoMap.zoomTo(
+                    [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
+                    "latlong",1,zoomDelay
+                );
+            }, 750);
         }, 500);
     });
 
@@ -429,8 +433,6 @@ var cartoMap;
                 originalBBox = getBoundingBoxLatLon(bounds);
             }
 
-            console.log(gridFeatures.length + " grid features")
-
             geoGridLayer
             .features(gridFeatures);
             cartoMap.refreshCartoLayer(geoGridLayer);
@@ -540,17 +542,7 @@ var cartoMap;
 
                 d3.selectAll(".lemma-button.map").data(wordBuckets)
                 .on("click",function(lemmaBucket,i){
-
-                    $("#filterMain").val(lemmaBucket.key);
-                    $("#filterLeft").val(lemmaBucket.key);
-                    filterMain = $("#filterMain");
-                    filterLeft = $("#filterLeft");
-                    $("#lemma-and-or-selector").val("or");
-                    update();
-                    cartoMap.zoomTo(
-                        [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
-                        "latlong",1,zoomDelay
-                    );
+                    plotInMap(lemmaBucket.key,"or",lemmaBucket.key);
                 });
 
                 showHideLemmaList(true);
@@ -830,6 +822,21 @@ var cartoMap;
     }
 
 
+    function plotInMap(leftLemma,andOr,mainLemma){
+
+        $("#filterLeft").val(leftLemma);
+        $("#filterMain").val(mainLemma);
+        filterMain = $("#filterMain");
+        filterLeft = $("#filterLeft");
+        $("#lemma-and-or-selector").val(andOr);
+        update();
+        cartoMap.zoomTo(
+            [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
+            "latlong",1,zoomDelay
+        );
+    }
+
+
     function generateTreeGraphForLemma(lemma){
 
         $("#lemma-graph").html("");
@@ -846,41 +853,52 @@ var cartoMap;
             var asLeftLemma = [];
             var asMainLemma = [];
 
+            function keepBuildingLemmaArray(array,side,hit){
+                var object = {};
+                if(side == "main"){
+                    object.name = hit._source.leftLemma;
+                }
+                else {
+                    object.name = hit._source.mainLemma;
+                }
+                if(object.name == undefined) return;
+                object.count = 1;
+                object.years = [];
+                if(hit._source.startYear != undefined){
+                    object.years.push(parseInt(hit._source.startYear));
+                }
+
+                // If the record already exists, do not push it, just add to the count
+                if(_.some(array, function(record) {return record.name == object.name;})){
+                    _.forEach(array,function(lemma){
+                        if(lemma.name == object.name){
+                            if(hit._source.startYear != undefined){
+                                lemma.years.push(parseInt(hit._source.startYear));
+                            }
+                            lemma.count++;
+                        }
+                    });
+                }
+                else{
+                    array.push(object);
+                }
+            }
+
             _.forEach(resp.hits.hits,function(hit){
                 if(lemma == hit._source.leftLemma){
-                    var object = {};
-                    object.name = hit._source.mainLemma;
-                    if(object.name == undefined) return;
-                    object.count = 1;
-                    object.year = hit._source.startYear;
-
-                    // If the record already exists, do not push it, just add to the count
-                    if(_.some(asLeftLemma, function(record) {return record.name == object.name;})){
-                        _.forEach(asLeftLemma,function(lemma){
-                            if(lemma.name == object.name){lemma.count++;}
-                        });
-                    }
-                    else{
-                        asLeftLemma.push(object);
-                    }
+                    keepBuildingLemmaArray(asLeftLemma,"left",hit);
                 }
                 else if(lemma == hit._source.mainLemma){
-                    var object = {};
-                    object.name = hit._source.leftLemma;
-                    if(object.name == undefined) return;
-                    object.count = 1;
-                    object.year = hit._source.startYear;
-
-                    // If the record already exists, do not push it, just add to the count
-                    if(_.some(asMainLemma, function(record) {return record.name == object.name;})){
-                        _.forEach(asMainLemma,function(lemma){
-                            if(lemma.name == object.name){lemma.count++;}
-                        });
-                    }
-                    else{
-                        asMainLemma.push(object);
-                    }
+                    keepBuildingLemmaArray(asMainLemma,"main",hit);
                 }
+            });
+
+            // Clear the years array of each lemma so they are unique and sorted
+            _.forEach(asLeftLemma, function(record) {
+                record.years = _.unique(record.years).sort(function(a,b) {return a - b;});
+            });
+            _.forEach(asMainLemma, function(record) {
+                record.years = _.unique(record.years).sort(function(a,b) {return a - b;});
             });
 
             var uniqueLeftLemmas = _.unique(asLeftLemma, function(record){return record.name;});
@@ -971,9 +989,6 @@ var cartoMap;
                 return data;
             }
 
-            console.log(dataLeft);
-            console.log(dataMain);
-
             // _.forEach(uniqueLeftCounts, function(numRelations){
             //     var firstLevelNode = {};
             //     if(numRelations == 1){
@@ -1057,6 +1072,8 @@ var cartoMap;
         var i = 0;
         var duration = 750;
         var root;
+        var maxRelationsFirstLevel = 0;
+        var maxRelationsSecondLevel = 0;
 
         // size of the diagram
         var viewerWidth = $("#lemma-graph").width();
@@ -1144,45 +1161,45 @@ var cartoMap;
         var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
 
         function initiateDrag(d, domNode) {
-            draggingNode = d;
-            d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
-            d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
-            d3.select(domNode).attr('class', 'node activeDrag');
-
-            svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
-            if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
-            else return -1; // a is the hovered element, bring "a" to the front
-        });
-        // if nodes has children, remove the links and nodes
-        if (nodes.length > 1) {
-            // remove link paths
-            links = tree.links(nodes);
-            nodePaths = svgGroup.selectAll("path.link")
-            .data(links, function(d) {
-                return d.target.id;
-            }).remove();
-            // remove child nodes
-            nodesExit = svgGroup.selectAll("g.node")
-            .data(nodes, function(d) {
-                return d.id;
-            }).filter(function(d, i) {
-                if (d.id == draggingNode.id) {
-                    return false;
-                }
-                return true;
-            }).remove();
-        }
-
-        // remove parent link
-        parentLink = tree.links(tree.nodes(draggingNode.parent));
-        svgGroup.selectAll('path.link').filter(function(d, i) {
-            if (d.target.id == draggingNode.id) {
-                return true;
-            }
-            return false;
-        }).remove();
-
-        dragStarted = null;
+        //     draggingNode = d;
+        //     d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
+        //     d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+        //     d3.select(domNode).attr('class', 'node activeDrag');
+        //
+        //     svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
+        //     if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
+        //     else return -1; // a is the hovered element, bring "a" to the front
+        // });
+        // // if nodes has children, remove the links and nodes
+        // if (nodes.length > 1) {
+        //     // remove link paths
+        //     links = tree.links(nodes);
+        //     nodePaths = svgGroup.selectAll("path.link")
+        //     .data(links, function(d) {
+        //         return d.target.id;
+        //     }).remove();
+        //     // remove child nodes
+        //     nodesExit = svgGroup.selectAll("g.node")
+        //     .data(nodes, function(d) {
+        //         return d.id;
+        //     }).filter(function(d, i) {
+        //         if (d.id == draggingNode.id) {
+        //             return false;
+        //         }
+        //         return true;
+        //     }).remove();
+        // }
+        //
+        // // remove parent link
+        // parentLink = tree.links(tree.nodes(draggingNode.parent));
+        // svgGroup.selectAll('path.link').filter(function(d, i) {
+        //     if (d.target.id == draggingNode.id) {
+        //         return true;
+        //     }
+        //     return false;
+        // }).remove();
+        //
+        // dragStarted = null;
     }
 
     // define the baseSvg, attaching a class for styling and the zoomListener
@@ -1196,93 +1213,93 @@ var cartoMap;
     // Define the drag listeners for drag/drop behaviour of nodes.
     dragListener = d3.behavior.drag()
     .on("dragstart", function(d) {
-        if (d == root) {
-            return;
-        }
-        dragStarted = true;
-        nodes = tree.nodes(d);
-        d3.event.sourceEvent.stopPropagation();
-        // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
+        // if (d == root) {
+        //     return;
+        // }
+        // dragStarted = true;
+        // nodes = tree.nodes(d);
+        // d3.event.sourceEvent.stopPropagation();
+        // // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
     })
     .on("drag", function(d) {
-        if (d == root) {
-            return;
-        }
-        if (dragStarted) {
-            domNode = this;
-            initiateDrag(d, domNode);
-        }
-
-        // get coords of mouseEvent relative to svg container to allow for panning
-        relCoords = d3.mouse($('svg').get(0));
-        if (relCoords[0] < panBoundary) {
-            panTimer = true;
-            pan(this, 'left');
-        } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
-
-            panTimer = true;
-            pan(this, 'right');
-        } else if (relCoords[1] < panBoundary) {
-            panTimer = true;
-            pan(this, 'up');
-        } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
-            panTimer = true;
-            pan(this, 'down');
-        } else {
-            try {
-                clearTimeout(panTimer);
-            } catch (e) {
-
-            }
-        }
-
-        d.x0 += d3.event.dy;
-        d.y0 += d3.event.dx;
-        var node = d3.select(this);
-        node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
-        updateTempConnector();
+        // if (d == root) {
+        //     return;
+        // }
+        // if (dragStarted) {
+        //     domNode = this;
+        //     initiateDrag(d, domNode);
+        // }
+        //
+        // // get coords of mouseEvent relative to svg container to allow for panning
+        // relCoords = d3.mouse($('svg').get(0));
+        // if (relCoords[0] < panBoundary) {
+        //     panTimer = true;
+        //     pan(this, 'left');
+        // } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+        //
+        //     panTimer = true;
+        //     pan(this, 'right');
+        // } else if (relCoords[1] < panBoundary) {
+        //     panTimer = true;
+        //     pan(this, 'up');
+        // } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+        //     panTimer = true;
+        //     pan(this, 'down');
+        // } else {
+        //     try {
+        //         clearTimeout(panTimer);
+        //     } catch (e) {
+        //
+        //     }
+        // }
+        //
+        // d.x0 += d3.event.dy;
+        // d.y0 += d3.event.dx;
+        // var node = d3.select(this);
+        // node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
+        // updateTempConnector();
     }).on("dragend", function(d) {
-        if (d == root) {
-            return;
-        }
-        domNode = this;
-        if (selectedNode) {
-            // now remove the element from the parent, and insert it into the new elements children
-            var index = draggingNode.parent.children.indexOf(draggingNode);
-            if (index > -1) {
-                draggingNode.parent.children.splice(index, 1);
-            }
-            if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
-                if (typeof selectedNode.children !== 'undefined') {
-                    selectedNode.children.push(draggingNode);
-                } else {
-                    selectedNode._children.push(draggingNode);
-                }
-            } else {
-                selectedNode.children = [];
-                selectedNode.children.push(draggingNode);
-            }
-            // Make sure that the node being added to is expanded so user can see added node is correctly moved
-            expand(selectedNode);
-            sortTree();
-            endDrag();
-        } else {
-            endDrag();
-        }
+        // if (d == root) {
+        //     return;
+        // }
+        // domNode = this;
+        // if (selectedNode) {
+        //     // now remove the element from the parent, and insert it into the new elements children
+        //     var index = draggingNode.parent.children.indexOf(draggingNode);
+        //     if (index > -1) {
+        //         draggingNode.parent.children.splice(index, 1);
+        //     }
+        //     if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
+        //         if (typeof selectedNode.children !== 'undefined') {
+        //             selectedNode.children.push(draggingNode);
+        //         } else {
+        //             selectedNode._children.push(draggingNode);
+        //         }
+        //     } else {
+        //         selectedNode.children = [];
+        //         selectedNode.children.push(draggingNode);
+        //     }
+        //     // Make sure that the node being added to is expanded so user can see added node is correctly moved
+        //     expand(selectedNode);
+        //     sortTree();
+        //     endDrag();
+        // } else {
+        //     endDrag();
+        // }
     });
 
     function endDrag() {
-        selectedNode = null;
-        d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
-        d3.select(domNode).attr('class', 'node');
-        // now restore the mouseover event or we won't be able to drag a 2nd time
-        d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
-        updateTempConnector();
-        if (draggingNode !== null) {
-            update(root);
-            centerNode(draggingNode);
-            draggingNode = null;
-        }
+        // selectedNode = null;
+        // d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+        // d3.select(domNode).attr('class', 'node');
+        // // now restore the mouseover event or we won't be able to drag a 2nd time
+        // d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
+        // updateTempConnector();
+        // if (draggingNode !== null) {
+        //     update(root);
+        //     centerNode(draggingNode);
+        //     draggingNode = null;
+        // }
     }
 
     // Helper functions for collapsing and expanding nodes.
@@ -1343,16 +1360,18 @@ var cartoMap;
     // Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
 
     function centerNode(source) {
-        scale = zoomListener.scale();
-        x = -source.y0;
-        y = -source.x0;
-        x = x * scale + viewerWidth / 2;
-        y = y * scale + viewerHeight / 2;
-        d3.select('g').transition()
-        .duration(duration)
-        .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
-        zoomListener.scale(scale);
-        zoomListener.translate([x, y]);
+        //if(source.name == lemma){
+            scale = zoomListener.scale();
+            x = -source.y0;
+            y = -source.x0;
+            x = x * scale + viewerWidth / 2;
+            y = y * scale + viewerHeight / 2;
+            d3.select('g').transition()
+            .duration(duration)
+            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+            zoomListener.scale(scale);
+            zoomListener.translate([x, y]);
+        //}
     }
 
     // Toggle children function
@@ -1428,7 +1447,31 @@ var cartoMap;
         .attr("transform", function(d) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
         })
-        .on('click', click);
+        .on('click', function(d){
+            click(d);
+
+            // If we click a leaf, we plot it in the map
+            if(d.parent.name != lemma){
+                if(side == "right"){plotInMap(d.name,"and",root.name);}
+                else if(side == "left"){plotInMap(root.name,"and",d.name);}
+            }
+        })
+        .on("mouseover", function(d){
+            if(d.years != undefined && d.years.length > 0){
+                // Highlight related years in timeline
+                timelineChart.selectAll('rect.bar').each(function(dBar){
+                    if(d.years.indexOf(parseInt(dBar.x)) > -1){
+                        d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                    }
+                    else {
+                        d3.select(this).transition().duration(500).style("fill", "black");
+                    }
+                });
+            }
+        })
+        .on("mouseout", function(d){
+            resetTimelineColor();
+        });
 
         nodeEnter.append("circle")
         .attr('class', 'nodeCircle')
@@ -1558,6 +1601,21 @@ var cartoMap;
                 source: o,
                 target: o
             });
+        })
+        .style("stroke-width",function(d){
+            var firstLevelStrokeScale = d3.scale.linear()
+            .domain([1,maxRelationsFirstLevel])
+            .range([1,8]);
+            var secondLevelStrokeScale = d3.scale.linear()
+            .domain([1,maxRelationsSecondLevel])
+            .range([1.5,8]);
+
+            if(d.source.name == lemma && d.target.children != undefined){ // 1st level
+                return firstLevelStrokeScale(d.target.children.length)+"px";
+            }
+            else { // 2nd level
+                return secondLevelStrokeScale(d.target.count)+"px";
+            }
         });
 
         // Transition links to their new position.
@@ -1613,10 +1671,52 @@ var cartoMap;
         }
     }
 
+    for(var i=0; i<root.children.length; i++){
+        if(root.children[i]._children.length > maxRelationsFirstLevel){
+            maxRelationsFirstLevel = root.children[i]._children.length;
+        }
+    }
+
+    for(var i=0; i<root.children.length; i++){
+        for(var j=0; j<root.children[i]._children.length; j++){
+            if(root.children[i]._children[j].count > maxRelationsSecondLevel){
+                maxRelationsSecondLevel = root.children[0]._children[j].count;
+            }
+        }
+    }
+
     click(root);
     setTimeout(function () {
         click(root);
+        updateLinkWeights();
     }, 1000);
+
+    function updateLinkWeights(){
+
+        // Compute the new tree layout.
+        var nodes = tree.nodes(root).reverse(),
+        links = tree.links(nodes);
+
+        var link = svgGroup.selectAll("path.link")
+        .data(links, function(d) {
+            return d.target.id;
+        }).style("stroke-width",function(d){
+
+            var firstLevelStrokeScale = d3.scale.linear()
+            .domain([1,maxRelationsFirstLevel])
+            .range([1,8]);
+            var secondLevelStrokeScale = d3.scale.linear()
+            .domain([1,maxRelationsSecondLevel])
+            .range([1.5,8]);
+
+            if(d.source.name == lemma){ // 1st level
+                return firstLevelStrokeScale(d.target._children.length)+"px";
+            }
+            else { // 2nd level
+                return secondLevelStrokeScale(d.target.count)+"px";
+            }
+        });
+    }
 }
 
 

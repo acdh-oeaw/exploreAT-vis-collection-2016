@@ -723,7 +723,7 @@ text {
 
 #lemma-graph {
     height: 100%;
-    background-color: white;
+    background-color: #fafafa;
     border-right: 1px solid rgba(0,0,0,.2);
 }
 
@@ -774,6 +774,8 @@ text {
     padding: 10px;
     z-index: 999;
     font-size: .8em;
+    background-color: #fafafa;
+    border-bottom: 1px dotted rgba(0, 0, 0, .3);
 }
 
 #toggle-tree {
@@ -794,6 +796,8 @@ text {
     border-radius: 3px;
     color: white;
     cursor: pointer;
+    margin-left: 10px;
+    margin-top: -4px;
 }
 
 /* TREE CSS */
@@ -803,7 +807,7 @@ text {
   }
 
   .overlaysvg{
-      background-color:#EEE;
+      background-color: #fafafa;
       position: absolute;
       top: 0px;
       z-index: 998;
@@ -818,12 +822,12 @@ text {
   .node text {
     font-size:10px;
     font-family:sans-serif;
+    font-weight: bold;
   }
 
   .link {
     fill: none;
     stroke: #ccc;
-    stroke-width: 1.5px;
   }
 
   .templink {
