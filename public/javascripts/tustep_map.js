@@ -720,10 +720,7 @@ var cartoMap;
             groupCounter = 0;
 
         _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
-
-            var minRelationships = 0, maxRelationShips = 0,
-            minValue = 0, maxValue = 0;
-
+            
             var currentGroup;
 
             if (bucket.leftLemma.buckets.length == 0)
@@ -740,7 +737,6 @@ var cartoMap;
                         "mainLemma" : true
                     }) - 1;
             } else {
-                nodes[bucketIndex].relationships += bucket.doc_count;
                 currentGroup = nodes[bucketIndex].group;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
@@ -755,8 +751,6 @@ var cartoMap;
                             "group": currentGroup
                         }) - 1;
 
-                } else {
-                    nodes[leftLemmaIndex].relationships += 1;
                 }
                 var linkIndex = _.findIndex(links, function(link) {
                     return link.source == bucketIndex &&

@@ -10,6 +10,7 @@
         _nthCluster = 0,
         nodes,
         links,
+        nest,
         communities;
 
     var lemmaGraph = function (domElement) {
@@ -38,8 +39,8 @@
 
         color = d3.scale.category20();
         force  = d3.layout.force()
-            .charge(-20)
-            .linkDistance(30)
+            .charge(-50)
+            .linkDistance(50)
             .size([bbox.width, bbox.height]);
 
         d3.select(domElement).append("input")
@@ -67,6 +68,23 @@
             _howDeep       = 2,
             _nthCluster    = 0;
 
+        var groupFill = function (d) {
+          return color(d.values[0].community)
+        };
+
+        var groupPath = function(d) {
+            var points = [];
+            var mapFn = function(i) { return [i.x, i.y]; };
+            if (d.values.length <= 2)
+                points = d.values.map(mapFn);
+            else
+                points = d3.geom.hull(d.values.map(mapFn));
+            return "M" +
+                    points
+                    .join("L")
+                + "Z";
+        };
+
         force.on("tick", function() {
             svg.selectAll(".link").attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
@@ -80,6 +98,17 @@
 
             svg.selectAll(".label").attr("x", function(d) { return d.x; })
                 .attr("y", function(d) { return d.y - 10; });
+
+            svg.selectAll("path")
+                .data(nest)
+                .attr("d", groupPath)
+                .enter().insert("path", "circle")
+                .style("fill", groupFill)
+                .style("stroke", groupFill)
+                .style("stroke-width", 40)
+                .style("stroke-linejoin", "round")
+                .style("opacity", .2)
+                .attr("d", groupPath);
 
         });
 
@@ -217,6 +246,9 @@
         lemmaGraph.nodes = function (someNodes) {
             if (!arguments.length) return nodes;
             nodes = someNodes;
+            nest = d3.nest()
+                .key(function(d) { return d.community; })
+                .entries(nodes);
             return lemmaGraph;
         };
 
