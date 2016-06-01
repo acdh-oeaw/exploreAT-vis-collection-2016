@@ -17,8 +17,13 @@
         "use strict";
         var min_zoom = 0.1;
         var max_zoom = 7;
-        var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]).on("zoom", function () {
+        var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]).
+        on("zoom", function () {
             svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            svg.selectAll("path")
+                .style("stroke-width", function (d) {
+                    return 40 * zoom.scale();
+                });
         });
 
 
@@ -39,6 +44,7 @@
 
         color = d3.scale.category20();
         force  = d3.layout.force()
+            .gravity(.05)
             .charge(-50)
             .linkDistance(50)
             .size([bbox.width, bbox.height]);
@@ -85,7 +91,7 @@
                 + "Z";
         };
 
-        force.on("tick", function() {
+        var forceTick = function() {
             svg.selectAll(".link").attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
@@ -102,12 +108,21 @@
                 .enter().insert("path", "g")
                 .style("fill", groupFill)
                 .style("stroke", groupFill)
-                .style("stroke-width", 40)
+                .style("stroke-width", function (d) {
+                    return 40 * zoom.scale();
+                })
                 .style("stroke-linejoin", "round")
                 .style("opacity", .2)
                 .attr("d", groupPath);
 
-        });
+            svg.selectAll("path")
+                .style("stroke-width", function (d) {
+                    return 40 * zoom.scale();
+                });
+
+        };
+
+        force.on("tick", forceTick);
 
         var pruneNodes = function(original_nodes){
             var nodes =[],q;
@@ -294,8 +309,8 @@
                 .style("stroke-width", "1px");
             nodeEnter.append("text")
                 .style("text-anchor", "middle")
-                .style("stroke", function(d) {return color(d.community);})
-                .style("stroke-width", "1px")
+                .style("stroke", function(d) { return color(d.community); })
+                .style("stroke-width", "0.5px")
                 .attr("y", 15)
                 .text(function(d) {return d.name;});
 
