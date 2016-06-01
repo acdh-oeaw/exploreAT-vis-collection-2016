@@ -462,6 +462,8 @@ var cartoMap;
                     return colorScale(d.properties.doc_count);
                 })
                 .style("opacity", 0.8);
+
+                refreshColorLegend(geoFeatures,colorScale);
             }
 
             if (geoFeaturesLayer == undefined) {
@@ -520,7 +522,7 @@ var cartoMap;
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets;
 
-                for(var i = 0; i<10/*d.doc_count*/; i++){
+                for(var i = 0; i<20/*d.doc_count*/; i++){
                     lemmaListTable.append(function(){
                         var html = '<div class="lemma-list-row">';
                         html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
@@ -1166,206 +1168,206 @@ var cartoMap;
         var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
 
         function initiateDrag(d, domNode) {
-        //     draggingNode = d;
-        //     d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
-        //     d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
-        //     d3.select(domNode).attr('class', 'node activeDrag');
-        //
-        //     svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
-        //     if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
-        //     else return -1; // a is the hovered element, bring "a" to the front
-        // });
-        // // if nodes has children, remove the links and nodes
-        // if (nodes.length > 1) {
-        //     // remove link paths
-        //     links = tree.links(nodes);
-        //     nodePaths = svgGroup.selectAll("path.link")
-        //     .data(links, function(d) {
-        //         return d.target.id;
-        //     }).remove();
-        //     // remove child nodes
-        //     nodesExit = svgGroup.selectAll("g.node")
-        //     .data(nodes, function(d) {
-        //         return d.id;
-        //     }).filter(function(d, i) {
-        //         if (d.id == draggingNode.id) {
-        //             return false;
-        //         }
-        //         return true;
-        //     }).remove();
-        // }
-        //
-        // // remove parent link
-        // parentLink = tree.links(tree.nodes(draggingNode.parent));
-        // svgGroup.selectAll('path.link').filter(function(d, i) {
-        //     if (d.target.id == draggingNode.id) {
-        //         return true;
-        //     }
-        //     return false;
-        // }).remove();
-        //
-        // dragStarted = null;
-    }
-
-    // define the baseSvg, attaching a class for styling and the zoomListener
-    var baseSvg = d3.select("#lemma-graph-"+side).append("svg")
-    .attr("width", viewerWidth)
-    .attr("height", viewerHeight)
-    .attr("class", "overlaysvg "+side)
-    .attr("id", "treesvg"+side)
-    .call(zoomListener);
-
-    // Define the drag listeners for drag/drop behaviour of nodes.
-    dragListener = d3.behavior.drag()
-    .on("dragstart", function(d) {
-        // if (d == root) {
-        //     return;
-        // }
-        // dragStarted = true;
-        // nodes = tree.nodes(d);
-        // d3.event.sourceEvent.stopPropagation();
-        // // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
-    })
-    .on("drag", function(d) {
-        // if (d == root) {
-        //     return;
-        // }
-        // if (dragStarted) {
-        //     domNode = this;
-        //     initiateDrag(d, domNode);
-        // }
-        //
-        // // get coords of mouseEvent relative to svg container to allow for panning
-        // relCoords = d3.mouse($('svg').get(0));
-        // if (relCoords[0] < panBoundary) {
-        //     panTimer = true;
-        //     pan(this, 'left');
-        // } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
-        //
-        //     panTimer = true;
-        //     pan(this, 'right');
-        // } else if (relCoords[1] < panBoundary) {
-        //     panTimer = true;
-        //     pan(this, 'up');
-        // } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
-        //     panTimer = true;
-        //     pan(this, 'down');
-        // } else {
-        //     try {
-        //         clearTimeout(panTimer);
-        //     } catch (e) {
-        //
-        //     }
-        // }
-        //
-        // d.x0 += d3.event.dy;
-        // d.y0 += d3.event.dx;
-        // var node = d3.select(this);
-        // node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
-        // updateTempConnector();
-    }).on("dragend", function(d) {
-        // if (d == root) {
-        //     return;
-        // }
-        // domNode = this;
-        // if (selectedNode) {
-        //     // now remove the element from the parent, and insert it into the new elements children
-        //     var index = draggingNode.parent.children.indexOf(draggingNode);
-        //     if (index > -1) {
-        //         draggingNode.parent.children.splice(index, 1);
-        //     }
-        //     if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
-        //         if (typeof selectedNode.children !== 'undefined') {
-        //             selectedNode.children.push(draggingNode);
-        //         } else {
-        //             selectedNode._children.push(draggingNode);
-        //         }
-        //     } else {
-        //         selectedNode.children = [];
-        //         selectedNode.children.push(draggingNode);
-        //     }
-        //     // Make sure that the node being added to is expanded so user can see added node is correctly moved
-        //     expand(selectedNode);
-        //     sortTree();
-        //     endDrag();
-        // } else {
-        //     endDrag();
-        // }
-    });
-
-    function endDrag() {
-        // selectedNode = null;
-        // d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
-        // d3.select(domNode).attr('class', 'node');
-        // // now restore the mouseover event or we won't be able to drag a 2nd time
-        // d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
-        // updateTempConnector();
-        // if (draggingNode !== null) {
-        //     update(root);
-        //     centerNode(draggingNode);
-        //     draggingNode = null;
-        // }
-    }
-
-    // Helper functions for collapsing and expanding nodes.
-
-    function collapse(d) {
-        if (d.children) {
-            d._children = d.children;
-            d._children.forEach(collapse);
-            d.children = null;
+            //     draggingNode = d;
+            //     d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
+            //     d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+            //     d3.select(domNode).attr('class', 'node activeDrag');
+            //
+            //     svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
+            //     if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
+            //     else return -1; // a is the hovered element, bring "a" to the front
+            // });
+            // // if nodes has children, remove the links and nodes
+            // if (nodes.length > 1) {
+            //     // remove link paths
+            //     links = tree.links(nodes);
+            //     nodePaths = svgGroup.selectAll("path.link")
+            //     .data(links, function(d) {
+            //         return d.target.id;
+            //     }).remove();
+            //     // remove child nodes
+            //     nodesExit = svgGroup.selectAll("g.node")
+            //     .data(nodes, function(d) {
+            //         return d.id;
+            //     }).filter(function(d, i) {
+            //         if (d.id == draggingNode.id) {
+            //             return false;
+            //         }
+            //         return true;
+            //     }).remove();
+            // }
+            //
+            // // remove parent link
+            // parentLink = tree.links(tree.nodes(draggingNode.parent));
+            // svgGroup.selectAll('path.link').filter(function(d, i) {
+            //     if (d.target.id == draggingNode.id) {
+            //         return true;
+            //     }
+            //     return false;
+            // }).remove();
+            //
+            // dragStarted = null;
         }
-    }
 
-    function expand(d) {
-        if (d._children) {
-            d.children = d._children;
-            d.children.forEach(expand);
-            d._children = null;
+        // define the baseSvg, attaching a class for styling and the zoomListener
+        var baseSvg = d3.select("#lemma-graph-"+side).append("svg")
+        .attr("width", viewerWidth)
+        .attr("height", viewerHeight)
+        .attr("class", "overlaysvg "+side)
+        .attr("id", "treesvg"+side)
+        .call(zoomListener);
+
+        // Define the drag listeners for drag/drop behaviour of nodes.
+        dragListener = d3.behavior.drag()
+        .on("dragstart", function(d) {
+            // if (d == root) {
+            //     return;
+            // }
+            // dragStarted = true;
+            // nodes = tree.nodes(d);
+            // d3.event.sourceEvent.stopPropagation();
+            // // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
+        })
+        .on("drag", function(d) {
+            // if (d == root) {
+            //     return;
+            // }
+            // if (dragStarted) {
+            //     domNode = this;
+            //     initiateDrag(d, domNode);
+            // }
+            //
+            // // get coords of mouseEvent relative to svg container to allow for panning
+            // relCoords = d3.mouse($('svg').get(0));
+            // if (relCoords[0] < panBoundary) {
+            //     panTimer = true;
+            //     pan(this, 'left');
+            // } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+            //
+            //     panTimer = true;
+            //     pan(this, 'right');
+            // } else if (relCoords[1] < panBoundary) {
+            //     panTimer = true;
+            //     pan(this, 'up');
+            // } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+            //     panTimer = true;
+            //     pan(this, 'down');
+            // } else {
+            //     try {
+            //         clearTimeout(panTimer);
+            //     } catch (e) {
+            //
+            //     }
+            // }
+            //
+            // d.x0 += d3.event.dy;
+            // d.y0 += d3.event.dx;
+            // var node = d3.select(this);
+            // node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
+            // updateTempConnector();
+        }).on("dragend", function(d) {
+            // if (d == root) {
+            //     return;
+            // }
+            // domNode = this;
+            // if (selectedNode) {
+            //     // now remove the element from the parent, and insert it into the new elements children
+            //     var index = draggingNode.parent.children.indexOf(draggingNode);
+            //     if (index > -1) {
+            //         draggingNode.parent.children.splice(index, 1);
+            //     }
+            //     if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
+            //         if (typeof selectedNode.children !== 'undefined') {
+            //             selectedNode.children.push(draggingNode);
+            //         } else {
+            //             selectedNode._children.push(draggingNode);
+            //         }
+            //     } else {
+            //         selectedNode.children = [];
+            //         selectedNode.children.push(draggingNode);
+            //     }
+            //     // Make sure that the node being added to is expanded so user can see added node is correctly moved
+            //     expand(selectedNode);
+            //     sortTree();
+            //     endDrag();
+            // } else {
+            //     endDrag();
+            // }
+        });
+
+        function endDrag() {
+            // selectedNode = null;
+            // d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+            // d3.select(domNode).attr('class', 'node');
+            // // now restore the mouseover event or we won't be able to drag a 2nd time
+            // d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
+            // updateTempConnector();
+            // if (draggingNode !== null) {
+            //     update(root);
+            //     centerNode(draggingNode);
+            //     draggingNode = null;
+            // }
         }
-    }
 
-    var overCircle = function(d) {
-        selectedNode = d;
-        updateTempConnector();
-    };
-    var outCircle = function(d) {
-        selectedNode = null;
-        updateTempConnector();
-    };
+        // Helper functions for collapsing and expanding nodes.
 
-    // Function to update the temporary connector indicating dragging affiliation
-    var updateTempConnector = function() {
-        var data = [];
-        if (draggingNode !== null && selectedNode !== null) {
-            // have to flip the source coordinates since we did this for the existing connectors on the original tree
-            data = [{
-                source: {
-                    x: selectedNode.y0,
-                    y: selectedNode.x0
-                },
-                target: {
-                    x: draggingNode.y0,
-                    y: draggingNode.x0
-                }
-            }];
+        function collapse(d) {
+            if (d.children) {
+                d._children = d.children;
+                d._children.forEach(collapse);
+                d.children = null;
+            }
         }
-        var link = svgGroup.selectAll(".templink").data(data);
 
-        link.enter().append("path")
-        .attr("class", "templink")
-        .attr("d", d3.svg.diagonal())
-        .attr('pointer-events', 'none');
+        function expand(d) {
+            if (d._children) {
+                d.children = d._children;
+                d.children.forEach(expand);
+                d._children = null;
+            }
+        }
 
-        link.attr("d", d3.svg.diagonal());
+        var overCircle = function(d) {
+            selectedNode = d;
+            updateTempConnector();
+        };
+        var outCircle = function(d) {
+            selectedNode = null;
+            updateTempConnector();
+        };
 
-        link.exit().remove();
-    };
+        // Function to update the temporary connector indicating dragging affiliation
+        var updateTempConnector = function() {
+            var data = [];
+            if (draggingNode !== null && selectedNode !== null) {
+                // have to flip the source coordinates since we did this for the existing connectors on the original tree
+                data = [{
+                    source: {
+                        x: selectedNode.y0,
+                        y: selectedNode.x0
+                    },
+                    target: {
+                        x: draggingNode.y0,
+                        y: draggingNode.x0
+                    }
+                }];
+            }
+            var link = svgGroup.selectAll(".templink").data(data);
 
-    // Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+            link.enter().append("path")
+            .attr("class", "templink")
+            .attr("d", d3.svg.diagonal())
+            .attr('pointer-events', 'none');
 
-    function centerNode(source) {
-        //if(source.name == lemma){
+            link.attr("d", d3.svg.diagonal());
+
+            link.exit().remove();
+        };
+
+        // Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+
+        function centerNode(source) {
+            //if(source.name == lemma){
             scale = zoomListener.scale();
             x = -source.y0;
             y = -source.x0;
@@ -1376,612 +1378,645 @@ var cartoMap;
             .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
             zoomListener.scale(scale);
             zoomListener.translate([x, y]);
-        //}
-    }
-
-    // Toggle children function
-
-    function toggleChildren(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
-        } else if (d._children) {
-            d.children = d._children;
-            d._children = null;
+            //}
         }
-        return d;
-    }
 
-    // Toggle children on click.
+        // Toggle children function
 
-    function click(d) {
-        if(d3.event != null)
+        function toggleChildren(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else if (d._children) {
+                d.children = d._children;
+                d._children = null;
+            }
+            return d;
+        }
+
+        // Toggle children on click.
+
+        function click(d) {
+            if(d3.event != null)
             if (d3.event.defaultPrevented) return; // click suppressed
-        d = toggleChildren(d);
-        update(d);
-        centerNode(d);
-    }
+            d = toggleChildren(d);
+            update(d);
+            centerNode(d);
+        }
 
-    function update(source) {
-        // Compute the new height, function counts total children of root node and sets tree height accordingly.
-        // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
-        // This makes the layout more consistent.
-        var levelWidth = [1];
-        var childCount = function(level, n) {
+        function update(source) {
+            // Compute the new height, function counts total children of root node and sets tree height accordingly.
+            // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
+            // This makes the layout more consistent.
+            var levelWidth = [1];
+            var childCount = function(level, n) {
 
-            if (n.children && n.children.length > 0) {
-                if (levelWidth.length <= level + 1) levelWidth.push(0);
+                if (n.children && n.children.length > 0) {
+                    if (levelWidth.length <= level + 1) levelWidth.push(0);
 
-                levelWidth[level + 1] += n.children.length;
-                n.children.forEach(function(d) {
-                    childCount(level + 1, d);
-                });
-            }
-        };
-        childCount(0, root);
-        var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line
-        tree = tree.size([newHeight, viewerWidth]);
-
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse(),
-        links = tree.links(nodes);
-
-        // Set widths between levels based on maxLabelLength.
-        nodes.forEach(function(d) {
-            if(side == "left"){
-                d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
-            }
-            else{
-                d.y = (viewerWidth - d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
-            }
-            // alternatively to keep a fixed scale one can set a fixed depth per level
-            // Normalize for fixed-depth by commenting out below line
-            // d.y = (d.depth * 500); //500px per level.
-        });
-
-        // Update the nodes…
-        node = svgGroup.selectAll("g.node")
-        .data(nodes, function(d) {
-            return d.id || (d.id = ++i);
-        });
-
-        // Enter any new nodes at the parent's previous position.
-        var nodeEnter = node.enter().append("g")
-        .call(dragListener)
-        .attr("class", "node")
-        .attr("transform", function(d) {
-            return "translate(" + source.y0 + "," + source.x0 + ")";
-        })
-        .on('click', function(d){
-            click(d);
-
-            // If we click a leaf, we plot it in the map
-            if(d.parent.name != lemma){
-                if(side == "right"){plotInMap(d.name,"and",root.name);}
-                else if(side == "left"){plotInMap(root.name,"and",d.name);}
-            }
-        })
-        .on("mouseover", function(d){
-
-            if(d.parent.name != lemma){
-                tooltipYmodifier = 20;
-                tooltip.html(function(){
-                    var html = "";
-                    if(side == "right"){
-                        html += 'Click to plot <strong>('+d.name+')'+lemma+'</strong> in the map';
-                        html += '<br><span>* There may be no results</span>';
-                    }
-                    else if(side == "left"){
-                        html += 'Click to plot <strong>('+lemma+')'+d.name+'</strong> in the map';
-                        html += '<br><span>* There may be no results</span>';
-                    }
-                    return html;
-                });
-
-                tooltip.show();
-            }
-
-            if(d.years != undefined && d.years.length > 0){
-                // Highlight related years in timeline
-                timelineChart.selectAll('rect.bar').each(function(dBar){
-                    if(d.years.indexOf(parseInt(dBar.x)) > -1){
-                        d3.select(this).transition().duration(500).style("fill", "#2b91fc");
-                    }
-                    else {
-                        d3.select(this).transition().duration(500).style("fill", "black");
-                    }
-                });
-            }
-        })
-        .on("mouseout", function(d){
-            tooltip.hide();
-            resetTimelineColor();
-        });
-
-        nodeEnter.append("circle")
-        .attr('class', 'nodeCircle')
-        .attr("r", 0)
-        .style("fill", function(d) {
-            return d._children ? "lightsteelblue" : "#fff";
-        });
-
-        nodeEnter.append("text")
-        .attr("x", function(d) {
-            if(side == "left"){
-                return d.children || d._children ? -10 : 10;
-            }
-            else{
-                return d.children || d._children ? 10 : -10;
-            }
-        })
-        .attr("dy", ".35em")
-        .attr('class', 'nodeText')
-        .attr("text-anchor", function(d) {
-            if(side == "left"){
-                return d.children || d._children ? "end" : "start";
-            }
-            else{
-                return d.children || d._children ? "start" : "end";
-            }
-        })
-        .text(function(d) {
-            if(d.count != undefined){
-                return d.name + " ("+d.count+")";
-            }
-            else{
-                return d.name;
-            }
-
-        })
-        .style("fill-opacity", 0);
-
-        // phantom node to give us mouseover in a radius around it
-        nodeEnter.append("circle")
-        .attr('class', 'ghostCircle')
-        .attr("r", 30)
-        .attr("opacity", 0.2) // change this to zero to hide the target area
-        .style("fill", "red")
-        .attr('pointer-events', 'mouseover')
-        .on("mouseover", function(node) {
-            overCircle(node);
-        })
-        .on("mouseout", function(node) {
-            outCircle(node);
-        });
-
-        // Update the text to reflect whether node has children or not.
-        node.select('text')
-        .attr("x", function(d) {
-            if(side == "left"){
-                return d.children || d._children ? -10 : 10;
-            }
-            else{
-                return d.children || d._children ? 10 : -10;
-            }
-        })
-        .attr("text-anchor", function(d) {
-            if(side == "left"){
-                return d.children || d._children ? "end" : "start";
-            }
-            else{
-                return d.children || d._children ? "start" : "end";
-            }
-        })
-        .text(function(d) {
-            if(d.count != undefined){
-                return d.name + " ("+d.count+")";
-            }
-            else{
-                return d.name;
-            }
-        });
-
-        // Change the circle fill depending on whether it has children and is collapsed
-        node.select("circle.nodeCircle")
-        .attr("r", 4.5)
-        .style("fill", function(d) {
-            return d._children ? "lightsteelblue" : "#fff";
-        });
-
-        // Transition nodes to their new position.
-        var nodeUpdate = node.transition()
-        .duration(duration)
-        .attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")";
-        });
-
-        // Fade the text in
-        nodeUpdate.select("text")
-        .style("fill-opacity", 1);
-
-        // Transition exiting nodes to the parent's new position.
-        var nodeExit = node.exit().transition()
-        .duration(duration)
-        .attr("transform", function(d) {
-            return "translate(" + source.y + "," + source.x + ")";
-        })
-        .remove();
-
-        nodeExit.select("circle")
-        .attr("r", 0);
-
-        nodeExit.select("text")
-        .style("fill-opacity", 0);
-
-        // Update the links…
-        var link = svgGroup.selectAll("path.link")
-        .data(links, function(d) {
-            return d.target.id;
-        });
-
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("path", "g")
-        .attr("class", "link")
-        .attr("d", function(d) {
-            var o = {
-                x: source.x0,
-                y: source.y0
+                    levelWidth[level + 1] += n.children.length;
+                    n.children.forEach(function(d) {
+                        childCount(level + 1, d);
+                    });
+                }
             };
-            return diagonal({
-                source: o,
-                target: o
+            childCount(0, root);
+            var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line
+            tree = tree.size([newHeight, viewerWidth]);
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
+
+            // Set widths between levels based on maxLabelLength.
+            nodes.forEach(function(d) {
+                if(side == "left"){
+                    d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+                }
+                else{
+                    d.y = (viewerWidth - d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+                }
+                // alternatively to keep a fixed scale one can set a fixed depth per level
+                // Normalize for fixed-depth by commenting out below line
+                // d.y = (d.depth * 500); //500px per level.
             });
-        })
-        .style("stroke-width",function(d){
-            var firstLevelStrokeScale = d3.scale.linear()
-            .domain([1,maxRelationsFirstLevel])
-            .range([1,8]);
-            var secondLevelStrokeScale = d3.scale.linear()
-            .domain([1,maxRelationsSecondLevel])
-            .range([1.5,8]);
 
-            if(d.source.name == lemma && d.target.children != undefined){ // 1st level
-                return firstLevelStrokeScale(d.target.children.length)+"px";
-            }
-            else { // 2nd level
-                return secondLevelStrokeScale(d.target.count)+"px";
-            }
-        });
-
-        // Transition links to their new position.
-        link.transition()
-        .duration(duration)
-        .attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        link.exit().transition()
-        .duration(duration)
-        .attr("d", function(d) {
-            var o = {
-                x: source.x,
-                y: source.y
-            };
-            return diagonal({
-                source: o,
-                target: o
+            // Update the nodes…
+            node = svgGroup.selectAll("g.node")
+            .data(nodes, function(d) {
+                return d.id || (d.id = ++i);
             });
-        })
-        .remove();
 
-        // Stash the old positions for transition.
-        nodes.forEach(function(d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-    }
+            // Enter any new nodes at the parent's previous position.
+            var nodeEnter = node.enter().append("g")
+            .call(dragListener)
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + source.y0 + "," + source.x0 + ")";
+            })
+            .on('click', function(d){
+                click(d);
 
-    // Append a group which holds all nodes and which the zoom Listener can act upon.
-    var svgGroup = baseSvg.append("g");
+                // If we click a leaf, we plot it in the map
+                if(d.parent.name != lemma){
+                    if(side == "right"){plotInMap(d.name,"and",root.name);}
+                    else if(side == "left"){plotInMap(root.name,"and",d.name);}
+                }
+            })
+            .on("mouseover", function(d){
 
-    // Define the root
-    root = treeData;
-    root.x0 = viewerHeight / 2;
-    if(side == "left"){
-        root.y0 = 0;
-    }
-    else {
-        root.y0 = viewerWidth;
-    }
+                if(d.parent.name != lemma){
+                    tooltipYmodifier = 20;
+                    tooltip.html(function(){
+                        var html = "";
+                        if(side == "right"){
+                            html += 'Click to plot <strong>('+d.name+')'+lemma+'</strong> in the map';
+                            html += '<br><span>* There may be no results</span>';
+                        }
+                        else if(side == "left"){
+                            html += 'Click to plot <strong>('+lemma+')'+d.name+'</strong> in the map';
+                            html += '<br><span>* There may be no results</span>';
+                        }
+                        return html;
+                    });
 
-    // Layout the tree initially and center on the root node.
-    update(root);
-    centerNode(root);
+                    tooltip.show();
+                }
 
-    root.children.forEach(collapseAll);
+                if(d.years != undefined && d.years.length > 0){
+                    // Highlight related years in timeline
+                    timelineChart.selectAll('rect.bar').each(function(dBar){
+                        if(d.years.indexOf(parseInt(dBar.x)) > -1){
+                            d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                        }
+                        else {
+                            d3.select(this).transition().duration(500).style("fill", "black");
+                        }
+                    });
+                }
+            })
+            .on("mouseout", function(d){
+                tooltip.hide();
+                resetTimelineColor();
+            });
 
-    function collapseAll(d) {
-        if (d.children) {
-            d.children.forEach(collapseAll);
-            toggleChildren(d);
+            nodeEnter.append("circle")
+            .attr('class', 'nodeCircle')
+            .attr("r", 0)
+            .style("fill", function(d) {
+                return d._children ? "lightsteelblue" : "#fff";
+            });
+
+            nodeEnter.append("text")
+            .attr("x", function(d) {
+                if(side == "left"){
+                    return d.children || d._children ? -10 : 10;
+                }
+                else{
+                    return d.children || d._children ? 10 : -10;
+                }
+            })
+            .attr("dy", ".35em")
+            .attr('class', 'nodeText')
+            .attr("text-anchor", function(d) {
+                if(side == "left"){
+                    return d.children || d._children ? "end" : "start";
+                }
+                else{
+                    return d.children || d._children ? "start" : "end";
+                }
+            })
+            .text(function(d) {
+                if(d.count != undefined){
+                    return d.name + " ("+d.count+")";
+                }
+                else{
+                    return d.name;
+                }
+
+            })
+            .style("fill-opacity", 0);
+
+            // phantom node to give us mouseover in a radius around it
+            nodeEnter.append("circle")
+            .attr('class', 'ghostCircle')
+            .attr("r", 30)
+            .attr("opacity", 0.2) // change this to zero to hide the target area
+            .style("fill", "red")
+            .attr('pointer-events', 'mouseover')
+            .on("mouseover", function(node) {
+                overCircle(node);
+            })
+            .on("mouseout", function(node) {
+                outCircle(node);
+            });
+
+            // Update the text to reflect whether node has children or not.
+            node.select('text')
+            .attr("x", function(d) {
+                if(side == "left"){
+                    return d.children || d._children ? -10 : 10;
+                }
+                else{
+                    return d.children || d._children ? 10 : -10;
+                }
+            })
+            .attr("text-anchor", function(d) {
+                if(side == "left"){
+                    return d.children || d._children ? "end" : "start";
+                }
+                else{
+                    return d.children || d._children ? "start" : "end";
+                }
+            })
+            .text(function(d) {
+                if(d.count != undefined){
+                    return d.name + " ("+d.count+")";
+                }
+                else{
+                    return d.name;
+                }
+            });
+
+            // Change the circle fill depending on whether it has children and is collapsed
+            node.select("circle.nodeCircle")
+            .attr("r", 4.5)
+            .style("fill", function(d) {
+                return d._children ? "lightsteelblue" : "#fff";
+            });
+
+            // Transition nodes to their new position.
+            var nodeUpdate = node.transition()
+            .duration(duration)
+            .attr("transform", function(d) {
+                return "translate(" + d.y + "," + d.x + ")";
+            });
+
+            // Fade the text in
+            nodeUpdate.select("text")
+            .style("fill-opacity", 1);
+
+            // Transition exiting nodes to the parent's new position.
+            var nodeExit = node.exit().transition()
+            .duration(duration)
+            .attr("transform", function(d) {
+                return "translate(" + source.y + "," + source.x + ")";
+            })
+            .remove();
+
+            nodeExit.select("circle")
+            .attr("r", 0);
+
+            nodeExit.select("text")
+            .style("fill-opacity", 0);
+
+            // Update the links…
+            var link = svgGroup.selectAll("path.link")
+            .data(links, function(d) {
+                return d.target.id;
+            });
+
+            // Enter any new links at the parent's previous position.
+            link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", function(d) {
+                var o = {
+                    x: source.x0,
+                    y: source.y0
+                };
+                return diagonal({
+                    source: o,
+                    target: o
+                });
+            })
+            .style("stroke-width",function(d){
+                var firstLevelStrokeScale = d3.scale.linear()
+                .domain([1,maxRelationsFirstLevel])
+                .range([1,8]);
+                var secondLevelStrokeScale = d3.scale.linear()
+                .domain([1,maxRelationsSecondLevel])
+                .range([1.5,8]);
+
+                if(d.source.name == lemma && d.target.children != undefined){ // 1st level
+                    return firstLevelStrokeScale(d.target.children.length)+"px";
+                }
+                else { // 2nd level
+                    return secondLevelStrokeScale(d.target.count)+"px";
+                }
+            });
+
+            // Transition links to their new position.
+            link.transition()
+            .duration(duration)
+            .attr("d", diagonal);
+
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+            .duration(duration)
+            .attr("d", function(d) {
+                var o = {
+                    x: source.x,
+                    y: source.y
+                };
+                return diagonal({
+                    source: o,
+                    target: o
+                });
+            })
+            .remove();
+
+            // Stash the old positions for transition.
+            nodes.forEach(function(d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
         }
-    }
 
-    for(var i=0; i<root.children.length; i++){
-        if(root.children[i]._children.length > maxRelationsFirstLevel){
-            maxRelationsFirstLevel = root.children[i]._children.length;
+        // Append a group which holds all nodes and which the zoom Listener can act upon.
+        var svgGroup = baseSvg.append("g");
+
+        // Define the root
+        root = treeData;
+        root.x0 = viewerHeight / 2;
+        if(side == "left"){
+            root.y0 = 0;
         }
-    }
+        else {
+            root.y0 = viewerWidth;
+        }
 
-    for(var i=0; i<root.children.length; i++){
-        for(var j=0; j<root.children[i]._children.length; j++){
-            if(root.children[i]._children[j].count > maxRelationsSecondLevel){
-                maxRelationsSecondLevel = root.children[0]._children[j].count;
+        // Layout the tree initially and center on the root node.
+        update(root);
+        centerNode(root);
+
+        root.children.forEach(collapseAll);
+
+        function collapseAll(d) {
+            if (d.children) {
+                d.children.forEach(collapseAll);
+                toggleChildren(d);
             }
         }
-    }
 
-    click(root);
-    setTimeout(function () {
+        for(var i=0; i<root.children.length; i++){
+            if(root.children[i]._children.length > maxRelationsFirstLevel){
+                maxRelationsFirstLevel = root.children[i]._children.length;
+            }
+        }
+
+        for(var i=0; i<root.children.length; i++){
+            for(var j=0; j<root.children[i]._children.length; j++){
+                if(root.children[i]._children[j].count > maxRelationsSecondLevel){
+                    maxRelationsSecondLevel = root.children[0]._children[j].count;
+                }
+            }
+        }
+
         click(root);
-        updateLinkWeights();
-    }, 1000);
+        setTimeout(function () {
+            click(root);
+            updateLinkWeights();
+        }, 1000);
 
-    function updateLinkWeights(){
+        function updateLinkWeights(){
 
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse(),
-        links = tree.links(nodes);
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
 
-        var link = svgGroup.selectAll("path.link")
-        .data(links, function(d) {
-            return d.target.id;
-        }).style("stroke-width",function(d){
+            var link = svgGroup.selectAll("path.link")
+            .data(links, function(d) {
+                return d.target.id;
+            }).style("stroke-width",function(d){
 
-            var firstLevelStrokeScale = d3.scale.linear()
-            .domain([1,maxRelationsFirstLevel])
-            .range([1,8]);
-            var secondLevelStrokeScale = d3.scale.linear()
-            .domain([1,maxRelationsSecondLevel])
-            .range([1.5,8]);
+                var firstLevelStrokeScale = d3.scale.linear()
+                .domain([1,maxRelationsFirstLevel])
+                .range([1,8]);
+                var secondLevelStrokeScale = d3.scale.linear()
+                .domain([1,maxRelationsSecondLevel])
+                .range([1.5,8]);
 
-            if(d.source.name == lemma){ // 1st level
-                return firstLevelStrokeScale(d.target._children.length)+"px";
-            }
-            else { // 2nd level
-                return secondLevelStrokeScale(d.target.count)+"px";
-            }
-        });
-    }
-}
-
-
-function getDataFromElastic() {
-
-    var body = {
-        "aggs": {
-            "ortMain": {
-                "geohash_grid": {
-                    "buckets_path": "years",
-                    "field": "gisOrt",
-                    "precision": bucketResolution - 4
-                },
-                "aggs": {
-                    "years": {
-                        "date_histogram": {
-                            "field": "startYear",
-                            "interval": (365*yearResolution)+"d",
-                            "time_zone": "Europe/Berlin",
-                            "min_doc_count": 0
-                        }
-                    }
+                if(d.source.name == lemma){ // 1st level
+                    return firstLevelStrokeScale(d.target._children.length)+"px";
                 }
-            },
-            "yearsMain": {
-                "date_histogram": {
-                    "field": "startYear",
-                    "interval": (365*yearResolution)+"d",
-                    "time_zone": "Europe/Berlin",
-                    "min_doc_count": 0
-                },
-                "aggs": {
-                    "ort": {
-                        "geohash_grid": {
-                            "buckets_path": "years",
-                            "field": "gisOrt",
-                            "precision": bucketResolution - 4
-                        }
-                    }
+                else { // 2nd level
+                    return secondLevelStrokeScale(d.target.count)+"px";
                 }
-            }
-        }
-    };
-
-    if ((filterMain.val() == undefined || filterMain.val().length == 0) && (filterLeft.val() == undefined || filterLeft.val().length == 0)){
-        body["query"] = {"match_all": {}};
-    }
-    else{
-        if($("#lemma-and-or-selector option:selected").val() == "and"){
-            body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and");
-        }
-        else{
-            body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or");
+            });
         }
     }
 
-    if (!filterMain.val() && !filterLeft.val())
-    body["size"] = 0;
 
-    return esClient.search({
-        index: 'tustepgeo2',
-        body: body
-    });
-}
+    function getDataFromElastic() {
 
-
-function getLemmasInGeoHashBucket(geo_hash) {
-    return esClient.search({
-        index: 'tustepgeo2',
-        body: {
-            "size": 0,
-            "query": {
-                "prefix": {
-                    "gisOrt.geohash": geo_hash
-                }
-            },
+        var body = {
             "aggs": {
-                "mainLemma": {
-                    "terms": {
-                        "field": "mainLemma.raw",
-                        "size": 2000
+                "ortMain": {
+                    "geohash_grid": {
+                        "buckets_path": "years",
+                        "field": "gisOrt",
+                        "precision": bucketResolution - 4
                     },
                     "aggs": {
-                        "leftLemma": {
-                            "terms": {
-                                "field": "leftLemma.raw"
+                        "years": {
+                            "date_histogram": {
+                                "field": "startYear",
+                                "interval": (365*yearResolution)+"d",
+                                "time_zone": "Europe/Berlin",
+                                "min_doc_count": 0
+                            }
+                        }
+                    }
+                },
+                "yearsMain": {
+                    "date_histogram": {
+                        "field": "startYear",
+                        "interval": (365*yearResolution)+"d",
+                        "time_zone": "Europe/Berlin",
+                        "min_doc_count": 0
+                    },
+                    "aggs": {
+                        "ort": {
+                            "geohash_grid": {
+                                "buckets_path": "years",
+                                "field": "gisOrt",
+                                "precision": bucketResolution - 4
                             }
                         }
                     }
                 }
             }
+        };
+
+        if ((filterMain.val() == undefined || filterMain.val().length == 0) && (filterLeft.val() == undefined || filterLeft.val().length == 0)){
+            body["query"] = {"match_all": {}};
         }
-    });
-}
+        else{
+            if($("#lemma-and-or-selector option:selected").val() == "and"){
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and");
+            }
+            else{
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or");
+            }
+        }
 
-function getAllRecordsForWord(word) {
+        if (!filterMain.val() && !filterLeft.val())
+        body["size"] = 0;
 
-    word = word
-    .replace('{','?')
-    .replace('<','?')
-    .replace('>','?')
-    .replace(':','?')
-    .replace('}','?');
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: body
+        });
+    }
 
-    return esClient.search({
-        index: 'tustepgeo2',
-        body: {
-            "size": 10000,
-            "query": {
+
+    function getLemmasInGeoHashBucket(geo_hash) {
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: {
+                "size": 0,
+                "query": {
+                    "prefix": {
+                        "gisOrt.geohash": geo_hash
+                    }
+                },
+                "aggs": {
+                    "mainLemma": {
+                        "terms": {
+                            "field": "mainLemma.raw",
+                            "size": 2000
+                        },
+                        "aggs": {
+                            "leftLemma": {
+                                "terms": {
+                                    "field": "leftLemma.raw"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function getAllRecordsForWord(word) {
+
+        word = word
+        .replace('{','?')
+        .replace('<','?')
+        .replace('>','?')
+        .replace(':','?')
+        .replace('}','?');
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: {
+                "size": 10000,
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "query_string": {
+                                    "default_field": "mainLemma",
+                                    "query": word
+                                }
+                            },
+                            {
+                                "query_string": {
+                                    "default_field": "leftLemma",
+                                    "query": word
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        });
+    }
+
+    function getQueryObjectForParams(mainLemma, leftLemma, andOr) {
+
+        mainLemma = mainLemma
+        .replace('{','?')
+        .replace('<','?')
+        .replace('>','?')
+        .replace(':','?')
+        .replace('}','?');
+
+        leftLemma = leftLemma
+        .replace('{','?')
+        .replace('<','?')
+        .replace('>','?')
+        .replace(':','?')
+        .replace('}','?');
+
+        if (mainLemma == undefined || mainLemma.length == 0)
+        mainLemma = "*";
+
+        if (leftLemma == undefined || leftLemma.length == 0)
+        leftLemma = "*";
+
+        if(andOr == "and"){
+            return {
                 "bool": {
-                    "should": [
+                    "must": [
                         {
                             "query_string": {
                                 "default_field": "mainLemma",
-                                "query": word
+                                "query": mainLemma
                             }
                         },
                         {
                             "query_string": {
                                 "default_field": "leftLemma",
-                                "query": word
+                                "query": leftLemma
                             }
                         }
                     ]
                 }
-            }
-        }
-    });
-}
-
-function getQueryObjectForParams(mainLemma, leftLemma, andOr) {
-
-    mainLemma = mainLemma
-    .replace('{','?')
-    .replace('<','?')
-    .replace('>','?')
-    .replace(':','?')
-    .replace('}','?');
-
-    leftLemma = leftLemma
-    .replace('{','?')
-    .replace('<','?')
-    .replace('>','?')
-    .replace(':','?')
-    .replace('}','?');
-
-    if (mainLemma == undefined || mainLemma.length == 0)
-    mainLemma = "*";
-
-    if (leftLemma == undefined || leftLemma.length == 0)
-    leftLemma = "*";
-
-    if(andOr == "and"){
-        return {
-            "bool": {
-                "must": [
-                    {
-                        "query_string": {
-                            "default_field": "mainLemma",
-                            "query": mainLemma
-                        }
-                    },
-                    {
-                        "query_string": {
-                            "default_field": "leftLemma",
-                            "query": leftLemma
-                        }
-                    }
-                ]
-            }
-        };
-    }
-    else{
-        return {
-            "bool": {
-                "should": [
-                    {
-                        "query_string": {
-                            "default_field": "mainLemma",
-                            "query": mainLemma
-                        }
-                    },
-                    {
-                        "query_string": {
-                            "default_field": "leftLemma",
-                            "query": leftLemma
-                        }
-                    }
-                ]
-            }
-        };
-    }
-}
-
-function getGridDataFromElastic() {
-
-    var body = {
-        "size": 0,
-        "query": {
-            "match_all": {}
-        },
-        "aggs": {
-            "ortMain": {
-                "geohash_grid": {
-                    "field": "gisOrt",
-                    "precision": bucketResolution - 5
-                },
-            }
-        }
-    };
-
-    return esClient.search({
-        index: 'tustepgeo2',
-        body: body
-    });
-}
-
-function resetTimelineColor(){
-    timelineChart.selectAll('rect.bar').each(function(dBar){
-        d3.select(this).transition().duration(500).style("fill", "black");
-    });
-}
-
-function showHideLemmaList(show){
-    if(show){
-        if(d3.select("#lemma-list-holder").classed("collapsed") == true){
-            d3.select("#lemma-list-holder").classed("collapsed",false);
-            $("#lemma-list-handle").html("&raquo;");
-        }
-    }
-    else{
-        if(d3.select("#lemma-list-holder").classed("collapsed") == true){
-            d3.select("#lemma-list-holder").classed("collapsed",false);
-            $("#lemma-list-handle").html("&raquo;");
+            };
         }
         else{
-            d3.select("#lemma-list-holder").classed("collapsed",true);
-            $("#lemma-list-handle").html("&laquo;");
+            return {
+                "bool": {
+                    "should": [
+                        {
+                            "query_string": {
+                                "default_field": "mainLemma",
+                                "query": mainLemma
+                            }
+                        },
+                        {
+                            "query_string": {
+                                "default_field": "leftLemma",
+                                "query": leftLemma
+                            }
+                        }
+                    ]
+                }
+            };
         }
     }
+
+    function getGridDataFromElastic() {
+
+        var body = {
+            "size": 0,
+            "query": {
+                "match_all": {}
+            },
+            "aggs": {
+                "ortMain": {
+                    "geohash_grid": {
+                        "field": "gisOrt",
+                        "precision": bucketResolution - 5
+                    },
+                }
+            }
+        };
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: body
+        });
+    }
+
+    function refreshColorLegend(geoFeatures, colorScale){
+        $("#legend-graph").html("");
+        var svg = d3.select("#legend-graph").append("svg")
+        .attr("width", '212px')
+        .attr("height", '35px');
+
+        svg.append("g")
+        .attr("class", "legendLinear");
+
+        var numCellsLegend = 0;
+        var pluckCounts = [];
+        _.forEach(geoFeatures,function(feature){
+            pluckCounts.push(feature.properties.doc_count);
+        });
+        pluckCounts = _.unique(pluckCounts);
+        if(pluckCounts.length > 5){numCellsLegend = 5;}
+        else {numCellsLegend = pluckCounts.length;}
+
+        var legendLinear = d3.legend.color()
+        .shapeWidth(40)
+        .shapePadding(3)
+        .cells(numCellsLegend)
+        .labelFormat(d3.format("f"))
+        .labelOffset(4)
+        .orient('horizontal')
+        .scale(colorScale);
+
+        svg.select(".legendLinear")
+        .call(legendLinear);
+    }
+
+    function resetTimelineColor(){
+        timelineChart.selectAll('rect.bar').each(function(dBar){
+            d3.select(this).transition().duration(500).style("fill", "black");
+        });
+    }
+
+    function showHideLemmaList(show){
+        if(show){
+            if(d3.select("#lemma-list-holder").classed("collapsed") == true){
+                d3.select("#lemma-list-holder").classed("collapsed",false);
+                $("#lemma-list-handle").html("&raquo;");
+            }
+        }
+        else{
+            if(d3.select("#lemma-list-holder").classed("collapsed") == true){
+                d3.select("#lemma-list-holder").classed("collapsed",false);
+                $("#lemma-list-handle").html("&raquo;");
+            }
+            else{
+                d3.select("#lemma-list-holder").classed("collapsed",true);
+                $("#lemma-list-handle").html("&laquo;");
+            }
+        }
+    }
+<<<<<<< HEAD
 }
 
     
@@ -1998,6 +2033,21 @@ function getBoundingBoxLatLon(bbox) {
     var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
     return latLonBox;
 }
+=======
+
+    function getBoundingBoxCenterLatLon(bbox) {
+        var ne = bbox.ne;
+        var sw = bbox.sw;
+        var center = [ne.lon - (ne.lon-sw.lon)/2, sw.lat - (sw.lat-ne.lat)/2];
+        return center;
+    }
+    function getBoundingBoxLatLon(bbox) {
+        var ne = bbox.ne;
+        var sw = bbox.sw;
+        var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
+        return latLonBox;
+    }
+>>>>>>> - Bucket color legend added to the app
 
 
 })();

@@ -476,6 +476,24 @@ text {
   color: #2b91fc;
 }
 
+#legend-holder {
+  position: absolute;
+  bottom: 18px;
+  left: -1px;
+  padding: 0px 16px;
+  padding-left: 24px;
+  padding-top: 12px;
+  width: auto;
+  background-color: rgba(255, 255, 255, .9);
+  pointer-events: auto;
+  font-size: .8em;
+  font-weight: 600;
+}
+
+#legend-graph {
+    margin-top: 4px;
+}
+
 #bucket-holder {
   position: absolute;
   top: 34px;
@@ -575,7 +593,7 @@ text {
 }
 
 #lemma-list-table {
-    max-height: 150px;
+    max-height: 130px;
     overflow: scroll;
 }
 
