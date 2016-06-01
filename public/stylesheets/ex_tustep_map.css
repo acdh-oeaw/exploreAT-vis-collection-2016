@@ -747,6 +747,12 @@ text {
     margin-top: 4px;
 }
 
+#tooltip > span {
+    font-style: italic;
+    font-size: .9em;
+    opacity: .7;
+}
+
 /*#d3MapPanBox > button, #d3MapZoomBox > button {
   border-radius: 15px;
   background: white;

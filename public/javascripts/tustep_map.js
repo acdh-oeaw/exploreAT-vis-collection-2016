@@ -145,9 +145,10 @@ var cartoMap;
 
     var tooltip = $('#tooltip');
     tooltip.hide();
+    var tooltipYmodifier = 0;
     $(document).mousemove(function(e){
         var tooltipW = 150, tooltipH = 150;
-        tooltip.css({'top': e.pageY - tooltip.height()/2,'left': e.pageX - tooltip.width()/2});
+        tooltip.css({'top': e.pageY - tooltip.height()/2 - tooltipYmodifier,'left': e.pageX - tooltip.width()/2});
     });
 
     // APP START (First update)
@@ -559,6 +560,7 @@ var cartoMap;
                 var featureCount = dFeature.properties.doc_count;
                 var restCount = parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count;
 
+                tooltipYmodifier = 0;
                 tooltip.html(function(){
                     var html = '<div id="tooltip-lemma-counter">';
                     html += '<strong>'+featureCount+' lemmas</strong><br>'
@@ -830,10 +832,13 @@ var cartoMap;
         filterLeft = $("#filterLeft");
         $("#lemma-and-or-selector").val(andOr);
         update();
-        cartoMap.zoomTo(
-            [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
-            "latlong",1,zoomDelay
-        );
+        cartoMap.refresh();
+        setTimeout(function () {
+            cartoMap.zoomTo(
+                [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
+                "latlong",1,zoomDelay
+            );
+        }, 750);
     }
 
 
@@ -1457,6 +1462,25 @@ var cartoMap;
             }
         })
         .on("mouseover", function(d){
+
+            if(d.parent.name != lemma){
+                tooltipYmodifier = 20;
+                tooltip.html(function(){
+                    var html = "";
+                    if(side == "right"){
+                        html += 'Click to plot <strong>('+d.name+')'+lemma+'</strong> in the map';
+                        html += '<br><span>* There may be no results</span>';
+                    }
+                    else if(side == "left"){
+                        html += 'Click to plot <strong>('+lemma+')'+d.name+'</strong> in the map';
+                        html += '<br><span>* There may be no results</span>';
+                    }
+                    return html;
+                });
+
+                tooltip.show();
+            }
+
             if(d.years != undefined && d.years.length > 0){
                 // Highlight related years in timeline
                 timelineChart.selectAll('rect.bar').each(function(dBar){
@@ -1470,6 +1494,7 @@ var cartoMap;
             }
         })
         .on("mouseout", function(d){
+            tooltip.hide();
             resetTimelineColor();
         });
 
