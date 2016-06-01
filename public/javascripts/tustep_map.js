@@ -740,8 +740,6 @@ var cartoMap;
                 currentGroup = nodes[bucketIndex].group;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
-                if (bucket_leftLemma.key == "ab")
-                    console.log('Stop');
                 var leftLemmaIndex = _.findIndex(nodes, function (node) {
                     return node.name == bucket_leftLemma.key;
                 });

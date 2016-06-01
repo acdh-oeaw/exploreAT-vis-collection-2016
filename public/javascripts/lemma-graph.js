@@ -91,18 +91,15 @@
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
 
-            svg.selectAll(".node").attr("cx", function(d) {
-                return d.x;
-            })
-                .attr("cy", function(d) { return d.y; });
-
-            svg.selectAll(".label").attr("x", function(d) { return d.x; })
-                .attr("y", function(d) { return d.y - 10; });
+            svg.selectAll("g.node")
+                .attr("transform", function (d) {
+                    return "translate("+d.x+","+d.y+")";
+                });
 
             svg.selectAll("path")
                 .data(nest)
                 .attr("d", groupPath)
-                .enter().insert("path", "circle")
+                .enter().insert("path", "g")
                 .style("fill", groupFill)
                 .style("stroke", groupFill)
                 .style("stroke-width", 40)
@@ -285,43 +282,34 @@
 
             theLinks.exit().remove();
 
-            var theNodes = svg.selectAll(".node")
-                .data(data_nodes);
-            var node = theNodes
-                .enter().append("circle")
-                .attr("class", "node")
-                .call(force.drag);
+            var nodeSelection = svg.selectAll("g.node").data(data_nodes);
+            var nodeEnter = nodeSelection
+                .enter()
+                .append("g")
+                .attr("class", "node");
+            nodeEnter.append("circle")
+                .attr("r", function (d) {return  d.weight;})
+                .style("fill", function(d) { return color(d.community); })
+                .style("stroke", function(d) { return color(d.community); })
+                .style("stroke-width", "1px");
+            nodeEnter.append("text")
+                .style("text-anchor", "middle")
+                .style("stroke", function(d) {return color(d.community);})
+                .style("stroke-width", "1px")
+                .attr("y", 15)
+                .text(function(d) {return d.name;});
 
-            node.on("mouseover", function(d) {
-            })
-                .on("mousedown", function(d) { d3.event.stopPropagation();
 
-                }	).on("mouseout", function(d) {
-            }	);
+            nodeEnter.on("mouseover", function(d) {})
+                .on("mousedown", function(d) { d3.event.stopPropagation();})
+                .on("mouseout", function(d) {}	);
 
-            var theLabels = svg.selectAll(".label")
-                .data(data_nodes)
-                .text(function(d) {
-                    return d.name;
-                });
 
-            var label = theLabels.enter()
-                .append("text")
-                .attr("class", "label")
-                .text(function(d) {
-                    return d.name;
-                });
-
-            theLabels.exit().remove();
-
-            theNodes.attr("r", function(d) {
-                return 4* Math.sqrt((d.isCluster)?d.nodes.length:1);
-            }).style("fill", function(d) { return color(d.community); });
-
-            node.append("title")
+            nodeEnter.append("title")
                 .text(function(d) { return d.community });
 
-            theNodes.exit().remove();
+            nodeSelection.call(force.drag);
+            nodeSelection.exit().remove();
         };
         return lemmaGraph;
     };
