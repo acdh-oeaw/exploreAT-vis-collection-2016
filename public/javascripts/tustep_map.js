@@ -518,7 +518,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                generateLemmaGraphFromAggregations(resp.aggregations);
+                //generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets;
 
@@ -725,11 +725,11 @@ var cartoMap;
 
     function generateLemmaGraphFromAggregations(resp_aggregations) {
         var nodes = [],
-            links = [],
-            groupCounter = 0;
+        links = [],
+        groupCounter = 0;
 
         _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
-            
+
             var currentGroup;
 
             if (bucket.leftLemma.buckets.length == 0)
@@ -741,10 +741,10 @@ var cartoMap;
             if (bucketIndex == -1) {
                 currentGroup = groupCounter++;
                 bucketIndex = nodes.push({
-                        "name": bucket.key,
-                        "group" : currentGroup,
-                        "mainLemma" : true
-                    }) - 1;
+                    "name": bucket.key,
+                    "group" : currentGroup,
+                    "mainLemma" : true
+                }) - 1;
             } else {
                 currentGroup = nodes[bucketIndex].group;
             }
@@ -754,9 +754,9 @@ var cartoMap;
                 });
                 if (leftLemmaIndex == -1) {
                     leftLemmaIndex = nodes.push({
-                            "name": bucket_leftLemma.key,
-                            "group": currentGroup
-                        }) - 1;
+                        "name": bucket_leftLemma.key,
+                        "group": currentGroup
+                    }) - 1;
 
                 }
                 var linkIndex = _.findIndex(links, function(link) {
@@ -778,7 +778,7 @@ var cartoMap;
 
 
         var comNodes = _.map(nodes, function (node) {
-           return node.name;
+            return node.name;
         });
 
         var comLinks = _.map(links, function (link) {
@@ -818,10 +818,10 @@ var cartoMap;
 
         setTimeout(function () {
             d3.lemmaGraph('#lemma-graph')
-                .nodes(nodes)
-                .links(links)
-                .communities(communities)
-                .update();
+            .nodes(nodes)
+            .links(links)
+            .communities(communities)
+            .update();
         }, 1000);
     }
 
@@ -1148,7 +1148,7 @@ var cartoMap;
                 scaleY = translateCoords.scale[1];
                 scale = zoomListener.scale();
                 svgGroup.transition().attr("transform", "translate(" + translateX + "," + translateY + ")scale(" + scale + ")");
-                d3.select(domNode).select('g.node').attr("transform", "translate(" + translateX + "," + translateY + ")");
+                d3.select(domNode).select('g.node-tree').attr("transform", "translate(" + translateX + "," + translateY + ")");
                 zoomListener.scale(zoomListener.scale());
                 zoomListener.translate([translateX, translateY]);
                 panTimer = setTimeout(function() {
@@ -1352,10 +1352,10 @@ var cartoMap;
                     }
                 }];
             }
-            var link = svgGroup.selectAll(".templink").data(data);
+            var link = svgGroup.selectAll(".templink-tree").data(data);
 
             link.enter().append("path")
-            .attr("class", "templink")
+            .attr("class", "templink-tree")
             .attr("d", d3.svg.diagonal())
             .attr('pointer-events', 'none');
 
@@ -1442,7 +1442,7 @@ var cartoMap;
             });
 
             // Update the nodes…
-            node = svgGroup.selectAll("g.node")
+            node = svgGroup.selectAll("g.node-tree")
             .data(nodes, function(d) {
                 return d.id || (d.id = ++i);
             });
@@ -1450,7 +1450,7 @@ var cartoMap;
             // Enter any new nodes at the parent's previous position.
             var nodeEnter = node.enter().append("g")
             .call(dragListener)
-            .attr("class", "node")
+            .attr("class", "node-tree")
             .attr("transform", function(d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
             })
@@ -1501,7 +1501,7 @@ var cartoMap;
             });
 
             nodeEnter.append("circle")
-            .attr('class', 'nodeCircle')
+            .attr('class', 'nodeCircle-tree')
             .attr("r", 0)
             .style("fill", function(d) {
                 return d._children ? "lightsteelblue" : "#fff";
@@ -1517,7 +1517,7 @@ var cartoMap;
                 }
             })
             .attr("dy", ".35em")
-            .attr('class', 'nodeText')
+            .attr('class', 'nodeText-tree')
             .attr("text-anchor", function(d) {
                 if(side == "left"){
                     return d.children || d._children ? "end" : "start";
@@ -1539,7 +1539,7 @@ var cartoMap;
 
             // phantom node to give us mouseover in a radius around it
             nodeEnter.append("circle")
-            .attr('class', 'ghostCircle')
+            .attr('class', 'ghostCircle-tree')
             .attr("r", 30)
             .attr("opacity", 0.2) // change this to zero to hide the target area
             .style("fill", "red")
@@ -1579,7 +1579,7 @@ var cartoMap;
             });
 
             // Change the circle fill depending on whether it has children and is collapsed
-            node.select("circle.nodeCircle")
+            node.select("circle.nodeCircle-tree")
             .attr("r", 4.5)
             .style("fill", function(d) {
                 return d._children ? "lightsteelblue" : "#fff";
@@ -1611,14 +1611,14 @@ var cartoMap;
             .style("fill-opacity", 0);
 
             // Update the links…
-            var link = svgGroup.selectAll("path.link")
+            var link = svgGroup.selectAll("path.link-tree")
             .data(links, function(d) {
                 return d.target.id;
             });
 
             // Enter any new links at the parent's previous position.
             link.enter().insert("path", "g")
-            .attr("class", "link")
+            .attr("class", "link-tree")
             .attr("d", function(d) {
                 var o = {
                     x: source.x0,
@@ -1724,7 +1724,7 @@ var cartoMap;
             var nodes = tree.nodes(root).reverse(),
             links = tree.links(nodes);
 
-            var link = svgGroup.selectAll("path.link")
+            var link = svgGroup.selectAll("path.link-tree")
             .data(links, function(d) {
                 return d.target.id;
             }).style("stroke-width",function(d){
@@ -1962,6 +1962,7 @@ var cartoMap;
     }
 
     function refreshColorLegend(geoFeatures, colorScale){
+
         $("#legend-graph").html("");
         var svg = d3.select("#legend-graph").append("svg")
         .attr("width", '212px')
@@ -1978,6 +1979,13 @@ var cartoMap;
         pluckCounts = _.unique(pluckCounts);
         if(pluckCounts.length > 5){numCellsLegend = 5;}
         else {numCellsLegend = pluckCounts.length;}
+
+        if(numCellsLegend < 2){
+            $("#legend-holder").hide();
+        }
+        else {
+            $("#legend-holder").show();
+        }
 
         var legendLinear = d3.legend.color()
         .shapeWidth(40)
@@ -2016,24 +2024,6 @@ var cartoMap;
             }
         }
     }
-<<<<<<< HEAD
-}
-
-    
-
-function getBoundingBoxCenterLatLon(bbox) {
-    var ne = bbox.ne;
-    var sw = bbox.sw;
-    var center = [ne.lon - (ne.lon-sw.lon)/2, sw.lat - (sw.lat-ne.lat)/2];
-    return center;
-}
-function getBoundingBoxLatLon(bbox) {
-    var ne = bbox.ne;
-    var sw = bbox.sw;
-    var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
-    return latLonBox;
-}
-=======
 
     function getBoundingBoxCenterLatLon(bbox) {
         var ne = bbox.ne;
@@ -2041,13 +2031,13 @@ function getBoundingBoxLatLon(bbox) {
         var center = [ne.lon - (ne.lon-sw.lon)/2, sw.lat - (sw.lat-ne.lat)/2];
         return center;
     }
+
     function getBoundingBoxLatLon(bbox) {
         var ne = bbox.ne;
         var sw = bbox.sw;
         var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
         return latLonBox;
     }
->>>>>>> - Bucket color legend added to the app
 
 
 })();

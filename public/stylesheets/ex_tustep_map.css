@@ -824,9 +824,22 @@ text {
     margin-top: -4px;
 }
 
-/* TREE CSS */
+
+/* WORD CLOUD CSS */
 
 .node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.link {
+    stroke: #999;
+    stroke-opacity: .3;
+}
+
+/* TREE CSS */
+
+.node-tree {
     cursor: pointer;
   }
 
@@ -837,33 +850,33 @@ text {
       z-index: 998;
   }
 
-  .node circle {
+  .node-tree circle {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 1.5px;
   }
 
-  .node text {
+  .node-tree text {
     font-size:10px;
     font-family:sans-serif;
     font-weight: bold;
   }
 
-  .link {
+  .link-tree {
     fill: none;
     stroke: #ccc;
   }
 
-  .templink {
+  .templink-tree {
     fill: none;
     stroke: red;
     stroke-width: 3px;
   }
 
-  .ghostCircle.show{
+  .ghostCircle-tree.show{
       display:block;
   }
 
-  .ghostCircle, .activeDrag .ghostCircle{
+  .ghostCircle-tree, .activeDrag .ghostCircle-tree{
        display: none;
   }
