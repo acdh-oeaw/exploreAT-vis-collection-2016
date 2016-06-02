@@ -541,7 +541,7 @@ var cartoMap;
             // Update timeline Y axis scale
             updateTimelineYscale(geoFeatures);
         }
-        else if(geoFeatures.length == 0){
+        else if(geoFeatures.length == 0){ // Empty brush selection, for example
             geoFeaturesLayer
             .features([]);
             //.clickableFeatures(true);
@@ -564,14 +564,17 @@ var cartoMap;
             // Zoom and rise resolution
             if(bucketResolution < 11){
                 resetTimelineColor();
-                cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
-                setTimeout(
-                    function() {
-                        bucketResolution +=1;
-                        $("#bucket-resolution-selector").val(bucketResolution);
-                        update();
-                    }, zoomDelay-850
-                );
+                setTimeout(function () { // Wait for the toggle left, then center
+                    cartoMap.refresh();
+                    cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
+                    setTimeout(
+                        function() {
+                            bucketResolution +=1;
+                            $("#bucket-resolution-selector").val(bucketResolution);
+                            update();
+                        }, zoomDelay-850
+                    );
+                }, 750);
             }
 
             // Show lemmas contained in the bucket
@@ -580,7 +583,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                generateLemmaGraphFromAggregations(resp.aggregations);
+                //generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                 var foundLemmas = [];
@@ -712,7 +715,7 @@ var cartoMap;
                 }
                 else {
                     $("#lemma-list-detail").html("");
-                    for(var i = 0; i<20/*d.properties.doc_count*/; i++){
+                    for(var i = 0; i<20 && i<wordBuckets.length; i++){
                         lemmaListTable.append(function(){
                             var html = '<div class="lemma-list-row">';
                             html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';

@@ -573,7 +573,7 @@ text {
   right: -1px;
   padding-top: 10px;
   width: 180px;
-  max-height: 200px;
+  max-height: 210px;
   background-color: rgba(255, 255, 255, .9);
   pointer-events: auto;
   font-size: .8em;
@@ -622,6 +622,13 @@ text {
 #lemma-list-table {
     max-height: 120px;
     overflow: scroll;
+}
+
+#lemma-list-notice {
+    font-style: italic;
+    font-size: .8em;
+    opacity: .65;
+    margin: 8px 0;
 }
 
 .lemma-list-actions{
