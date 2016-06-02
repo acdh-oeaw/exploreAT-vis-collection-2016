@@ -128,6 +128,11 @@ var cartoMap;
                     [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
                     "latlong",1,zoomDelay
                 );
+                setTimeout(function () {
+                    bucketResolution = 7;
+                    $("#bucket-resolution-selector option:selected").val(bucketResolution);
+                    update();
+                }, zoomDelay);
             }, 750);
         }, 500);
     });
