@@ -930,12 +930,9 @@ var cartoMap;
 
     function generateLemmaGraphFromAggregations(resp_aggregations) {
         var nodes = [],
-        links = [],
-        groupCounter = 0;
+        links = [];
 
         _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
-
-            var currentGroup;
 
             if (bucket.leftLemma.buckets.length == 0)
             return; //Skip
@@ -944,14 +941,11 @@ var cartoMap;
                 return node.name == bucket.key;
             });
             if (bucketIndex == -1) {
-                currentGroup = groupCounter++;
                 bucketIndex = nodes.push({
-                    "name": bucket.key,
-                    "group" : currentGroup,
-                    "mainLemma" : true
+                    "name"      : bucket.key,
+                    "mainLemma" : true,
+                        "weight": 0
                 }) - 1;
-            } else {
-                currentGroup = nodes[bucketIndex].group;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
                 var leftLemmaIndex = _.findIndex(nodes, function (node) {
@@ -960,9 +954,8 @@ var cartoMap;
                 if (leftLemmaIndex == -1) {
                     leftLemmaIndex = nodes.push({
                         "name": bucket_leftLemma.key,
-                        "group": currentGroup
+                            "weight" : 0
                     }) - 1;
-
                 }
                 var linkIndex = _.findIndex(links, function(link) {
                     return link.source == bucketIndex &&
@@ -973,11 +966,13 @@ var cartoMap;
                     links[linkIndex].value += bucket_leftLemma.doc_count;
                 } else {
                     links.push({
-                        "source":   bucketIndex,
-                        "target":   leftLemmaIndex,
-                        "weight":     bucket_leftLemma.doc_count
+                        "source":   leftLemmaIndex,
+                        "target":   bucketIndex,
+                        "weight":   bucket_leftLemma.doc_count
                     });
                 }
+                nodes[leftLemmaIndex].weight += 1;
+                nodes[bucketIndex].weight += 1;
             });
         });
 
