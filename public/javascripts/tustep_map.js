@@ -239,7 +239,9 @@ var cartoMap;
         timelineChart.filterAll();
         dc.redrawAll();
 
-        resetTimelineColor();
+        setTimeout(function () {
+            resetTimelineColor();
+        }, 500);
 
         // timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
     }
@@ -323,40 +325,40 @@ var cartoMap;
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
-        if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // if(selectedMaxYear - selectedMinYear > 200){
-        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // }
-        // else if(selectedMaxYear - selectedMinYear > 120){
-        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // }
-        // else if(selectedMaxYear - selectedMinYear > 80){
-        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 2 === 1;}));}
-        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // }
-        // else if(selectedMaxYear - selectedMinYear > 50){
-        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
-        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // }
-        // else{
-        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
-        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        // }
+        // if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        // else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        // else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        // else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        if(maxYear - minYear > 200){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else if(maxYear - minYear > 120){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else if(maxYear - minYear > 80){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 2 === 1;}));}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else if(maxYear - minYear > 50){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else{
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
 
         // if(yearResolution == 1){
         //     timelineChart.centerBar(true);
@@ -538,6 +540,15 @@ var cartoMap;
             updateTimelineInfoLabels(geoFeatures);
             // Update timeline Y axis scale
             updateTimelineYscale(geoFeatures);
+        }
+        else if(geoFeatures.length == 0){
+            geoFeaturesLayer
+            .features([]);
+            //.clickableFeatures(true);
+            cartoMap.refreshCartoLayer(geoFeaturesLayer);
+
+            // Update counters to show no data was found
+            $("#timeline-lemma-count").html(0);
         }
     }
 
@@ -815,60 +826,65 @@ var cartoMap;
         var newGeoHashBuckets = [];
         var hashStringArray = _.unique(_.pluck(yearDim.top(Infinity),"hash"));
 
-        _.each(hashStringArray,function(hash){
-            var entriesForHash = _.filter(yearDim.top(Infinity), function(entry){
-                return entry.hash == hash;
+        if(yearDim.top(Infinity).length == 0){
+            return [];
+        }
+        else{
+            _.each(hashStringArray,function(hash){
+                var entriesForHash = _.filter(yearDim.top(Infinity), function(entry){
+                    return entry.hash == hash;
+                });
+
+                var geoObject = {};
+                geoObject.key = hash;
+                geoObject.doc_count = 0;
+                geoObject.years = [];
+
+                geohashBuckets.forEach(function(bucket){
+                    if(bucket.key == hash && bucket.years != undefined){
+                        bucket.years.buckets.forEach(function(yearBucket){
+                            geoObject.years.push(parseInt(yearBucket.key_as_string));
+                        });
+                    }
+                });
+
+                _.each(entriesForHash, function(entry){
+                    geoObject.doc_count += parseInt(entry.docs);
+                });
+
+                if(geoObject.doc_count > 0)
+                newGeoHashBuckets.push(geoObject);
             });
 
-            var geoObject = {};
-            geoObject.key = hash;
-            geoObject.doc_count = 0;
-            geoObject.years = [];
+            return _.map(newGeoHashBuckets, function (hash_bucket) {
 
-            geohashBuckets.forEach(function(bucket){
-                if(bucket.key == hash && bucket.years != undefined){
-                    bucket.years.buckets.forEach(function(yearBucket){
-                        geoObject.years.push(parseInt(yearBucket.key_as_string));
-                    });
-                }
+                var geohashBounds = Geohash.bounds(hash_bucket.key);
+                var swCoords = geohashBounds.sw;
+                var neCoords = geohashBounds.ne;
+
+                var polygonVertex = [[]];
+
+                polygonVertex[0][0] = [swCoords.lon, neCoords.lat];
+                polygonVertex[0][1] = [neCoords.lon, neCoords.lat];
+                polygonVertex[0][2] = [neCoords.lon, swCoords.lat];
+                polygonVertex[0][3] = [swCoords.lon, swCoords.lat];
+                polygonVertex[0][4] = [swCoords.lon, neCoords.lat];
+
+                return {
+                    "type": "Feature",
+                    "properties": {
+                        "key": hash_bucket.key,
+                        "doc_count": hash_bucket.doc_count,
+                        "years": hash_bucket.years,
+                        "bounds": geohashBounds
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": polygonVertex
+                    }
+                };
             });
-
-            _.each(entriesForHash, function(entry){
-                geoObject.doc_count += parseInt(entry.docs);
-            });
-
-            if(geoObject.doc_count > 0)
-            newGeoHashBuckets.push(geoObject);
-        });
-
-        return _.map(newGeoHashBuckets, function (hash_bucket) {
-
-            var geohashBounds = Geohash.bounds(hash_bucket.key);
-            var swCoords = geohashBounds.sw;
-            var neCoords = geohashBounds.ne;
-
-            var polygonVertex = [[]];
-
-            polygonVertex[0][0] = [swCoords.lon, neCoords.lat];
-            polygonVertex[0][1] = [neCoords.lon, neCoords.lat];
-            polygonVertex[0][2] = [neCoords.lon, swCoords.lat];
-            polygonVertex[0][3] = [swCoords.lon, swCoords.lat];
-            polygonVertex[0][4] = [swCoords.lon, neCoords.lat];
-
-            return {
-                "type": "Feature",
-                "properties": {
-                    "key": hash_bucket.key,
-                    "doc_count": hash_bucket.doc_count,
-                    "years": hash_bucket.years,
-                    "bounds": geohashBounds
-                },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": polygonVertex
-                }
-            };
-        });
+        }
     }
 
     function generateGridFeatures(resp){
