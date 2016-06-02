@@ -559,7 +559,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                //generateLemmaGraphFromAggregations(resp.aggregations);
+                generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                 var foundLemmas = [];
