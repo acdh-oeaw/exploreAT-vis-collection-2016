@@ -620,7 +620,7 @@ text {
 }
 
 #lemma-list-table {
-    max-height: 130px;
+    max-height: 120px;
     overflow: scroll;
 }
 

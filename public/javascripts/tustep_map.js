@@ -291,7 +291,7 @@ var cartoMap;
         // Draw all for the first time
         dc.renderAll();
         resetCrossfilterData();
-        resetTimelineColor();
+        //resetTimelineColor();
     }
 
     function updateTimelineInfoLabels(geoFeatures){
@@ -323,49 +323,59 @@ var cartoMap;
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
-        if(selectedMaxYear - selectedMinYear > 200){
-            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        }
-        else if(selectedMaxYear - selectedMinYear > 100){
-            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        }
-        else if(selectedMaxYear - selectedMinYear > 50){
-            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
-            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        }
-        else{
-            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
-            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
-            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        }
+        if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // if(selectedMaxYear - selectedMinYear > 200){
+        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // }
+        // else if(selectedMaxYear - selectedMinYear > 120){
+        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // }
+        // else if(selectedMaxYear - selectedMinYear > 80){
+        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 2 === 1;}));}
+        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // }
+        // else if(selectedMaxYear - selectedMinYear > 50){
+        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // }
+        // else{
+        //     if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+        //     else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        //     else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+        //     else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        // }
 
-        if(yearResolution == 1){
-            timelineChart.centerBar(true);
-        }
-        else{
-            timelineChart.centerBar(false);
-            // setTimeout(function () {
-            //     var ticks = timelineChart.selectAll("g.x > g.tick");
-            //     var tickOneCoords = d3.transform(d3.select(ticks[0][0]).attr("transform")).translate;
-            //     var tickTwoCoords = d3.transform(d3.select(ticks[0][1]).attr("transform")).translate;
-            //     timelineChart.xUnits(function(){return parseInt(tickTwoCoords[0]-tickOneCoords[0])-1;});
-            // }, 1000);
-        }
+        // if(yearResolution == 1){
+        //     timelineChart.centerBar(true);
+        // }
+        // else{
+        //     timelineChart.centerBar(false);
+        //     // setTimeout(function () {
+        //     //     var ticks = timelineChart.selectAll("g.x > g.tick");
+        //     //     var tickOneCoords = d3.transform(d3.select(ticks[0][0]).attr("transform")).translate;
+        //     //     var tickTwoCoords = d3.transform(d3.select(ticks[0][1]).attr("transform")).translate;
+        //     //     timelineChart.xUnits(function(){return parseInt(tickTwoCoords[0]-tickOneCoords[0])-1;});
+        //     // }, 1000);
+        // }
 
         dc.redrawAll();
 
-        setTimeout(function () {
-            resetTimelineColor();
-        }, 200);
+        // setTimeout(function () {
+        //     resetTimelineColor();
+        // }, 200);
     }
 
     function updateTimelineYscale(geoFeatures){
@@ -654,19 +664,37 @@ var cartoMap;
                     });
                     for(var i = 0; i<wordBuckets.length; i++){
                         _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
-                            if(relatedLeftLemma.key == filterLeft.val()){
-                                lemmaListTable.append(function(){
-                                    var html = '<div class="lemma-list-row">';
-                                    html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                    html += '<div class="lemma-list-actions">';
-                                    html += '<div class="lemma-button relations">Plot Relations</div>';
-                                    html += '<div class="lemma-button map">Plot in Map</div>';
-                                    html += '</div>';
-                                    html += '</div>';
-                                    return html;
-                                });
-                                counter++;
-                                foundLemmas.push(wordBuckets[i].key);
+                            if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
+                                if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
+                                    lemmaListTable.append(function(){
+                                        var html = '<div class="lemma-list-row">';
+                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                        html += '<div class="lemma-list-actions">';
+                                        html += '<div class="lemma-button relations">Plot Relations</div>';
+                                        html += '<div class="lemma-button map">Plot in Map</div>';
+                                        html += '</div>';
+                                        html += '</div>';
+                                        return html;
+                                    });
+                                    counter++;
+                                    foundLemmas.push(wordBuckets[i].key);
+                                }
+                            }
+                            else{
+                                if(relatedLeftLemma.key == filterLeft.val()){
+                                    lemmaListTable.append(function(){
+                                        var html = '<div class="lemma-list-row">';
+                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                        html += '<div class="lemma-list-actions">';
+                                        html += '<div class="lemma-button relations">Plot Relations</div>';
+                                        html += '<div class="lemma-button map">Plot in Map</div>';
+                                        html += '</div>';
+                                        html += '</div>';
+                                        return html;
+                                    });
+                                    counter++;
+                                    foundLemmas.push(wordBuckets[i].key);
+                                }
                             }
                         });
                     }
@@ -1959,7 +1987,7 @@ var cartoMap;
                                 "field": "startYear",
                                 "interval": (365*yearResolution)+"d",
                                 "time_zone": "Europe/Berlin",
-                                "min_doc_count": 0
+                                "min_doc_count": 1
                             }
                         }
                     }
@@ -1969,7 +1997,7 @@ var cartoMap;
                         "field": "startYear",
                         "interval": (365*yearResolution)+"d",
                         "time_zone": "Europe/Berlin",
-                        "min_doc_count": 0
+                        "min_doc_count": 1
                     },
                     "aggs": {
                         "ort": {
@@ -2197,9 +2225,11 @@ var cartoMap;
     }
 
     function resetTimelineColor(){
-        timelineChart.selectAll('rect.bar').each(function(dBar){
-            d3.select(this).transition().duration(500).style("fill", "black");
-        });
+        setTimeout(function () {
+            timelineChart.selectAll('rect.bar').each(function(dBar){
+                d3.select(this).transition().duration(500).style("fill", "black");
+            });
+        }, 500);
     }
 
     function showHideLemmaList(show){
