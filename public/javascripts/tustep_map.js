@@ -291,6 +291,7 @@ var cartoMap;
         // Draw all for the first time
         dc.renderAll();
         resetCrossfilterData();
+        resetTimelineColor();
     }
 
     function updateTimelineInfoLabels(geoFeatures){
@@ -322,11 +323,49 @@ var cartoMap;
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
-        if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
-        else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        if(selectedMaxYear - selectedMinYear > 200){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else if(selectedMaxYear - selectedMinYear > 100){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else if(selectedMaxYear - selectedMinYear > 50){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+        else{
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
+            else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+            else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
+            else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
+        }
+
+        if(yearResolution == 1){
+            timelineChart.centerBar(true);
+        }
+        else{
+            timelineChart.centerBar(false);
+            // setTimeout(function () {
+            //     var ticks = timelineChart.selectAll("g.x > g.tick");
+            //     var tickOneCoords = d3.transform(d3.select(ticks[0][0]).attr("transform")).translate;
+            //     var tickTwoCoords = d3.transform(d3.select(ticks[0][1]).attr("transform")).translate;
+            //     timelineChart.xUnits(function(){return parseInt(tickTwoCoords[0]-tickOneCoords[0])-1;});
+            // }, 1000);
+        }
+
         dc.redrawAll();
+
+        setTimeout(function () {
+            resetTimelineColor();
+        }, 200);
     }
 
     function updateTimelineYscale(geoFeatures){
@@ -338,8 +377,10 @@ var cartoMap;
 
         getMinMaxMeanDocCountsOverall();
 
-        timelineChart.y(d3.scale.linear().domain([minDocCountOverall, maxDocCountOverall]));
-        timelineChart.yAxis().tickValues([minDocCountOverall, maxDocCountOverall]);
+        // timelineChart.y(d3.scale.linear().domain([minDocCountOverall, maxDocCountOverall]));
+        // timelineChart.yAxis().tickValues([minDocCountOverall, maxDocCountOverall]);
+        timelineChart.y(d3.scale.linear().domain([0, maxDocCountOverall]));
+        timelineChart.yAxis().tickValues([0, maxDocCountOverall]);
         dc.redrawAll();
 
         // timelineYaxisNeedsUpdate = false;
@@ -520,32 +561,144 @@ var cartoMap;
 
                 //generateLemmaGraphFromAggregations(resp.aggregations);
 
-                var wordBuckets = resp.aggregations.mainLemma.buckets;
+                var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
+                var foundLemmas = [];
 
-                for(var i = 0; i<20/*d.doc_count*/; i++){
-                    lemmaListTable.append(function(){
-                        var html = '<div class="lemma-list-row">';
-                        html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                        html += '<div class="lemma-list-actions">';
-                        html += '<div class="lemma-button relations">Plot Relations</div>';
-                        html += '<div class="lemma-button map">Plot in Map</div>';
-                        html += '</div>';
-                        html += '</div>';
+                var counter = 0;
+                // if(filterMain.val() != "" || filterLeft.val() != ""){
+                //     for(var i = 0; i<d.doc_count || i<20; i++){
+                //         if(filterMain.val() != "" && filterLeft.val() == ""){
+                //             if(wordBuckets[i].key == filterMain.val()) {
+                //                 lemmaListTable.append(function(){
+                //                     var html = '<div class="lemma-list-row">';
+                //                     html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                //                     html += '<div class="lemma-list-actions">';
+                //                     html += '<div class="lemma-button relations">Plot Relations</div>';
+                //                     html += '<div class="lemma-button map">Plot in Map</div>';
+                //                     html += '</div>';
+                //                     html += '</div>';
+                //                     return html;
+                //                 });
+                //                 counter++;
+                //                 foundLemmas.push(wordBuckets[i].key);
+                //             }
+                //         }
+                //         else if(filterLeft.val() != "" && filterMain.val() == ""){
+                //             if(wordBuckets[i].leftLemma.buckets != undefined &&
+                //                 wordBuckets[i].leftLemma.buckets.length > 0){
+                //                     for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
+                //                         if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
+                //                             lemmaListTable.append(function(){
+                //                                 var html = '<div class="lemma-list-row">';
+                //                                 html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                //                                 html += '<div class="lemma-list-actions">';
+                //                                 html += '<div class="lemma-button relations">Plot Relations</div>';
+                //                                 html += '<div class="lemma-button map">Plot in Map</div>';
+                //                                 html += '</div>';
+                //                                 html += '</div>';
+                //                                 return html;
+                //                             });
+                //                             counter++;
+                //                             foundLemmas.push(wordBuckets[i].key);
+                //                         }
+                //                     }
+                //                 }
+                //         }
+                //         else if(filterMain.val() != "" && filterLeft.val() != ""){
+                //             if(wordBuckets[i].key == filterMain.val()){
+                //                 for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
+                //                     if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
+                //                         lemmaListTable.append(function(){
+                //                             var html = '<div class="lemma-list-row">';
+                //                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                //                             html += '<div class="lemma-list-actions">';
+                //                             html += '<div class="lemma-button relations">Plot Relations</div>';
+                //                             html += '<div class="lemma-button map">Plot in Map</div>';
+                //                             html += '</div>';
+                //                             html += '</div>';
+                //                             return html;
+                //                         });
+                //                         counter++;
+                //                         foundLemmas.push(wordBuckets[i].key);
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
+                if(filterMain.val() != ""){
+                    $("#lemma-list-detail").html("");
+                    for(var i = 0; i<wordBuckets.length; i++){
+                        if(wordBuckets[i].key == filterMain.val()){
+                            lemmaListTable.append(function(){
+                                var html = '<div class="lemma-list-row">';
+                                html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                html += '<div class="lemma-list-actions">';
+                                html += '<div class="lemma-button relations">Plot Relations</div>';
+                                html += '<div class="lemma-button map">Plot in Map</div>';
+                                html += '</div>';
+                                html += '</div>';
+                                return html;
+                            });
+                            counter++;
+                            foundLemmas.push(wordBuckets[i].key);
+                        }
+
+                    }
+                }
+                else if(filterLeft.val() != ""){
+                    $("#lemma-list-detail").html(function(){
+                        var html = "";
+                        html += '(with "<strong>'+filterLeft.val()+'</strong>" as the Left Lemma)';
                         return html;
                     });
+                    for(var i = 0; i<wordBuckets.length; i++){
+                        _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
+                            if(relatedLeftLemma.key == filterLeft.val()){
+                                lemmaListTable.append(function(){
+                                    var html = '<div class="lemma-list-row">';
+                                    html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                    html += '<div class="lemma-list-actions">';
+                                    html += '<div class="lemma-button relations">Plot Relations</div>';
+                                    html += '<div class="lemma-button map">Plot in Map</div>';
+                                    html += '</div>';
+                                    html += '</div>';
+                                    return html;
+                                });
+                                counter++;
+                                foundLemmas.push(wordBuckets[i].key);
+                            }
+                        });
+                    }
+                }
+                else {
+                    $("#lemma-list-detail").html("");
+                    for(var i = 0; i<20/*d.properties.doc_count*/; i++){
+                        lemmaListTable.append(function(){
+                            var html = '<div class="lemma-list-row">';
+                            html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                            html += '<div class="lemma-list-actions">';
+                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                            html += '<div class="lemma-button map">Plot in Map</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            return html;
+                        });
+                        foundLemmas.push(wordBuckets[i].key);
+                    }
                 }
 
                 // Lemma List Listeners
 
                 d3.selectAll(".lemma-button.relations").data(wordBuckets)
                 .on("click",function(lemmaBucket,i){
-                    generateTreeGraphForLemma(lemmaBucket.key);
+                    generateTreeGraphForLemma(foundLemmas[i]);
                     w2ui['content'].show('left');
                 });
 
                 d3.selectAll(".lemma-button.map").data(wordBuckets)
                 .on("click",function(lemmaBucket,i){
-                    plotInMap(lemmaBucket.key,"or",lemmaBucket.key);
+                    plotInMap(foundLemmas[i],"or",foundLemmas[i]);
                 });
 
                 showHideLemmaList(true);
@@ -827,6 +980,11 @@ var cartoMap;
 
 
     function plotInMap(leftLemma,andOr,mainLemma){
+
+        d3.selectAll("#live-search > input").classed("flash",true);
+        setTimeout(function () {
+            d3.selectAll("#live-search > input").classed("flash",false);
+        }, 200);
 
         $("#filterLeft").val(leftLemma);
         $("#filterMain").val(mainLemma);
@@ -1463,7 +1621,41 @@ var cartoMap;
                     else if(side == "left"){plotInMap(root.name,"and",d.name);}
                 }
             })
-            .on("mouseover", function(d){
+            .on("mouseover", function(d,i){
+
+                d3.selection.prototype.moveToFront = function() {
+                    return this.each(function(){
+                        this.parentNode.appendChild(this);
+                    });
+                };
+
+                d3.selection.prototype.moveToBack = function() {
+                    return this.each(function() {
+                        var firstChild = this.parentNode.firstChild;
+                        if (firstChild) {
+                            this.parentNode.insertBefore(this, firstChild);
+                        }
+                    });
+                };
+
+                // Highlight the links between the root and the active node
+                var nodeParentName = d.parent.name;
+                var nodeName = d.name;
+                var links = d3.selectAll(".link-tree");
+                _.forEach(links[0], function(link){
+                    // Me with parent
+                    if(link.__data__.source.name == d.parent.name && link.__data__.target.name == d.name){
+                        //d3.select(link).moveToFront();
+                        d3.select(link).style("stroke","#2b91fc");
+                    }
+                    // Parent with root
+                    if(d.parent.name != lemma){
+                        if(link.__data__.source.name == lemma && link.__data__.target.name == d.parent.name){
+                            //d3.select(link).moveToFront();
+                            d3.select(link).style("stroke","#2b91fc");
+                        }
+                    }
+                });
 
                 if(d.parent.name != lemma){
                     tooltipYmodifier = 20;
@@ -1496,6 +1688,10 @@ var cartoMap;
                 }
             })
             .on("mouseout", function(d){
+                var links = d3.selectAll(".link-tree");
+                _.forEach(links[0], function(link){
+                    d3.select(link).style("stroke","#ccc");
+                });
                 tooltip.hide();
                 resetTimelineColor();
             });
