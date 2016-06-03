@@ -423,11 +423,11 @@ text {
     border-bottom: 4px solid #2b91fc;
     width: 200px;
 
-    -webkit-transition: all .2s linear;
-	-moz-transition: all .2s linear;
-	-o-transition: all .2s linear;
-	-ms-transition: all .2s linear;
-	transition: all .2s linear;
+    -webkit-transition: all linear 1s;
+      -moz-transition: all linear 1s;
+      -o-transition: all linear 1s;
+      -ms-transition: all linear 1s;
+      transition: all linear 1s;
 }
 
 #live-search > input.flash {
@@ -573,7 +573,7 @@ text {
   right: -1px;
   padding-top: 10px;
   width: 180px;
-  max-height: 210px;
+  max-height: 174px;
   background-color: rgba(255, 255, 255, .9);
   pointer-events: auto;
   font-size: .8em;
@@ -620,8 +620,10 @@ text {
 }
 
 #lemma-list-table {
-    max-height: 120px;
+    max-height: 84px;
     overflow: scroll;
+    border-top: 1px solid rgba(0,0,0,.1);
+    border-bottom: 1px solid rgba(0,0,0,.1)
 }
 
 #lemma-list-notice {

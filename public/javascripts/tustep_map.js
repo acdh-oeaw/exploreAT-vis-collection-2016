@@ -29,12 +29,12 @@ var cartoMap;
 
     $("#livesearch-holder > form > input")
     .on("input", function() {
-        resetTimelineColor();
+        resetTimelineColor(600);
         update();
     });
 
     $("#lemma-and-or-selector").change(function(){
-        resetTimelineColor();
+        resetTimelineColor(600);
         update();
     });
 
@@ -112,6 +112,11 @@ var cartoMap;
 
     // GEO BUCKETS SCALE/PRECISION CONTROL
 
+    function resetBucketResolution(){
+        bucketResolution = 7;
+        $("#bucket-resolution-selector").val(bucketResolution);
+    }
+
     $("#bucket-resolution-selector").change(function() {
         bucketResolution = parseInt($("#bucket-resolution-selector option:selected").val());
         update();
@@ -128,9 +133,8 @@ var cartoMap;
                     [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
                     "latlong",1,zoomDelay
                 );
+                resetBucketResolution();
                 setTimeout(function () {
-                    bucketResolution = 7;
-                    $("#bucket-resolution-selector option:selected").val(bucketResolution);
                     update();
                 }, zoomDelay);
             }, 750);
@@ -142,6 +146,7 @@ var cartoMap;
 
     // LEMMA LIST HANDLE
 
+    $("#lemma-list-handle").hide();
     $("#lemma-list-handle").on("click", function() {
         showHideLemmaList();
     });
@@ -245,7 +250,7 @@ var cartoMap;
         dc.redrawAll();
 
         setTimeout(function () {
-            resetTimelineColor();
+            resetTimelineColor(600);
         }, 500);
 
         // timelineYaxisNeedsUpdate = true; // Update only once when the data changes (new docCounts)
@@ -328,31 +333,37 @@ var cartoMap;
 
         timelineChart.x(d3.scale.linear().domain([minYear,maxYear]));
 
+        if(minYear == maxYear){
+            maxYear++;
+            minYear--;
+        }
+
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
         // if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
         // else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
         // else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
         // else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
-        if(maxYear - minYear > 200){
+        var yearDiff = maxYear - minYear;
+        if(yearDiff > 200){
             if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
             else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
             else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
             else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
         }
-        else if(maxYear - minYear > 120){
-            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
+        else if(yearDiff > 150){
+            if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 3 === 1;}));}
             else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
             else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
             else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
         }
-        else if(maxYear - minYear > 80){
+        else if(yearDiff > 80){
             if(yearResolution == 1){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 2 === 1;}));}
             else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
             else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
             else if(yearResolution == 25){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 25 === 1;}));}
         }
-        else if(maxYear - minYear > 50){
+        else if(yearDiff > 50){
             if(yearResolution == 1){timelineChart.xAxis().tickValues(years);}
             else if(yearResolution == 5){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 5 === 1;}));}
             else if(yearResolution == 10){timelineChart.xAxis().tickValues(years.filter(function(el, index) {return index % 10 === 1;}));}
@@ -568,7 +579,7 @@ var cartoMap;
 
             // Zoom and rise resolution
             if(bucketResolution < 11){
-                resetTimelineColor();
+                resetTimelineColor(600);
                 setTimeout(function () { // Wait for the toggle left, then center
                     cartoMap.refresh();
                     cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
@@ -655,7 +666,7 @@ var cartoMap;
                 //         }
                 //     }
                 // }
-                if(filterMain.val() != ""){
+                if(filterMain.val() != "" && filterMain.val() != "*"){
                     $("#lemma-list-detail").html("");
                     for(var i = 0; i<wordBuckets.length; i++){
                         if(wordBuckets[i].key == filterMain.val()){
@@ -675,63 +686,66 @@ var cartoMap;
 
                     }
                 }
-                else if(filterLeft.val() != ""){
-                    $("#lemma-list-detail").html(function(){
-                        var html = "";
-                        html += '(with "<strong>'+filterLeft.val()+'</strong>" as the Left Lemma)';
-                        return html;
-                    });
-                    for(var i = 0; i<wordBuckets.length; i++){
-                        _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
-                            if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
-                                if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
-                                    lemmaListTable.append(function(){
-                                        var html = '<div class="lemma-list-row">';
-                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                        html += '<div class="lemma-list-actions">';
-                                        html += '<div class="lemma-button relations">Plot Relations</div>';
-                                        html += '<div class="lemma-button map">Plot in Map</div>';
-                                        html += '</div>';
-                                        html += '</div>';
-                                        return html;
-                                    });
-                                    counter++;
-                                    foundLemmas.push(wordBuckets[i].key);
-                                }
-                            }
-                            else{
-                                if(relatedLeftLemma.key == filterLeft.val()){
-                                    lemmaListTable.append(function(){
-                                        var html = '<div class="lemma-list-row">';
-                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                        html += '<div class="lemma-list-actions">';
-                                        html += '<div class="lemma-button relations">Plot Relations</div>';
-                                        html += '<div class="lemma-button map">Plot in Map</div>';
-                                        html += '</div>';
-                                        html += '</div>';
-                                        return html;
-                                    });
-                                    counter++;
-                                    foundLemmas.push(wordBuckets[i].key);
-                                }
-                            }
-                        });
-                    }
-                }
-                else {
-                    $("#lemma-list-detail").html("");
-                    for(var i = 0; i<20 && i<wordBuckets.length; i++){
-                        lemmaListTable.append(function(){
-                            var html = '<div class="lemma-list-row">';
-                            html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                            html += '<div class="lemma-list-actions">';
-                            html += '<div class="lemma-button relations">Plot Relations</div>';
-                            html += '<div class="lemma-button map">Plot in Map</div>';
-                            html += '</div>';
-                            html += '</div>';
+                else { // filterMain == "*" && filterMain == ""
+
+                    if(filterLeft.val() != "" && filterLeft.val() != "*"){
+                        $("#lemma-list-detail").html(function(){
+                            var html = "";
+                            html += '(with "<strong>'+filterLeft.val()+'</strong>" as the Left Lemma)';
                             return html;
                         });
-                        foundLemmas.push(wordBuckets[i].key);
+                        for(var i = 0; i<wordBuckets.length; i++){
+                            _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
+                                if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
+                                    if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
+                                        lemmaListTable.append(function(){
+                                            var html = '<div class="lemma-list-row">';
+                                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                            html += '<div class="lemma-list-actions">';
+                                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                                            html += '<div class="lemma-button map">Plot in Map</div>';
+                                            html += '</div>';
+                                            html += '</div>';
+                                            return html;
+                                        });
+                                        counter++;
+                                        foundLemmas.push(wordBuckets[i].key);
+                                    }
+                                }
+                                else{
+                                    if(relatedLeftLemma.key == filterLeft.val()){
+                                        lemmaListTable.append(function(){
+                                            var html = '<div class="lemma-list-row">';
+                                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                            html += '<div class="lemma-list-actions">';
+                                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                                            html += '<div class="lemma-button map">Plot in Map</div>';
+                                            html += '</div>';
+                                            html += '</div>';
+                                            return html;
+                                        });
+                                        counter++;
+                                        foundLemmas.push(wordBuckets[i].key);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else { // filterLeft == "*" && filterLeft == ""
+                        $("#lemma-list-detail").html("");
+                        for(var i = 0; i<20 && i<wordBuckets.length; i++){
+                            lemmaListTable.append(function(){
+                                var html = '<div class="lemma-list-row">';
+                                html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                html += '<div class="lemma-list-actions">';
+                                html += '<div class="lemma-button relations">Plot Relations</div>';
+                                html += '<div class="lemma-button map">Plot in Map</div>';
+                                html += '</div>';
+                                html += '</div>';
+                                return html;
+                            });
+                            foundLemmas.push(wordBuckets[i].key);
+                        }
                     }
                 }
 
@@ -814,17 +828,19 @@ var cartoMap;
             }
 
             // Highlight related years in timeline
-            timelineChart.selectAll('rect.bar').each(function(dBar){
-                if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
-                    d3.select(this).transition().duration(500).style("fill", "#2b91fc");
-                }
-                else {
-                    d3.select(this).transition().duration(500).style("fill", "black");
-                }
-            });
+            setTimeout(function () {
+                timelineChart.selectAll('rect.bar').each(function(dBar){
+                    if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
+                        d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                    }
+                    else {
+                        d3.select(this).transition().duration(500).style("fill", "black");
+                    }
+                });
+            }, 100);
         })
         .on("mouseout",function(dFeature,i){
-            resetTimelineColor();
+            resetTimelineColor(0);
             tooltip.hide();
         });
     }
@@ -1027,6 +1043,8 @@ var cartoMap;
 
 
     function plotInMap(leftLemma,andOr,mainLemma){
+
+        resetBucketResolution();
 
         d3.selectAll("#live-search > input").classed("flash",true);
         setTimeout(function () {
@@ -1666,6 +1684,7 @@ var cartoMap;
                 if(d.parent.name != lemma){
                     if(side == "right"){plotInMap(d.name,"and",root.name);}
                     else if(side == "left"){plotInMap(root.name,"and",d.name);}
+                    showHideLemmaList(false);
                 }
             })
             .on("mouseover", function(d,i){
@@ -1723,15 +1742,17 @@ var cartoMap;
                 }
 
                 if(d.years != undefined && d.years.length > 0){
-                    // Highlight related years in timeline
-                    timelineChart.selectAll('rect.bar').each(function(dBar){
-                        if(d.years.indexOf(parseInt(dBar.x)) > -1){
-                            d3.select(this).transition().duration(500).style("fill", "#2b91fc");
-                        }
-                        else {
-                            d3.select(this).transition().duration(500).style("fill", "black");
-                        }
-                    });
+                    setTimeout(function () {
+                        // Highlight related years in timeline
+                        timelineChart.selectAll('rect.bar').each(function(dBar){
+                            if(d.years.indexOf(parseInt(dBar.x)) > -1){
+                                d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                            }
+                            else {
+                                d3.select(this).transition().duration(500).style("fill", "black");
+                            }
+                        });
+                    }, 100);
                 }
             })
             .on("mouseout", function(d){
@@ -1740,7 +1761,7 @@ var cartoMap;
                     d3.select(link).style("stroke","#ccc");
                 });
                 tooltip.hide();
-                resetTimelineColor();
+                resetTimelineColor(0);
             });
 
             nodeEnter.append("circle")
@@ -2243,12 +2264,12 @@ var cartoMap;
         .call(legendLinear);
     }
 
-    function resetTimelineColor(){
+    function resetTimelineColor(waitingTime){
         setTimeout(function () {
             timelineChart.selectAll('rect.bar').each(function(dBar){
                 d3.select(this).transition().duration(500).style("fill", "black");
             });
-        }, 500);
+        }, waitingTime);
     }
 
     function showHideLemmaList(show){
@@ -2256,6 +2277,7 @@ var cartoMap;
             if(d3.select("#lemma-list-holder").classed("collapsed") == true){
                 d3.select("#lemma-list-holder").classed("collapsed",false);
                 $("#lemma-list-handle").html("&raquo;");
+                $("#lemma-list-handle").show();
             }
         }
         else{
@@ -2266,6 +2288,9 @@ var cartoMap;
             else{
                 d3.select("#lemma-list-holder").classed("collapsed",true);
                 $("#lemma-list-handle").html("&laquo;");
+                setTimeout(function () {
+                    $("#lemma-list-handle").hide();
+                }, 350);
             }
         }
     }
