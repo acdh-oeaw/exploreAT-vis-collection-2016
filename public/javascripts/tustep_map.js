@@ -369,11 +369,12 @@ var cartoMap;
         timelineChart.x(d3.scale.linear().domain([minYear,maxYear]));
 
         if(minYear == maxYear){
-            maxYear++;
             minYear--;
+            maxYear++;
         }
-
-        console.log(yearDim.top(Infinity));
+        else if(maxYear == yearDim.top(Infinity)[0].year){
+            maxYear++;
+        }
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
