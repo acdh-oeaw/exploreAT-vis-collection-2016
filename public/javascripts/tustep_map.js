@@ -50,6 +50,7 @@ var cartoMap;
     geoGridLayer,
     geohashBuckets;
     var zoomDelay = 2000;
+    var clickedGeoHash = "";
 
     cartoMap = d3.carto.map();
     d3.select("#map").call(cartoMap);
@@ -199,6 +200,7 @@ var cartoMap;
         geohashBuckets = resp.aggregations.ortMain.buckets;
 
         geohashBuckets.forEach(function(bucket){
+            console.log(bucket);
             bucket.years.buckets.forEach(function(year){
                 tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
             });
@@ -506,6 +508,17 @@ var cartoMap;
             geoGridLayer
             .features(gridFeatures);
             cartoMap.refreshCartoLayer(geoGridLayer);
+
+            // Highlight the clicked grid, if any
+            d3.selectAll('path.bucketGrid')
+            .style("stroke", function(d){
+                if(d.properties.key == clickedGeoHash){return "#00b8ff";}
+                else {return "rgba(0,0,0,.5)";}
+            })
+            .style("stroke-width", function(d){
+                if(d.properties.key == clickedGeoHash){return "5px";}
+                else {return "1px";}
+            });
         });
     }
 
@@ -527,10 +540,9 @@ var cartoMap;
                 .range(colorbrewer.Blues[3])
                 .domain([minDoc, mean, maxDoc]);
                 d3.selectAll("path.featureLayer")
-                .style("fill", function (d) {
-                    return colorScale(d.properties.doc_count);
-                })
-                .style("opacity", 0.8);
+                .style("fill", function (d) {return colorScale(d.properties.doc_count);})
+                d3.selectAll("g.featureLayer")
+                .style("opacity", "0.8");
 
                 refreshColorLegend(geoFeatures,colorScale);
             }
@@ -574,6 +586,9 @@ var cartoMap;
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("click",function(d,i){
 
+            // Save the geohash id, to highlight it in the grid
+            clickedGeoHash = d.properties.key;
+
             // Hide tooltip
             tooltip.hide();
 
@@ -592,6 +607,12 @@ var cartoMap;
                     );
                 }, 750);
             }
+
+            // Reset opacity of all
+            d3.selectAll("g.featureLayer")
+            .style("opacity", "0.8")
+            .style("stroke-width","0px")
+            .style("stroke","black");
 
             // Show lemmas contained in the bucket
             var lemmaListTable = $('#lemma-list-table');
@@ -770,6 +791,19 @@ var cartoMap;
         d3.selectAll("g.featureLayer").data(geoFeatures)
         .on("mouseover",function(dFeature,i){
 
+            console.log(dFeature.properties.key);
+            console.log(_.filter(geohashBuckets,function(geoBucket){return geoBucket.key == dFeature.properties.key;}));
+
+            // Highlight this, low opacity of others
+            d3.selectAll("g.featureLayer")
+            .style("opacity", "0.2")
+            .style("stroke-width","0px")
+            .style("stroke","black");
+            d3.select(this)
+            .style("opacity","0.8")
+            .style("stroke-width","4px")
+            .style("stroke","#2b91fc");
+
             // Only if the user wants to see the tooltip
             if($("#tooltip-checkbox").is(":checked")) {
 
@@ -831,15 +865,22 @@ var cartoMap;
             setTimeout(function () {
                 timelineChart.selectAll('rect.bar').each(function(dBar){
                     if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
-                        d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                        d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
                     }
                     else {
-                        d3.select(this).transition().duration(500).style("fill", "black");
+                        d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
                     }
                 });
             }, 100);
         })
         .on("mouseout",function(dFeature,i){
+
+            // Reset opacity of all
+            d3.selectAll("g.featureLayer")
+            .style("opacity", "0.8")
+            .style("stroke-width","0px")
+            .style("stroke","black");
+
             resetTimelineColor(0);
             tooltip.hide();
         });
@@ -1746,10 +1787,10 @@ var cartoMap;
                         // Highlight related years in timeline
                         timelineChart.selectAll('rect.bar').each(function(dBar){
                             if(d.years.indexOf(parseInt(dBar.x)) > -1){
-                                d3.select(this).transition().duration(500).style("fill", "#2b91fc");
+                                d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
                             }
                             else {
-                                d3.select(this).transition().duration(500).style("fill", "black");
+                                d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
                             }
                         });
                     }, 100);
@@ -2083,6 +2124,18 @@ var cartoMap;
                     "prefix": {
                         "gisOrt.geohash": geo_hash
                     }
+                    // ,
+                    // "filter": {
+                    //     "bool": {
+                    //       "must": [
+                    //         {
+                    //           "exists": {
+                    //             "field": "startYear"
+                    //           }
+                    //         }
+                    //       ]
+                    //     }
+                    //   }
                 },
                 "aggs": {
                     "mainLemma": {
@@ -2267,9 +2320,9 @@ var cartoMap;
     function resetTimelineColor(waitingTime){
         setTimeout(function () {
             timelineChart.selectAll('rect.bar').each(function(dBar){
-                d3.select(this).transition().duration(500).style("fill", "black");
+                d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
             });
-        }, waitingTime);
+        }, 0/*waitingTime*/);
     }
 
     function showHideLemmaList(show){
