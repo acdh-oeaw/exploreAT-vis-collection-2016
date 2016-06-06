@@ -655,7 +655,7 @@ var cartoMap;
 
             getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                //generateLemmaGraphFromAggregations(resp.aggregations);
+                generateLemmaGraphFromAggregations(resp.aggregations);
 
                 var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                 var foundLemmas = [];
@@ -2151,43 +2151,40 @@ var cartoMap;
 
 
     function getLemmasInGeoHashBucket(geo_hash) {
-        return esClient.search({
-            index: 'tustepgeo2',
-            body: {
-                "size": 0,
-                "query": {
-                    "prefix": {
-                        "gisOrt.geohash": geo_hash
-                    }
-                    // ,
-                    // "filter": {
-                    //     "bool": {
-                    //       "must": [
-                    //         {
-                    //           "exists": {
-                    //             "field": "startYear"
-                    //           }
-                    //         }
-                    //       ]
-                    //     }
-                    //   }
-                },
-                "aggs": {
-                    "mainLemma": {
-                        "terms": {
-                            "field": "mainLemma.raw",
-                            "size": 2000
-                        },
-                        "aggs": {
-                            "leftLemma": {
-                                "terms": {
-                                    "field": "leftLemma.raw"
-                                }
+
+        var queryObj;
+        if ((filterMain.val() !== undefined && filterMain.val().length !== 0) || (filterLeft.val() !== undefined && filterLeft.val().length !== 0)){
+            if($("#lemma-and-or-selector option:selected").val() == "and"){
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", geo_hash);
+            }
+            else{
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", geo_hash);
+            }
+        }
+
+        var body = {
+            "size": 0,
+            "query": queryObj,
+            "aggs": {
+                "mainLemma": {
+                    "terms": {
+                        "field": "mainLemma.raw",
+                        "size": 2000
+                    },
+                    "aggs": {
+                        "leftLemma": {
+                            "terms": {
+                                "field": "leftLemma.raw"
                             }
                         }
                     }
                 }
             }
+        };
+        
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: body
         });
     }
 
@@ -2226,7 +2223,7 @@ var cartoMap;
         });
     }
 
-    function getQueryObjectForParams(mainLemma, leftLemma, andOr) {
+    function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash) {
 
         mainLemma = mainLemma
         .replace('{','?')
@@ -2242,51 +2239,82 @@ var cartoMap;
         .replace(':','?')
         .replace('}','?');
 
-        if (mainLemma == undefined || mainLemma.length == 0)
-        mainLemma = "*";
+        var queryArray = [];
 
-        if (leftLemma == undefined || leftLemma.length == 0)
-        leftLemma = "*";
-
-        if(andOr == "and"){
-            return {
-                "bool": {
-                    "must": [
-                        {
-                            "query_string": {
-                                "default_field": "mainLemma",
-                                "query": mainLemma
-                            }
-                        },
-                        {
-                            "query_string": {
-                                "default_field": "leftLemma",
-                                "query": leftLemma
-                            }
-                        }
-                    ]
+        if (mainLemma !== undefined && mainLemma.length !== 0) {
+            queryArray.push({
+                "query_string": {
+                    "default_field": "mainLemma.raw",
+                    "query": mainLemma
                 }
+            });
+        }
+
+        if (leftLemma !== undefined && leftLemma.length !== 0) {
+            queryArray.push({
+                "query_string": {
+                    "default_field": "leftLemma.raw",
+                    "query": leftLemma
+                }
+            })
+        }
+
+        if (queryArray.length == 0) {
+            if (geohash) {
+                queryArray.push({"prefix": {
+                    "gisOrt.geohash": geohash
+                }});
+                return {
+                    "bool" : {"must": queryArray}
+                };
+            } else {
+                return {"match_all" : {}}
+            }
+        }
+
+        if (queryArray.length == 1) {
+            if (geohash) {
+                queryArray.push({"prefix": {
+                    "gisOrt.geohash": geohash
+                }});
+            }
+            return {
+                "bool" : {"must": queryArray}
             };
         }
-        else{
-            return {
-                "bool": {
-                    "should": [
-                        {
-                            "query_string": {
-                                "default_field": "mainLemma",
-                                "query": mainLemma
-                            }
-                        },
-                        {
-                            "query_string": {
-                                "default_field": "leftLemma",
-                                "query": leftLemma
-                            }
+
+        if (queryArray.length == 2) {
+            if (andOr == "and") {
+                if (geohash) {
+                    queryArray.push({
+                        "prefix": {
+                            "gisOrt.geohash": geohash
                         }
-                    ]
+                    });
                 }
-            };
+                return {
+                    "bool" : {"must": queryArray}
+                };
+            } else {
+                if (geohash) {
+                    return {
+                        "bool" : {
+                            "must": [{
+                                "prefix": {
+                                    "gisOrt.geohash": geohash
+                                }
+                            }],
+                            "should": queryArray
+                        }
+                    };
+                } else {
+                    return {
+                        "bool" : {
+                            "should": queryArray
+                        }
+                    }; 
+                }
+            }
         }
     }
 

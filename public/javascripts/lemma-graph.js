@@ -264,6 +264,7 @@
         lemmaGraph.nodes = function (someNodes) {
             if (!arguments.length) return originalNodes;
             originalNodes = someNodes;
+            console.log('Will represent ' + someNodes.length + ' nodes');
             originalNest = d3.nest()
                 .key(function(d) { return d.community; })
                 .entries(originalNodes);
@@ -298,19 +299,38 @@
 
             console.log('Max and min community populations: ' + popMinMax[1] + ' ' + popMinMax[0]);
 
-            var populationAvg = Math.round((popMinMax[1] + popMinMax[0]) / 2);
-            filterLevel = populationAvg;
+            // filterLevel = Math.round((popMinMax[1] + popMinMax[0]) / 2);
 
             var list = _.chain(communities).map(function(d){ return d.population}).uniq().value().sort(function (a,b){return a-b;});
 
+            var avg = 0;
+
+            _.forEach(list, function (el) {
+                avg += el;
+            });
+
+            avg = avg/list.length;
+
+            var getClosestValues = function(a, x) {
+                var lo, hi;
+                for (var i = a.length; i--;) {
+                    if (a[i] <= x && (lo === undefined || lo < a[i])) lo = a[i];
+                    if (a[i] >= x && (hi === undefined || hi > a[i])) hi = a[i];
+                };
+                return [lo, hi];
+            };
+
+            filterLevel = getClosestValues(list, avg)[1];
+
             var select = d3.select('#population-select');
-            var midVal = list[Math.round(list.length / 2)];
 
             _.forEach(list, function (el, idx) {
                 var opt = select.append('option')
                             .attr('value', el);
-                if (el == midVal)
+                if (el == filterLevel) {
+                    console.log('filterLevel is ' + filterLevel);
                     opt.attr('selected', true);
+                }
                 opt.html(el + ' members');
             });
 
