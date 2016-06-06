@@ -536,9 +536,26 @@ text {
   font-weight: 600;
 }
 
-#tooltip-check-holder {
+#nontemporal-check-holder {
   position: absolute;
   top: 100px;
+  left: -1px;
+  padding: 10px 20px 10px 30px;
+  width: 200px;
+  background-color: rgba(255, 255, 255, .9);
+  pointer-events: auto;
+  font-size: .8em;
+}
+
+#nontemporal-check-holder > input {
+    display: inline-block;;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+#tooltip-check-holder {
+  position: absolute;
+  top: 178px;
   left: -1px;
   padding: 10px 20px 10px 30px;
   width: 200px;
