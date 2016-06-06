@@ -233,9 +233,11 @@ var cartoMap;
         geohashBuckets = resp.aggregations.ortMain.buckets;
 
         geohashBuckets.forEach(function(bucket){
-             bucket.years.buckets.forEach(function(year){
-                tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
-            });
+            if (bucket.years !== undefined) {
+                bucket.years.buckets.forEach(function(year){
+                    tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
+                });
+            }
         });
 
         // console.log("TUSTEPDATA");
@@ -655,7 +657,7 @@ var cartoMap;
 
                 getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                    //generateLemmaGraphFromAggregations(resp.aggregations);
+                    generateLemmaGraphFromAggregations(resp.aggregations);
 
                     var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                     var foundLemmas = [];
@@ -2138,6 +2140,19 @@ var cartoMap;
                             "buckets_path": "years",
                             "field": "gisOrt",
                             "precision": bucketResolution - 4
+                        },
+                        "aggs": {
+                            "years": {
+                                "date_histogram": {
+                                    "field": "startYear",
+                                    "interval": (365*yearResolution)+"d",
+                                    "time_zone": "Europe/Berlin",
+                                    "min_doc_count": 1
+                                }
+                            },
+                            "noYear": {
+                                "missing": { "field" : "startYear"}
+                            }
                         }
                     }
                 }
@@ -2146,7 +2161,7 @@ var cartoMap;
 
 
         if ((filterMain.val() == undefined || filterMain.val().length == 0) && (filterLeft.val() == undefined || filterLeft.val().length == 0)){
-            body["query"] = {"match_all": {}};
+            body["query"] = getQueryObjectForParams(null, null, "and", null, temp);
         }
         else{
             if($("#lemma-and-or-selector option:selected").val() == "and"){
@@ -2170,13 +2185,17 @@ var cartoMap;
     function getLemmasInGeoHashBucket(geo_hash) {
 
         var queryObj;
+        var tempOnly = !$("#nontemporal-checkbox").is(":checked");
+
         if ((filterMain.val() !== undefined && filterMain.val().length !== 0) || (filterLeft.val() !== undefined && filterLeft.val().length !== 0)){
             if($("#lemma-and-or-selector option:selected").val() == "and"){
-                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", geo_hash, !$("#nontemporal-checkbox").is(":checked"));
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", geo_hash, tempOnly);
             }
             else{
-                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", geo_hash, !$("#nontemporal-checkbox").is(":checked"));
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", geo_hash, tempOnly);
             }
+        } else {
+            queryObj = getQueryObjectForParams(null, null, "and", geo_hash, tempOnly);
         }
 
         var body = {
@@ -2242,23 +2261,27 @@ var cartoMap;
 
     function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only) {
 
-        mainLemma = mainLemma
-            .replace('{','?')
-            .replace('<','?')
-            .replace('>','?')
-            .replace(':','?')
-            .replace('}','?');
+        if (mainLemma) {
+            mainLemma = mainLemma
+                .replace('{','?')
+                .replace('<','?')
+                .replace('>','?')
+                .replace(':','?')
+                .replace('}','?');
+        }
 
-        leftLemma = leftLemma
-            .replace('{','?')
-            .replace('<','?')
-            .replace('>','?')
-            .replace(':','?')
-            .replace('}','?');
+        if (leftLemma) {
+            leftLemma = leftLemma
+                .replace('{','?')
+                .replace('<','?')
+                .replace('>','?')
+                .replace(':','?')
+                .replace('}','?');
+        }
 
         var queryArray = [];
 
-        if (mainLemma !== undefined && mainLemma.length !== 0) {
+        if (mainLemma && mainLemma !== undefined && mainLemma.length !== 0) {
             queryArray.push({
                 "query_string": {
                     "default_field": "mainLemma.raw",
@@ -2267,7 +2290,7 @@ var cartoMap;
             });
         }
 
-        if (leftLemma !== undefined && leftLemma.length !== 0) {
+        if (leftLemma && leftLemma !== undefined && leftLemma.length !== 0) {
             queryArray.push({
                 "query_string": {
                     "default_field": "leftLemma.raw",
@@ -2405,7 +2428,7 @@ var cartoMap;
                     "geohash_grid": {
                         "field": "gisOrt",
                         "precision": bucketResolution - 5
-                    },
+                    }
                 }
             }
         };
