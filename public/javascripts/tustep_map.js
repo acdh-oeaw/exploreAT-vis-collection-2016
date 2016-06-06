@@ -28,15 +28,15 @@ var cartoMap;
     var treeRootLemma = "";
 
     $("#livesearch-holder > form > input")
-    .on("input", function() {
-        if(filterMain.val() == "" && filterLeft.val() == ""){
-            resetApp();
-        }
-        else{
-            resetTimelineColor(600);
-            update();
-        }
-    });
+        .on("input", function() {
+            if(filterMain.val() == "" && filterLeft.val() == ""){
+                resetApp();
+            }
+            else{
+                resetTimelineColor(600);
+                update();
+            }
+        });
 
     $("#lemma-and-or-selector").change(function(){
         resetTimelineColor(600);
@@ -51,9 +51,9 @@ var cartoMap;
     var bucketResolution = 7;
     var yearResolution = 1;
     var svg,
-    geoFeaturesLayer,
-    geoGridLayer,
-    geohashBuckets;
+        geoFeaturesLayer,
+        geoGridLayer,
+        geohashBuckets;
     var zoomDelay = 2000;
     var clickedGeoHash = "";
 
@@ -90,22 +90,22 @@ var cartoMap;
 
     var terrainLayer = d3.carto.layer.tile();
     terrainLayer
-    .path('toner-lite')
-    .tileType("stamen")
-    .label("Map Tiles");
+        .path('toner-lite')
+        .tileType("stamen")
+        .label("Map Tiles");
 
     var geojsonLayer = d3.carto.layer.geojson();
     geojsonLayer
-    .path("data/austria.json")
-    .label("Country Borders")
-    .visibility(true)
-    .cssClass("countryborders")
-    .renderMode("svg");
+        .path("data/austria.json")
+        .label("Country Borders")
+        .visibility(true)
+        .cssClass("countryborders")
+        .renderMode("svg");
 
     geoGridLayer = d3.carto.layer.featureArray().label("Bucket Grid")
-    .cssClass("bucketGrid")
-    .features([])
-    .renderMode("svg");
+        .cssClass("bucketGrid")
+        .features([])
+        .renderMode("svg");
 
     cartoMap.addCartoLayer(terrainLayer);
     cartoMap.addCartoLayer(geojsonLayer);
@@ -201,30 +201,30 @@ var cartoMap;
 
     function update() {
         getDataFromElastic()
-        .then(function(resp) {
-            if (resp.aggregations.length !== 0) {
-                createDataStructure(resp);
-                if(tustepData.length > 0) {
-                    refreshCrossfilter();
-                    refreshGridFeatures();
-                    refreshGeoFeatures();
-                }
-                else {
-                    console.log("no results")
-                    // Clear the timeline
-                    timelineChart.selectAll("rect.bar").remove();
+            .then(function(resp) {
+                if (resp.aggregations.length !== 0) {
+                    createDataStructure(resp);
+                    if(tustepData.length > 0) {
+                        refreshCrossfilter();
+                        refreshGridFeatures();
+                        refreshGeoFeatures();
+                    }
+                    else {
+                        console.log("no results")
+                        // Clear the timeline
+                        timelineChart.selectAll("rect.bar").remove();
 
-                    // No geofeatures == remove layer
-                    geoFeaturesLayer
-                    .features([]);
-                    //.clickableFeatures(true);
-                    cartoMap.refreshCartoLayer(geoFeaturesLayer);
+                        // No geofeatures == remove layer
+                        geoFeaturesLayer
+                            .features([]);
+                        //.clickableFeatures(true);
+                        cartoMap.refreshCartoLayer(geoFeaturesLayer);
 
-                    // Update counters to show no data was found
-                    $("#timeline-lemma-count").html(0);
+                        // Update counters to show no data was found
+                        $("#timeline-lemma-count").html(0);
+                    }
                 }
-            }
-        });
+            });
     }
 
     function createDataStructure(resp) {
@@ -251,7 +251,7 @@ var cartoMap;
             ndx = crossfilter(tustepData);
 
             if(yearDim == null || yearDim == undefined)
-            yearDim = ndx.dimension(dc.pluck('year'));
+                yearDim = ndx.dimension(dc.pluck('year'));
             // hashDim = ndx.dimension(dc.pluck('hash')),
             // docCountDim = ndx.dimension(dc.pluck('docs')),
             // allDim = ndx.dimension(function(d) {return d;});
@@ -264,7 +264,7 @@ var cartoMap;
             var reducer = reductio()
             // .count(true)
             // .avg(true)
-            .sum(function(d) { return d.docs; });
+                .sum(function(d) { return d.docs; });
             reducer(groupOfDocsPerYear);
 
             appendTimeline();
@@ -295,17 +295,17 @@ var cartoMap;
 
         var margins = {top: 10, right: 60, bottom: 40, left: 60};
         timelineChart
-        .width(parseInt(d3.select('#timeline-holder').style('width'), 10))
-        .height(100)
-        .dimension(yearDim)
-        .group(groupOfDocsPerYear)
-        .valueAccessor(function(p) { return p.value.sum; })
-        .x(d3.scale.linear().domain([
-            yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year, // minYear
-            yearDim.top(Infinity)[0].year // maxYear
-        ]))
-        .centerBar(true)
-        .margins(margins);
+            .width(parseInt(d3.select('#timeline-holder').style('width'), 10))
+            .height(100)
+            .dimension(yearDim)
+            .group(groupOfDocsPerYear)
+            .valueAccessor(function(p) { return p.value.sum; })
+            .x(d3.scale.linear().domain([
+                yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year, // minYear
+                yearDim.top(Infinity)[0].year // maxYear
+            ]))
+            .centerBar(true)
+            .margins(margins);
         timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort().filter(function(el, index) {return index % 10 === 1;}));
         //timelineChart.yAxis().tickValues(0);
 
@@ -320,7 +320,7 @@ var cartoMap;
         timelineChart.on('filtered', function () {
             refreshGeoFeatures();
             timelineChart.selectAll('g.x text')
-            .attr('transform', 'translate(-10,10) rotate(315)');
+                .attr('transform', 'translate(-10,10) rotate(315)');
         });
 
         // Reset == Remove filters and redraw
@@ -484,7 +484,7 @@ var cartoMap;
             });
 
             if(geoObject.doc_count > 0)
-            newGeohashBuckets.push(geoObject);
+                newGeohashBuckets.push(geoObject);
         });
 
         var geoFeaturesOverall = _.map(newGeohashBuckets, function (hash_bucket) {
@@ -529,32 +529,32 @@ var cartoMap;
 
     function refreshGridFeatures(){
         getGridDataFromElastic()
-        .then(function(resp) {
+            .then(function(resp) {
 
-            var gridFeatures = generateGridFeatures(resp);
+                var gridFeatures = generateGridFeatures(resp);
 
-            if(originalBBox == null || originalBBox == undefined){
-                var bounds = {};
-                bounds.ne = gridFeatures[0].properties.bounds.ne;
-                bounds.sw = gridFeatures[1].properties.bounds.sw;
-                originalBBox = getBoundingBoxLatLon(bounds);
-            }
+                if(originalBBox == null || originalBBox == undefined){
+                    var bounds = {};
+                    bounds.ne = gridFeatures[0].properties.bounds.ne;
+                    bounds.sw = gridFeatures[1].properties.bounds.sw;
+                    originalBBox = getBoundingBoxLatLon(bounds);
+                }
 
-            geoGridLayer
-            .features(gridFeatures);
-            cartoMap.refreshCartoLayer(geoGridLayer);
+                geoGridLayer
+                    .features(gridFeatures);
+                cartoMap.refreshCartoLayer(geoGridLayer);
 
-            // Highlight the clicked grid, if any
-            d3.selectAll('path.bucketGrid')
-            .style("stroke", function(d){
-                if(d.properties.key == clickedGeoHash){return "#00b8ff";}
-                else {return "rgba(0,0,0,.5)";}
-            })
-            .style("stroke-width", function(d){
-                if(d.properties.key == clickedGeoHash){return "5px";}
-                else {return "1px";}
+                // Highlight the clicked grid, if any
+                d3.selectAll('path.bucketGrid')
+                    .style("stroke", function(d){
+                        if(d.properties.key == clickedGeoHash){return "#00b8ff";}
+                        else {return "rgba(0,0,0,.5)";}
+                    })
+                    .style("stroke-width", function(d){
+                        if(d.properties.key == clickedGeoHash){return "5px";}
+                        else {return "1px";}
+                    });
             });
-        });
     }
 
     function refreshGeoFeatures(){
@@ -572,29 +572,29 @@ var cartoMap;
                 minDoc = minDoc || minDocCount;
                 maxDoc = maxDoc || maxDocCount;
                 var colorScale = d3.scale.linear()
-                .range(colorbrewer.Blues[3])
-                .domain([minDoc, mean, maxDoc]);
+                    .range(colorbrewer.Blues[3])
+                    .domain([minDoc, mean, maxDoc]);
                 d3.selectAll("path.featureLayer")
-                .style("fill", function (d) {return colorScale(d.properties.doc_count);})
+                    .style("fill", function (d) {return colorScale(d.properties.doc_count);})
                 d3.selectAll("g.featureLayer")
-                .style("opacity", "0.8");
+                    .style("opacity", "0.8");
 
                 refreshColorLegend(geoFeatures,colorScale);
             }
 
             if (geoFeaturesLayer == undefined) {
                 geoFeaturesLayer = d3.carto.layer.featureArray().label("Word Buckets")
-                .cssClass("featureLayer")
-                .features(geoFeatures)
-                .renderMode("svg")
-                .on("load", colorByCount);
+                    .cssClass("featureLayer")
+                    .features(geoFeatures)
+                    .renderMode("svg")
+                    .on("load", colorByCount);
                 cartoMap.addCartoLayer(geoFeaturesLayer);
             } else {
                 geoFeaturesLayer
-                .features(geoFeatures);
+                    .features(geoFeatures);
                 cartoMap.refreshCartoLayer(geoFeaturesLayer);
                 if (geoFeatures.length > 0)
-                colorByCount(minDocCount,docCountMean,maxDocCount);
+                    colorByCount(minDocCount,docCountMean,maxDocCount);
             }
 
             bindGeoFeaturesActions(geoFeatures);
@@ -606,7 +606,7 @@ var cartoMap;
         }
         else if(geoFeatures.length == 0){ // Empty brush selection, for example
             geoFeaturesLayer
-            .features([]);
+                .features([]);
             //.clickableFeatures(true);
             cartoMap.refreshCartoLayer(geoFeaturesLayer);
 
@@ -619,306 +619,306 @@ var cartoMap;
         var featureLayer = $("g.featureLayer");
         featureLayer.unbind('click');
         d3.selectAll("g.featureLayer").data(geoFeatures)
-        .on("click",function(d,i){
+            .on("click",function(d,i){
 
-            // Save the geohash id, to highlight it in the grid
-            clickedGeoHash = d.properties.key;
+                // Save the geohash id, to highlight it in the grid
+                clickedGeoHash = d.properties.key;
 
-            // Hide tooltip
-            tooltip.hide();
+                // Hide tooltip
+                tooltip.hide();
 
-            // Zoom and rise resolution
-            if(bucketResolution < 11){
-                resetTimelineColor(600);
-                setTimeout(function () { // Wait for the toggle left, then center
-                    cartoMap.refresh();
-                    cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
-                    setTimeout(
-                        function() {
-                            bucketResolution +=1;
-                            $("#bucket-resolution-selector").val(bucketResolution);
-                            update();
-                        }, zoomDelay-850
-                    );
-                }, 750);
-            }
-
-            // Reset opacity of all
-            d3.selectAll("g.featureLayer")
-            .style("opacity", "0.8")
-            // .style("stroke-width","0px")
-            // .style("stroke","black");
-
-            // Show lemmas contained in the bucket
-            var lemmaListTable = $('#lemma-list-table');
-            lemmaListTable.html("");
-
-            getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
-
-                generateLemmaGraphFromAggregations(resp.aggregations);
-
-                var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
-                var foundLemmas = [];
-
-                var counter = 0;
-                // if(filterMain.val() != "" || filterLeft.val() != ""){
-                //     for(var i = 0; i<d.doc_count || i<20; i++){
-                //         if(filterMain.val() != "" && filterLeft.val() == ""){
-                //             if(wordBuckets[i].key == filterMain.val()) {
-                //                 lemmaListTable.append(function(){
-                //                     var html = '<div class="lemma-list-row">';
-                //                     html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                //                     html += '<div class="lemma-list-actions">';
-                //                     html += '<div class="lemma-button relations">Plot Relations</div>';
-                //                     html += '<div class="lemma-button map">Plot in Map</div>';
-                //                     html += '</div>';
-                //                     html += '</div>';
-                //                     return html;
-                //                 });
-                //                 counter++;
-                //                 foundLemmas.push(wordBuckets[i].key);
-                //             }
-                //         }
-                //         else if(filterLeft.val() != "" && filterMain.val() == ""){
-                //             if(wordBuckets[i].leftLemma.buckets != undefined &&
-                //                 wordBuckets[i].leftLemma.buckets.length > 0){
-                //                     for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
-                //                         if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
-                //                             lemmaListTable.append(function(){
-                //                                 var html = '<div class="lemma-list-row">';
-                //                                 html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                //                                 html += '<div class="lemma-list-actions">';
-                //                                 html += '<div class="lemma-button relations">Plot Relations</div>';
-                //                                 html += '<div class="lemma-button map">Plot in Map</div>';
-                //                                 html += '</div>';
-                //                                 html += '</div>';
-                //                                 return html;
-                //                             });
-                //                             counter++;
-                //                             foundLemmas.push(wordBuckets[i].key);
-                //                         }
-                //                     }
-                //                 }
-                //         }
-                //         else if(filterMain.val() != "" && filterLeft.val() != ""){
-                //             if(wordBuckets[i].key == filterMain.val()){
-                //                 for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
-                //                     if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
-                //                         lemmaListTable.append(function(){
-                //                             var html = '<div class="lemma-list-row">';
-                //                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                //                             html += '<div class="lemma-list-actions">';
-                //                             html += '<div class="lemma-button relations">Plot Relations</div>';
-                //                             html += '<div class="lemma-button map">Plot in Map</div>';
-                //                             html += '</div>';
-                //                             html += '</div>';
-                //                             return html;
-                //                         });
-                //                         counter++;
-                //                         foundLemmas.push(wordBuckets[i].key);
-                //                     }
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
-                if(filterMain.val() != "" && filterMain.val() != "*"){
-                    $("#lemma-list-detail").html("");
-                    for(var i = 0; i<wordBuckets.length; i++){
-                        if(wordBuckets[i].key == filterMain.val()){
-                            lemmaListTable.append(function(){
-                                var html = '<div class="lemma-list-row">';
-                                html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                html += '<div class="lemma-list-actions">';
-                                html += '<div class="lemma-button relations">Plot Relations</div>';
-                                html += '<div class="lemma-button map">Plot in Map</div>';
-                                html += '</div>';
-                                html += '</div>';
-                                return html;
-                            });
-                            counter++;
-                            foundLemmas.push(wordBuckets[i].key);
-                        }
-
-                    }
+                // Zoom and rise resolution
+                if(bucketResolution < 11){
+                    resetTimelineColor(600);
+                    setTimeout(function () { // Wait for the toggle left, then center
+                        cartoMap.refresh();
+                        cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
+                        setTimeout(
+                            function() {
+                                bucketResolution +=1;
+                                $("#bucket-resolution-selector").val(bucketResolution);
+                                update();
+                            }, zoomDelay-850
+                        );
+                    }, 750);
                 }
-                else { // filterMain == "*" && filterMain == ""
 
-                    if(filterLeft.val() != "" && filterLeft.val() != "*"){
-                        $("#lemma-list-detail").html(function(){
-                            var html = "";
-                            html += '(with "<strong>'+filterLeft.val()+'</strong>" as the Left Lemma)';
-                            return html;
-                        });
-                        for(var i = 0; i<wordBuckets.length; i++){
-                            _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
-                                if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
-                                    if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
-                                        lemmaListTable.append(function(){
-                                            var html = '<div class="lemma-list-row">';
-                                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                            html += '<div class="lemma-list-actions">';
-                                            html += '<div class="lemma-button relations">Plot Relations</div>';
-                                            html += '<div class="lemma-button map">Plot in Map</div>';
-                                            html += '</div>';
-                                            html += '</div>';
-                                            return html;
-                                        });
-                                        counter++;
-                                        foundLemmas.push(wordBuckets[i].key);
-                                    }
-                                }
-                                else{
-                                    if(relatedLeftLemma.key == filterLeft.val()){
-                                        lemmaListTable.append(function(){
-                                            var html = '<div class="lemma-list-row">';
-                                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                            html += '<div class="lemma-list-actions">';
-                                            html += '<div class="lemma-button relations">Plot Relations</div>';
-                                            html += '<div class="lemma-button map">Plot in Map</div>';
-                                            html += '</div>';
-                                            html += '</div>';
-                                            return html;
-                                        });
-                                        counter++;
-                                        foundLemmas.push(wordBuckets[i].key);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                    else { // filterLeft == "*" && filterLeft == ""
+                // Reset opacity of all
+                d3.selectAll("g.featureLayer")
+                    .style("opacity", "0.8")
+                // .style("stroke-width","0px")
+                // .style("stroke","black");
+
+                // Show lemmas contained in the bucket
+                var lemmaListTable = $('#lemma-list-table');
+                lemmaListTable.html("");
+
+                getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
+
+                    generateLemmaGraphFromAggregations(resp.aggregations);
+
+                    var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
+                    var foundLemmas = [];
+
+                    var counter = 0;
+                    // if(filterMain.val() != "" || filterLeft.val() != ""){
+                    //     for(var i = 0; i<d.doc_count || i<20; i++){
+                    //         if(filterMain.val() != "" && filterLeft.val() == ""){
+                    //             if(wordBuckets[i].key == filterMain.val()) {
+                    //                 lemmaListTable.append(function(){
+                    //                     var html = '<div class="lemma-list-row">';
+                    //                     html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                    //                     html += '<div class="lemma-list-actions">';
+                    //                     html += '<div class="lemma-button relations">Plot Relations</div>';
+                    //                     html += '<div class="lemma-button map">Plot in Map</div>';
+                    //                     html += '</div>';
+                    //                     html += '</div>';
+                    //                     return html;
+                    //                 });
+                    //                 counter++;
+                    //                 foundLemmas.push(wordBuckets[i].key);
+                    //             }
+                    //         }
+                    //         else if(filterLeft.val() != "" && filterMain.val() == ""){
+                    //             if(wordBuckets[i].leftLemma.buckets != undefined &&
+                    //                 wordBuckets[i].leftLemma.buckets.length > 0){
+                    //                     for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
+                    //                         if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
+                    //                             lemmaListTable.append(function(){
+                    //                                 var html = '<div class="lemma-list-row">';
+                    //                                 html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                    //                                 html += '<div class="lemma-list-actions">';
+                    //                                 html += '<div class="lemma-button relations">Plot Relations</div>';
+                    //                                 html += '<div class="lemma-button map">Plot in Map</div>';
+                    //                                 html += '</div>';
+                    //                                 html += '</div>';
+                    //                                 return html;
+                    //                             });
+                    //                             counter++;
+                    //                             foundLemmas.push(wordBuckets[i].key);
+                    //                         }
+                    //                     }
+                    //                 }
+                    //         }
+                    //         else if(filterMain.val() != "" && filterLeft.val() != ""){
+                    //             if(wordBuckets[i].key == filterMain.val()){
+                    //                 for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
+                    //                     if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
+                    //                         lemmaListTable.append(function(){
+                    //                             var html = '<div class="lemma-list-row">';
+                    //                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                    //                             html += '<div class="lemma-list-actions">';
+                    //                             html += '<div class="lemma-button relations">Plot Relations</div>';
+                    //                             html += '<div class="lemma-button map">Plot in Map</div>';
+                    //                             html += '</div>';
+                    //                             html += '</div>';
+                    //                             return html;
+                    //                         });
+                    //                         counter++;
+                    //                         foundLemmas.push(wordBuckets[i].key);
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                    if(filterMain.val() != "" && filterMain.val() != "*"){
                         $("#lemma-list-detail").html("");
-                        for(var i = 0; i<20 && i<wordBuckets.length; i++){
-                            lemmaListTable.append(function(){
-                                var html = '<div class="lemma-list-row">';
-                                html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                html += '<div class="lemma-list-actions">';
-                                html += '<div class="lemma-button relations">Plot Relations</div>';
-                                html += '<div class="lemma-button map">Plot in Map</div>';
-                                html += '</div>';
-                                html += '</div>';
-                                return html;
-                            });
-                            foundLemmas.push(wordBuckets[i].key);
+                        for(var i = 0; i<wordBuckets.length; i++){
+                            if(wordBuckets[i].key == filterMain.val()){
+                                lemmaListTable.append(function(){
+                                    var html = '<div class="lemma-list-row">';
+                                    html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                    html += '<div class="lemma-list-actions">';
+                                    html += '<div class="lemma-button relations">Plot Relations</div>';
+                                    html += '<div class="lemma-button map">Plot in Map</div>';
+                                    html += '</div>';
+                                    html += '</div>';
+                                    return html;
+                                });
+                                counter++;
+                                foundLemmas.push(wordBuckets[i].key);
+                            }
+
                         }
                     }
-                }
+                    else { // filterMain == "*" && filterMain == ""
 
-                // Lemma List Listeners
+                        if(filterLeft.val() != "" && filterLeft.val() != "*"){
+                            $("#lemma-list-detail").html(function(){
+                                var html = "";
+                                html += '(with "<strong>'+filterLeft.val()+'</strong>" as the Left Lemma)';
+                                return html;
+                            });
+                            for(var i = 0; i<wordBuckets.length; i++){
+                                _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
+                                    if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
+                                        if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
+                                            lemmaListTable.append(function(){
+                                                var html = '<div class="lemma-list-row">';
+                                                html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                                html += '<div class="lemma-list-actions">';
+                                                html += '<div class="lemma-button relations">Plot Relations</div>';
+                                                html += '<div class="lemma-button map">Plot in Map</div>';
+                                                html += '</div>';
+                                                html += '</div>';
+                                                return html;
+                                            });
+                                            counter++;
+                                            foundLemmas.push(wordBuckets[i].key);
+                                        }
+                                    }
+                                    else{
+                                        if(relatedLeftLemma.key == filterLeft.val()){
+                                            lemmaListTable.append(function(){
+                                                var html = '<div class="lemma-list-row">';
+                                                html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                                html += '<div class="lemma-list-actions">';
+                                                html += '<div class="lemma-button relations">Plot Relations</div>';
+                                                html += '<div class="lemma-button map">Plot in Map</div>';
+                                                html += '</div>';
+                                                html += '</div>';
+                                                return html;
+                                            });
+                                            counter++;
+                                            foundLemmas.push(wordBuckets[i].key);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        else { // filterLeft == "*" && filterLeft == ""
+                            $("#lemma-list-detail").html("");
+                            for(var i = 0; i<20 && i<wordBuckets.length; i++){
+                                lemmaListTable.append(function(){
+                                    var html = '<div class="lemma-list-row">';
+                                    html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                    html += '<div class="lemma-list-actions">';
+                                    html += '<div class="lemma-button relations">Plot Relations</div>';
+                                    html += '<div class="lemma-button map">Plot in Map</div>';
+                                    html += '</div>';
+                                    html += '</div>';
+                                    return html;
+                                });
+                                foundLemmas.push(wordBuckets[i].key);
+                            }
+                        }
+                    }
 
-                d3.selectAll(".lemma-button.relations").data(wordBuckets)
-                .on("click",function(lemmaBucket,i){
-                    generateTreeGraphForLemma(foundLemmas[i]);
-                    w2ui['content'].show('left');
+                    // Lemma List Listeners
+
+                    d3.selectAll(".lemma-button.relations").data(wordBuckets)
+                        .on("click",function(lemmaBucket,i){
+                            generateTreeGraphForLemma(foundLemmas[i]);
+                            w2ui['content'].show('left');
+                        });
+
+                    d3.selectAll(".lemma-button.map").data(wordBuckets)
+                        .on("click",function(lemmaBucket,i){
+                            plotInMap(foundLemmas[i],"or",foundLemmas[i]);
+                        });
+
+                    showHideLemmaList(true);
                 });
-
-                d3.selectAll(".lemma-button.map").data(wordBuckets)
-                .on("click",function(lemmaBucket,i){
-                    plotInMap(foundLemmas[i],"or",foundLemmas[i]);
-                });
-
-                showHideLemmaList(true);
             });
-        });
         featureLayer.unbind('mouseover');
         featureLayer.unbind('mouseout');
         d3.selectAll("g.featureLayer").data(geoFeatures)
-        .on("mouseover",function(dFeature,i){
+            .on("mouseover",function(dFeature,i){
 
-            console.log(dFeature.properties.key);
-            console.log(_.filter(geohashBuckets,function(geoBucket){return geoBucket.key == dFeature.properties.key;}));
+                console.log(dFeature.properties.key);
+                console.log(_.filter(geohashBuckets,function(geoBucket){return geoBucket.key == dFeature.properties.key;}));
 
-            // Highlight this, low opacity of others
-            d3.selectAll("g.featureLayer")
-            .style("opacity", "0.2")
-            // .style("stroke-width","0px")
-            // .style("stroke","black");
-            d3.select(this)
-            .style("opacity","0.8")
-            // .style("stroke-width","4px")
-            // .style("stroke","#2b91fc");
+                // Highlight this, low opacity of others
+                d3.selectAll("g.featureLayer")
+                    .style("opacity", "0.2")
+                // .style("stroke-width","0px")
+                // .style("stroke","black");
+                d3.select(this)
+                    .style("opacity","0.8")
+                // .style("stroke-width","4px")
+                // .style("stroke","#2b91fc");
 
-            // Only if the user wants to see the tooltip
-            if($("#tooltip-checkbox").is(":checked")) {
+                // Only if the user wants to see the tooltip
+                if($("#tooltip-checkbox").is(":checked")) {
 
-                var featureCount = dFeature.properties.doc_count;
-                var restCount = parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count;
+                    var featureCount = dFeature.properties.doc_count;
+                    var restCount = parseInt($("#timeline-lemma-count").html())-dFeature.properties.doc_count;
 
-                tooltipYmodifier = 0;
-                tooltip.html(function(){
-                    var html = '<div id="tooltip-lemma-counter">';
-                    html += '<strong>'+featureCount+' lemmas</strong><br>'
-                    html += 'out of <strong>'+(restCount+featureCount)+'</strong>';
-                    html += '</div>';
-                    return html;
-                });
+                    tooltipYmodifier = 0;
+                    tooltip.html(function(){
+                        var html = '<div id="tooltip-lemma-counter">';
+                        html += '<strong>'+featureCount+' lemmas</strong><br>'
+                        html += 'out of <strong>'+(restCount+featureCount)+'</strong>';
+                        html += '</div>';
+                        return html;
+                    });
 
-                // tooltip.css({
-                //     'top': $(this).position().top - $(this).height()/2,
-                //     'left': $(this).offset().left - $(this).width()/2,
-                //     'width': $(this).width(),
-                //     'height': $(this).height()
-                // });
+                    // tooltip.css({
+                    //     'top': $(this).position().top - $(this).height()/2,
+                    //     'left': $(this).offset().left - $(this).width()/2,
+                    //     'width': $(this).width(),
+                    //     'height': $(this).height()
+                    // });
 
-                var w = 24, h = 24, r = 12;
-                var color = d3.scale.category20c();
-                var color = d3.scale.ordinal()
-                .domain([featureCount,restCount])
-                .range(["#2b91fc", "#d6eaff"]);
+                    var w = 24, h = 24, r = 12;
+                    var color = d3.scale.category20c();
+                    var color = d3.scale.ordinal()
+                        .domain([featureCount,restCount])
+                        .range(["#2b91fc", "#d6eaff"]);
 
-                var data = [{"label":"Feature", "value":featureCount},
-                {"label":"All", "value":restCount}];
+                    var data = [{"label":"Feature", "value":featureCount},
+                        {"label":"All", "value":restCount}];
 
-                var vis = d3.select("#tooltip")
-                .insert("svg:svg",":first-child")
-                .data([data])
-                .attr("class","vis")
-                .attr("width", w)
-                .attr("height", h)
-                .append("svg:g")
-                .attr("transform", "translate(" + r + "," + r + ")");
-                var pie = d3.layout.pie().value(function(d){return d.value;});
+                    var vis = d3.select("#tooltip")
+                        .insert("svg:svg",":first-child")
+                        .data([data])
+                        .attr("class","vis")
+                        .attr("width", w)
+                        .attr("height", h)
+                        .append("svg:g")
+                        .attr("transform", "translate(" + r + "," + r + ")");
+                    var pie = d3.layout.pie().value(function(d){return d.value;});
 
-                // declare an arc generator function
-                var arc = d3.svg.arc().outerRadius(r);
+                    // declare an arc generator function
+                    var arc = d3.svg.arc().outerRadius(r);
 
-                // select paths, use arc generator to draw
-                var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-                arcs.append("svg:path")
-                .attr("fill", function(d, i){
-                    return color(i);
-                })
-                .attr("d", function (d) {
-                    return arc(d);
-                });
+                    // select paths, use arc generator to draw
+                    var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+                    arcs.append("svg:path")
+                        .attr("fill", function(d, i){
+                            return color(i);
+                        })
+                        .attr("d", function (d) {
+                            return arc(d);
+                        });
 
-                tooltip.show();
-            }
+                    tooltip.show();
+                }
 
-            // Highlight related years in timeline
-            setTimeout(function () {
-                timelineChart.selectAll('rect.bar').each(function(dBar){
-                    if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
-                        d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
-                    }
-                    else {
-                        d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
-                    }
-                });
-            }, 100);
-        })
-        .on("mouseout",function(dFeature,i){
+                // Highlight related years in timeline
+                setTimeout(function () {
+                    timelineChart.selectAll('rect.bar').each(function(dBar){
+                        if(dFeature.properties.years.indexOf(parseInt(dBar.x)) > -1){
+                            d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
+                        }
+                        else {
+                            d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
+                        }
+                    });
+                }, 100);
+            })
+            .on("mouseout",function(dFeature,i){
 
-            // Reset opacity of all
-            d3.selectAll("g.featureLayer")
-            .style("opacity", "0.8")
-            // .style("stroke-width","0px")
-            // .style("stroke","black");
+                // Reset opacity of all
+                d3.selectAll("g.featureLayer")
+                    .style("opacity", "0.8")
+                // .style("stroke-width","0px")
+                // .style("stroke","black");
 
-            resetTimelineColor(0);
-            tooltip.hide();
-        });
+                resetTimelineColor(0);
+                tooltip.hide();
+            });
     }
 
     function generateCrossGeoFeatures() {
@@ -953,7 +953,7 @@ var cartoMap;
                 });
 
                 if(geoObject.doc_count > 0)
-                newGeoHashBuckets.push(geoObject);
+                    newGeoHashBuckets.push(geoObject);
             });
 
             return _.map(newGeoHashBuckets, function (hash_bucket) {
@@ -1022,22 +1022,22 @@ var cartoMap;
 
     function generateLemmaGraphFromAggregations(resp_aggregations) {
         var nodes = [],
-        links = [];
+            links = [];
 
         _.forEach(resp_aggregations.mainLemma.buckets, function (bucket) {
 
             if (bucket.leftLemma.buckets.length == 0)
-            return; //Skip
+                return; //Skip
 
             var bucketIndex = _.findIndex(nodes, function (node) {
                 return node.name == bucket.key;
             });
             if (bucketIndex == -1) {
                 bucketIndex = nodes.push({
-                    "name"      : bucket.key,
-                    "mainLemma" : true,
+                        "name"      : bucket.key,
+                        "mainLemma" : true,
                         "weight": 0
-                }) - 1;
+                    }) - 1;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
                 var leftLemmaIndex = _.findIndex(nodes, function (node) {
@@ -1045,13 +1045,13 @@ var cartoMap;
                 });
                 if (leftLemmaIndex == -1) {
                     leftLemmaIndex = nodes.push({
-                        "name": bucket_leftLemma.key,
+                            "name": bucket_leftLemma.key,
                             "weight" : 0
-                    }) - 1;
+                        }) - 1;
                 }
                 var linkIndex = _.findIndex(links, function(link) {
                     return link.source == bucketIndex &&
-                    link.target == leftLemmaIndex;
+                        link.target == leftLemmaIndex;
                 });
 
                 if (linkIndex !== -1) {
@@ -1110,10 +1110,10 @@ var cartoMap;
 
         setTimeout(function () {
             d3.lemmaGraph('#lemma-graph')
-            .nodes(nodes)
-            .links(links)
-            .communities(communities)
-            .update();
+                .nodes(nodes)
+                .links(links)
+                .communities(communities)
+                .update();
         }, 1000);
     }
 
@@ -1386,13 +1386,13 @@ var cartoMap;
         var viewerHeight = $("#lemma-graph").height();
 
         var tree = d3.layout.tree()
-        .size([viewerHeight, viewerWidth]);
+            .size([viewerHeight, viewerWidth]);
 
         // define a d3 diagonal projection for use by the node paths later on.
         var diagonal = d3.svg.diagonal()
-        .projection(function(d) {
-            return [d.y, d.x];
-        });
+            .projection(function(d) {
+                return [d.y, d.x];
+            });
 
         // A recursive helper function for performing some setup by walking through all nodes
 
@@ -1510,89 +1510,89 @@ var cartoMap;
 
         // define the baseSvg, attaching a class for styling and the zoomListener
         var baseSvg = d3.select("#lemma-graph-"+side).append("svg")
-        .attr("width", viewerWidth)
-        .attr("height", viewerHeight)
-        .attr("class", "overlaysvg "+side)
-        .attr("id", "treesvg"+side)
-        .call(zoomListener);
+            .attr("width", viewerWidth)
+            .attr("height", viewerHeight)
+            .attr("class", "overlaysvg "+side)
+            .attr("id", "treesvg"+side)
+            .call(zoomListener);
 
         // Define the drag listeners for drag/drop behaviour of nodes.
         dragListener = d3.behavior.drag()
-        .on("dragstart", function(d) {
-            // if (d == root) {
-            //     return;
-            // }
-            // dragStarted = true;
-            // nodes = tree.nodes(d);
-            // d3.event.sourceEvent.stopPropagation();
-            // // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
-        })
-        .on("drag", function(d) {
-            // if (d == root) {
-            //     return;
-            // }
-            // if (dragStarted) {
-            //     domNode = this;
-            //     initiateDrag(d, domNode);
-            // }
-            //
-            // // get coords of mouseEvent relative to svg container to allow for panning
-            // relCoords = d3.mouse($('svg').get(0));
-            // if (relCoords[0] < panBoundary) {
-            //     panTimer = true;
-            //     pan(this, 'left');
-            // } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
-            //
-            //     panTimer = true;
-            //     pan(this, 'right');
-            // } else if (relCoords[1] < panBoundary) {
-            //     panTimer = true;
-            //     pan(this, 'up');
-            // } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
-            //     panTimer = true;
-            //     pan(this, 'down');
-            // } else {
-            //     try {
-            //         clearTimeout(panTimer);
-            //     } catch (e) {
-            //
-            //     }
-            // }
-            //
-            // d.x0 += d3.event.dy;
-            // d.y0 += d3.event.dx;
-            // var node = d3.select(this);
-            // node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
-            // updateTempConnector();
-        }).on("dragend", function(d) {
-            // if (d == root) {
-            //     return;
-            // }
-            // domNode = this;
-            // if (selectedNode) {
-            //     // now remove the element from the parent, and insert it into the new elements children
-            //     var index = draggingNode.parent.children.indexOf(draggingNode);
-            //     if (index > -1) {
-            //         draggingNode.parent.children.splice(index, 1);
-            //     }
-            //     if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
-            //         if (typeof selectedNode.children !== 'undefined') {
-            //             selectedNode.children.push(draggingNode);
-            //         } else {
-            //             selectedNode._children.push(draggingNode);
-            //         }
-            //     } else {
-            //         selectedNode.children = [];
-            //         selectedNode.children.push(draggingNode);
-            //     }
-            //     // Make sure that the node being added to is expanded so user can see added node is correctly moved
-            //     expand(selectedNode);
-            //     sortTree();
-            //     endDrag();
-            // } else {
-            //     endDrag();
-            // }
-        });
+            .on("dragstart", function(d) {
+                // if (d == root) {
+                //     return;
+                // }
+                // dragStarted = true;
+                // nodes = tree.nodes(d);
+                // d3.event.sourceEvent.stopPropagation();
+                // // it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
+            })
+            .on("drag", function(d) {
+                // if (d == root) {
+                //     return;
+                // }
+                // if (dragStarted) {
+                //     domNode = this;
+                //     initiateDrag(d, domNode);
+                // }
+                //
+                // // get coords of mouseEvent relative to svg container to allow for panning
+                // relCoords = d3.mouse($('svg').get(0));
+                // if (relCoords[0] < panBoundary) {
+                //     panTimer = true;
+                //     pan(this, 'left');
+                // } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+                //
+                //     panTimer = true;
+                //     pan(this, 'right');
+                // } else if (relCoords[1] < panBoundary) {
+                //     panTimer = true;
+                //     pan(this, 'up');
+                // } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+                //     panTimer = true;
+                //     pan(this, 'down');
+                // } else {
+                //     try {
+                //         clearTimeout(panTimer);
+                //     } catch (e) {
+                //
+                //     }
+                // }
+                //
+                // d.x0 += d3.event.dy;
+                // d.y0 += d3.event.dx;
+                // var node = d3.select(this);
+                // node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
+                // updateTempConnector();
+            }).on("dragend", function(d) {
+                // if (d == root) {
+                //     return;
+                // }
+                // domNode = this;
+                // if (selectedNode) {
+                //     // now remove the element from the parent, and insert it into the new elements children
+                //     var index = draggingNode.parent.children.indexOf(draggingNode);
+                //     if (index > -1) {
+                //         draggingNode.parent.children.splice(index, 1);
+                //     }
+                //     if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
+                //         if (typeof selectedNode.children !== 'undefined') {
+                //             selectedNode.children.push(draggingNode);
+                //         } else {
+                //             selectedNode._children.push(draggingNode);
+                //         }
+                //     } else {
+                //         selectedNode.children = [];
+                //         selectedNode.children.push(draggingNode);
+                //     }
+                //     // Make sure that the node being added to is expanded so user can see added node is correctly moved
+                //     expand(selectedNode);
+                //     sortTree();
+                //     endDrag();
+                // } else {
+                //     endDrag();
+                // }
+            });
 
         function endDrag() {
             // selectedNode = null;
@@ -1654,9 +1654,9 @@ var cartoMap;
             var link = svgGroup.selectAll(".templink-tree").data(data);
 
             link.enter().append("path")
-            .attr("class", "templink-tree")
-            .attr("d", d3.svg.diagonal())
-            .attr('pointer-events', 'none');
+                .attr("class", "templink-tree")
+                .attr("d", d3.svg.diagonal())
+                .attr('pointer-events', 'none');
 
             link.attr("d", d3.svg.diagonal());
 
@@ -1673,8 +1673,8 @@ var cartoMap;
             x = x * scale + viewerWidth / 2;
             y = y * scale + viewerHeight / 2;
             d3.select('g').transition()
-            .duration(duration)
-            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+                .duration(duration)
+                .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
             zoomListener.scale(scale);
             zoomListener.translate([x, y]);
             //}
@@ -1697,7 +1697,7 @@ var cartoMap;
 
         function click(d) {
             if(d3.event != null)
-            if (d3.event.defaultPrevented) return; // click suppressed
+                if (d3.event.defaultPrevented) return; // click suppressed
             d = toggleChildren(d);
             update(d);
             centerNode(d);
@@ -1725,7 +1725,7 @@ var cartoMap;
 
             // Compute the new tree layout.
             var nodes = tree.nodes(root).reverse(),
-            links = tree.links(nodes);
+                links = tree.links(nodes);
 
             // Set widths between levels based on maxLabelLength.
             nodes.forEach(function(d) {
@@ -1742,268 +1742,268 @@ var cartoMap;
 
             // Update the nodes…
             node = svgGroup.selectAll("g.node-tree")
-            .data(nodes, function(d) {
-                return d.id || (d.id = ++i);
-            });
+                .data(nodes, function(d) {
+                    return d.id || (d.id = ++i);
+                });
 
             // Enter any new nodes at the parent's previous position.
             var nodeEnter = node.enter().append("g")
-            .call(dragListener)
-            .attr("class", "node-tree")
-            .attr("transform", function(d) {
-                return "translate(" + source.y0 + "," + source.x0 + ")";
-            })
-            .on('click', function(d){
-                click(d);
+                .call(dragListener)
+                .attr("class", "node-tree")
+                .attr("transform", function(d) {
+                    return "translate(" + source.y0 + "," + source.x0 + ")";
+                })
+                .on('click', function(d){
+                    click(d);
 
-                // If we click a leaf, we plot it in the map
-                if(d.parent.name != lemma){
-                    if(side == "right"){plotInMap(d.name,"and",root.name);}
-                    else if(side == "left"){plotInMap(root.name,"and",d.name);}
-                    showHideLemmaList(false);
-                }
-            })
-            .on("mouseover", function(d,i){
-
-                d3.selection.prototype.moveToFront = function() {
-                    return this.each(function(){
-                        this.parentNode.appendChild(this);
-                    });
-                };
-
-                d3.selection.prototype.moveToBack = function() {
-                    return this.each(function() {
-                        var firstChild = this.parentNode.firstChild;
-                        if (firstChild) {
-                            this.parentNode.insertBefore(this, firstChild);
-                        }
-                    });
-                };
-
-                // Highlight the links between the root and the active node
-                var nodeParentName = d.parent.name;
-                var nodeName = d.name;
-                var links = d3.selectAll(".link-tree");
-                _.forEach(links[0], function(link){
-                    // Me with parent
-                    if(link.__data__.source.name == d.parent.name && link.__data__.target.name == d.name){
-                        //d3.select(link).moveToFront();
-                        d3.select(link).style("stroke","#2b91fc");
-                    }
-                    // Parent with root
+                    // If we click a leaf, we plot it in the map
                     if(d.parent.name != lemma){
-                        if(link.__data__.source.name == lemma && link.__data__.target.name == d.parent.name){
+                        if(side == "right"){plotInMap(d.name,"and",root.name);}
+                        else if(side == "left"){plotInMap(root.name,"and",d.name);}
+                        showHideLemmaList(false);
+                    }
+                })
+                .on("mouseover", function(d,i){
+
+                    d3.selection.prototype.moveToFront = function() {
+                        return this.each(function(){
+                            this.parentNode.appendChild(this);
+                        });
+                    };
+
+                    d3.selection.prototype.moveToBack = function() {
+                        return this.each(function() {
+                            var firstChild = this.parentNode.firstChild;
+                            if (firstChild) {
+                                this.parentNode.insertBefore(this, firstChild);
+                            }
+                        });
+                    };
+
+                    // Highlight the links between the root and the active node
+                    var nodeParentName = d.parent.name;
+                    var nodeName = d.name;
+                    var links = d3.selectAll(".link-tree");
+                    _.forEach(links[0], function(link){
+                        // Me with parent
+                        if(link.__data__.source.name == d.parent.name && link.__data__.target.name == d.name){
                             //d3.select(link).moveToFront();
                             d3.select(link).style("stroke","#2b91fc");
                         }
-                    }
-                });
-
-                if(d.parent.name != lemma){
-                    tooltipYmodifier = 20;
-                    tooltip.html(function(){
-                        var html = "";
-                        if(side == "right"){
-                            html += 'Click to plot <strong>('+d.name+')'+lemma+'</strong> in the map';
-                            html += '<br><span>* There may be no results</span>';
+                        // Parent with root
+                        if(d.parent.name != lemma){
+                            if(link.__data__.source.name == lemma && link.__data__.target.name == d.parent.name){
+                                //d3.select(link).moveToFront();
+                                d3.select(link).style("stroke","#2b91fc");
+                            }
                         }
-                        else if(side == "left"){
-                            html += 'Click to plot <strong>('+lemma+')'+d.name+'</strong> in the map';
-                            html += '<br><span>* There may be no results</span>';
-                        }
-                        return html;
                     });
 
-                    tooltip.show();
-                }
-
-                if(d.years != undefined && d.years.length > 0){
-                    setTimeout(function () {
-                        // Highlight related years in timeline
-                        timelineChart.selectAll('rect.bar').each(function(dBar){
-                            if(d.years.indexOf(parseInt(dBar.x)) > -1){
-                                d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
+                    if(d.parent.name != lemma){
+                        tooltipYmodifier = 20;
+                        tooltip.html(function(){
+                            var html = "";
+                            if(side == "right"){
+                                html += 'Click to plot <strong>('+d.name+')'+lemma+'</strong> in the map';
+                                html += '<br><span>* There may be no results</span>';
                             }
-                            else {
-                                d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
+                            else if(side == "left"){
+                                html += 'Click to plot <strong>('+lemma+')'+d.name+'</strong> in the map';
+                                html += '<br><span>* There may be no results</span>';
                             }
+                            return html;
                         });
-                    }, 100);
-                }
-            })
-            .on("mouseout", function(d){
-                var links = d3.selectAll(".link-tree");
-                _.forEach(links[0], function(link){
-                    d3.select(link).style("stroke","#ccc");
+
+                        tooltip.show();
+                    }
+
+                    if(d.years != undefined && d.years.length > 0){
+                        setTimeout(function () {
+                            // Highlight related years in timeline
+                            timelineChart.selectAll('rect.bar').each(function(dBar){
+                                if(d.years.indexOf(parseInt(dBar.x)) > -1){
+                                    d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
+                                }
+                                else {
+                                    d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
+                                }
+                            });
+                        }, 100);
+                    }
+                })
+                .on("mouseout", function(d){
+                    var links = d3.selectAll(".link-tree");
+                    _.forEach(links[0], function(link){
+                        d3.select(link).style("stroke","#ccc");
+                    });
+                    tooltip.hide();
+                    resetTimelineColor(0);
                 });
-                tooltip.hide();
-                resetTimelineColor(0);
-            });
 
             nodeEnter.append("circle")
-            .attr('class', 'nodeCircle-tree')
-            .attr("r", 0)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-            });
+                .attr('class', 'nodeCircle-tree')
+                .attr("r", 0)
+                .style("fill", function(d) {
+                    return d._children ? "lightsteelblue" : "#fff";
+                });
 
             nodeEnter.append("text")
-            .attr("x", function(d) {
-                if(side == "left"){
-                    return d.children || d._children ? -10 : 10;
-                }
-                else{
-                    return d.children || d._children ? 10 : -10;
-                }
-            })
-            .attr("dy", ".35em")
-            .attr('class', 'nodeText-tree')
-            .attr("text-anchor", function(d) {
-                if(side == "left"){
-                    return d.children || d._children ? "end" : "start";
-                }
-                else{
-                    return d.children || d._children ? "start" : "end";
-                }
-            })
-            .text(function(d) {
-                if(d.count != undefined){
-                    return d.name + " ("+d.count+")";
-                }
-                else{
-                    return d.name;
-                }
+                .attr("x", function(d) {
+                    if(side == "left"){
+                        return d.children || d._children ? -10 : 10;
+                    }
+                    else{
+                        return d.children || d._children ? 10 : -10;
+                    }
+                })
+                .attr("dy", ".35em")
+                .attr('class', 'nodeText-tree')
+                .attr("text-anchor", function(d) {
+                    if(side == "left"){
+                        return d.children || d._children ? "end" : "start";
+                    }
+                    else{
+                        return d.children || d._children ? "start" : "end";
+                    }
+                })
+                .text(function(d) {
+                    if(d.count != undefined){
+                        return d.name + " ("+d.count+")";
+                    }
+                    else{
+                        return d.name;
+                    }
 
-            })
-            .style("fill-opacity", 0);
+                })
+                .style("fill-opacity", 0);
 
             // phantom node to give us mouseover in a radius around it
             nodeEnter.append("circle")
-            .attr('class', 'ghostCircle-tree')
-            .attr("r", 30)
-            .attr("opacity", 0.2) // change this to zero to hide the target area
-            .style("fill", "red")
-            .attr('pointer-events', 'mouseover')
-            .on("mouseover", function(node) {
-                overCircle(node);
-            })
-            .on("mouseout", function(node) {
-                outCircle(node);
-            });
+                .attr('class', 'ghostCircle-tree')
+                .attr("r", 30)
+                .attr("opacity", 0.2) // change this to zero to hide the target area
+                .style("fill", "red")
+                .attr('pointer-events', 'mouseover')
+                .on("mouseover", function(node) {
+                    overCircle(node);
+                })
+                .on("mouseout", function(node) {
+                    outCircle(node);
+                });
 
             // Update the text to reflect whether node has children or not.
             node.select('text')
-            .attr("x", function(d) {
-                if(side == "left"){
-                    return d.children || d._children ? -10 : 10;
-                }
-                else{
-                    return d.children || d._children ? 10 : -10;
-                }
-            })
-            .attr("text-anchor", function(d) {
-                if(side == "left"){
-                    return d.children || d._children ? "end" : "start";
-                }
-                else{
-                    return d.children || d._children ? "start" : "end";
-                }
-            })
-            .text(function(d) {
-                if(d.count != undefined){
-                    return d.name + " ("+d.count+")";
-                }
-                else{
-                    return d.name;
-                }
-            });
+                .attr("x", function(d) {
+                    if(side == "left"){
+                        return d.children || d._children ? -10 : 10;
+                    }
+                    else{
+                        return d.children || d._children ? 10 : -10;
+                    }
+                })
+                .attr("text-anchor", function(d) {
+                    if(side == "left"){
+                        return d.children || d._children ? "end" : "start";
+                    }
+                    else{
+                        return d.children || d._children ? "start" : "end";
+                    }
+                })
+                .text(function(d) {
+                    if(d.count != undefined){
+                        return d.name + " ("+d.count+")";
+                    }
+                    else{
+                        return d.name;
+                    }
+                });
 
             // Change the circle fill depending on whether it has children and is collapsed
             node.select("circle.nodeCircle-tree")
-            .attr("r", 4.5)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-            });
+                .attr("r", 4.5)
+                .style("fill", function(d) {
+                    return d._children ? "lightsteelblue" : "#fff";
+                });
 
             // Transition nodes to their new position.
             var nodeUpdate = node.transition()
-            .duration(duration)
-            .attr("transform", function(d) {
-                return "translate(" + d.y + "," + d.x + ")";
-            });
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + d.y + "," + d.x + ")";
+                });
 
             // Fade the text in
             nodeUpdate.select("text")
-            .style("fill-opacity", 1);
+                .style("fill-opacity", 1);
 
             // Transition exiting nodes to the parent's new position.
             var nodeExit = node.exit().transition()
-            .duration(duration)
-            .attr("transform", function(d) {
-                return "translate(" + source.y + "," + source.x + ")";
-            })
-            .remove();
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                })
+                .remove();
 
             nodeExit.select("circle")
-            .attr("r", 0);
+                .attr("r", 0);
 
             nodeExit.select("text")
-            .style("fill-opacity", 0);
+                .style("fill-opacity", 0);
 
             // Update the links…
             var link = svgGroup.selectAll("path.link-tree")
-            .data(links, function(d) {
-                return d.target.id;
-            });
+                .data(links, function(d) {
+                    return d.target.id;
+                });
 
             // Enter any new links at the parent's previous position.
             link.enter().insert("path", "g")
-            .attr("class", "link-tree")
-            .attr("d", function(d) {
-                var o = {
-                    x: source.x0,
-                    y: source.y0
-                };
-                return diagonal({
-                    source: o,
-                    target: o
-                });
-            })
-            .style("stroke-width",function(d){
-                var firstLevelStrokeScale = d3.scale.linear()
-                .domain([1,maxRelationsFirstLevel])
-                .range([1,8]);
-                var secondLevelStrokeScale = d3.scale.linear()
-                .domain([1,maxRelationsSecondLevel])
-                .range([1.5,8]);
+                .attr("class", "link-tree")
+                .attr("d", function(d) {
+                    var o = {
+                        x: source.x0,
+                        y: source.y0
+                    };
+                    return diagonal({
+                        source: o,
+                        target: o
+                    });
+                })
+                .style("stroke-width",function(d){
+                    var firstLevelStrokeScale = d3.scale.linear()
+                        .domain([1,maxRelationsFirstLevel])
+                        .range([1,8]);
+                    var secondLevelStrokeScale = d3.scale.linear()
+                        .domain([1,maxRelationsSecondLevel])
+                        .range([1.5,8]);
 
-                if(d.source.name == lemma && d.target.children != undefined){ // 1st level
-                    return firstLevelStrokeScale(d.target.children.length)+"px";
-                }
-                else { // 2nd level
-                    return secondLevelStrokeScale(d.target.count)+"px";
-                }
-            });
+                    if(d.source.name == lemma && d.target.children != undefined){ // 1st level
+                        return firstLevelStrokeScale(d.target.children.length)+"px";
+                    }
+                    else { // 2nd level
+                        return secondLevelStrokeScale(d.target.count)+"px";
+                    }
+                });
 
             // Transition links to their new position.
             link.transition()
-            .duration(duration)
-            .attr("d", diagonal);
+                .duration(duration)
+                .attr("d", diagonal);
 
             // Transition exiting nodes to the parent's new position.
             link.exit().transition()
-            .duration(duration)
-            .attr("d", function(d) {
-                var o = {
-                    x: source.x,
-                    y: source.y
-                };
-                return diagonal({
-                    source: o,
-                    target: o
-                });
-            })
-            .remove();
+                .duration(duration)
+                .attr("d", function(d) {
+                    var o = {
+                        x: source.x,
+                        y: source.y
+                    };
+                    return diagonal({
+                        source: o,
+                        target: o
+                    });
+                })
+                .remove();
 
             // Stash the old positions for transition.
             nodes.forEach(function(d) {
@@ -2062,86 +2062,102 @@ var cartoMap;
 
             // Compute the new tree layout.
             var nodes = tree.nodes(root).reverse(),
-            links = tree.links(nodes);
+                links = tree.links(nodes);
 
             var link = svgGroup.selectAll("path.link-tree")
-            .data(links, function(d) {
-                return d.target.id;
-            }).style("stroke-width",function(d){
+                .data(links, function(d) {
+                    return d.target.id;
+                }).style("stroke-width",function(d){
 
-                var firstLevelStrokeScale = d3.scale.linear()
-                .domain([1,maxRelationsFirstLevel])
-                .range([1,8]);
-                var secondLevelStrokeScale = d3.scale.linear()
-                .domain([1,maxRelationsSecondLevel])
-                .range([1.5,8]);
+                    var firstLevelStrokeScale = d3.scale.linear()
+                        .domain([1,maxRelationsFirstLevel])
+                        .range([1,8]);
+                    var secondLevelStrokeScale = d3.scale.linear()
+                        .domain([1,maxRelationsSecondLevel])
+                        .range([1.5,8]);
 
-                if(d.source.name == lemma){ // 1st level
-                    return firstLevelStrokeScale(d.target._children.length)+"px";
-                }
-                else { // 2nd level
-                    return secondLevelStrokeScale(d.target.count)+"px";
-                }
-            });
+                    if(d.source.name == lemma){ // 1st level
+                        return firstLevelStrokeScale(d.target._children.length)+"px";
+                    }
+                    else { // 2nd level
+                        return secondLevelStrokeScale(d.target.count)+"px";
+                    }
+                });
         }
     }
 
 
     function getDataFromElastic() {
+        var body;
 
-        var body = {
-            "aggs": {
-                "ortMain": {
-                    "geohash_grid": {
-                        "buckets_path": "years",
-                        "field": "gisOrt",
-                        "precision": bucketResolution - 4
-                    },
-                    "aggs": {
-                        "years": {
-                            "date_histogram": {
-                                "field": "startYear",
-                                "interval": (365*yearResolution)+"d",
-                                "time_zone": "Europe/Berlin",
-                                "min_doc_count": 1
+        if (temp) {
+            body = {
+                "aggs": {
+                    "ortMain": {
+                        "geohash_grid": {
+                            "buckets_path": "years",
+                            "field": "gisOrt",
+                            "precision": bucketResolution - 4
+                        },
+                        "aggs": {
+                            "years": {
+                                "date_histogram": {
+                                    "field": "startYear",
+                                    "interval": (365*yearResolution)+"d",
+                                    "time_zone": "Europe/Berlin",
+                                    "min_doc_count": 1
+                                }
                             }
                         }
-                    }
-                },
-                "yearsMain": {
-                    "date_histogram": {
-                        "field": "startYear",
-                        "interval": (365*yearResolution)+"d",
-                        "time_zone": "Europe/Berlin",
-                        "min_doc_count": 1
                     },
-                    "aggs": {
-                        "ort": {
-                            "geohash_grid": {
-                                "buckets_path": "years",
-                                "field": "gisOrt",
-                                "precision": bucketResolution - 4
+                    "yearsMain": {
+                        "date_histogram": {
+                            "field": "startYear",
+                            "interval": (365*yearResolution)+"d",
+                            "time_zone": "Europe/Berlin",
+                            "min_doc_count": 1
+                        },
+                        "aggs": {
+                            "ort": {
+                                "geohash_grid": {
+                                    "buckets_path": "years",
+                                    "field": "gisOrt",
+                                    "precision": bucketResolution - 4
+                                }
                             }
                         }
                     }
                 }
-            }
-        };
+            };
+        } else {
+            body = {
+                "aggs": {
+                    "ortMain": {
+                        "geohash_grid": {
+                            "buckets_path": "years",
+                            "field": "gisOrt",
+                            "precision": bucketResolution - 4
+                        }
+                    }
+                }
+            };
+        }
+
 
         if ((filterMain.val() == undefined || filterMain.val().length == 0) && (filterLeft.val() == undefined || filterLeft.val().length == 0)){
             body["query"] = {"match_all": {}};
         }
         else{
             if($("#lemma-and-or-selector option:selected").val() == "and"){
-                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and");
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", temp);
             }
             else{
-                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or");
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", temp);
             }
         }
 
         if (!filterMain.val() && !filterLeft.val())
-        body["size"] = 0;
+            body["size"] = 0;
 
         return esClient.search({
             index: 'tustepgeo2',
@@ -2181,7 +2197,7 @@ var cartoMap;
                 }
             }
         };
-        
+
         return esClient.search({
             index: 'tustepgeo2',
             body: body
@@ -2191,11 +2207,11 @@ var cartoMap;
     function getAllRecordsForWord(word) {
 
         word = word
-        .replace('{','?')
-        .replace('<','?')
-        .replace('>','?')
-        .replace(':','?')
-        .replace('}','?');
+            .replace('{','?')
+            .replace('<','?')
+            .replace('>','?')
+            .replace(':','?')
+            .replace('}','?');
 
         return esClient.search({
             index: 'tustepgeo2',
@@ -2223,21 +2239,21 @@ var cartoMap;
         });
     }
 
-    function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash) {
+    function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only) {
 
         mainLemma = mainLemma
-        .replace('{','?')
-        .replace('<','?')
-        .replace('>','?')
-        .replace(':','?')
-        .replace('}','?');
+            .replace('{','?')
+            .replace('<','?')
+            .replace('>','?')
+            .replace(':','?')
+            .replace('}','?');
 
         leftLemma = leftLemma
-        .replace('{','?')
-        .replace('<','?')
-        .replace('>','?')
-        .replace(':','?')
-        .replace('}','?');
+            .replace('{','?')
+            .replace('<','?')
+            .replace('>','?')
+            .replace(':','?')
+            .replace('}','?');
 
         var queryArray = [];
 
@@ -2260,7 +2276,21 @@ var cartoMap;
         }
 
         if (queryArray.length == 0) {
-            if (geohash) {
+            if (temp_only) {
+                queryArray.push( {
+                    "exists": {
+                        "field": "startYear"
+                    }
+                });
+                if (geohash) {
+                    queryArray.push({"prefix": {
+                        "gisOrt.geohash": geohash
+                    }});
+                }
+                return {
+                    "bool" : {"must": queryArray}
+                };
+            } else if (geohash) {
                 queryArray.push({"prefix": {
                     "gisOrt.geohash": geohash
                 }});
@@ -2278,6 +2308,13 @@ var cartoMap;
                     "gisOrt.geohash": geohash
                 }});
             }
+            if (temp_only) {
+                queryArray.push( {
+                    "exists": {
+                        "field": "startYear"
+                    }
+                });
+            }
             return {
                 "bool" : {"must": queryArray}
             };
@@ -2292,27 +2329,64 @@ var cartoMap;
                         }
                     });
                 }
+                if (temp_only) {
+                    queryArray.push( {
+                        "exists": {
+                            "field": "startYear"
+                        }
+                    });
+                }
                 return {
                     "bool" : {"must": queryArray}
                 };
             } else {
                 if (geohash) {
-                    return {
-                        "bool" : {
-                            "must": [{
-                                "prefix": {
-                                    "gisOrt.geohash": geohash
-                                }
-                            }],
-                            "should": queryArray
-                        }
-                    };
+                    if (temp_only) {
+                        return {
+                            "bool" : {
+                                "must": [{
+                                    "prefix": {
+                                        "gisOrt.geohash": geohash
+                                    }
+                                },
+                                    {
+                                        "exists": {
+                                            "field": "startYear"
+                                        }
+                                    }],
+                                "should": queryArray
+                            }
+                        };
+                    } else {
+                        return {
+                            "bool" : {
+                                "must": [{
+                                    "prefix": {
+                                        "gisOrt.geohash": geohash
+                                    }
+                                }],
+                                "should": queryArray
+                            }
+                        };
+                    }
                 } else {
-                    return {
-                        "bool" : {
-                            "should": queryArray
+                    if (temp_only) {
+                        return {
+                            "bool" : {
+                                "must": [{
+                                    "exists": {
+                                        "field": "startYear"
+                                    }
+                                }],
+                                "should": queryArray
+                            }
                         }
-                    }; 
+                    } else {
+                        return {
+                            "bool" : {
+                                "should": queryArray
+                            }
+                        };}
                 }
             }
         }
@@ -2345,11 +2419,11 @@ var cartoMap;
 
         $("#legend-graph").html("");
         var svg = d3.select("#legend-graph").append("svg")
-        .attr("width", '212px')
-        .attr("height", '35px');
+            .attr("width", '212px')
+            .attr("height", '35px');
 
         svg.append("g")
-        .attr("class", "legendLinear");
+            .attr("class", "legendLinear");
 
         var numCellsLegend = 0;
         var pluckCounts = [];
@@ -2368,16 +2442,16 @@ var cartoMap;
         }
 
         var legendLinear = d3.legend.color()
-        .shapeWidth(40)
-        .shapePadding(3)
-        .cells(numCellsLegend)
-        .labelFormat(d3.format("f"))
-        .labelOffset(4)
-        .orient('horizontal')
-        .scale(colorScale);
+            .shapeWidth(40)
+            .shapePadding(3)
+            .cells(numCellsLegend)
+            .labelFormat(d3.format("f"))
+            .labelOffset(4)
+            .orient('horizontal')
+            .scale(colorScale);
 
         svg.select(".legendLinear")
-        .call(legendLinear);
+            .call(legendLinear);
     }
 
     function resetTimelineColor(waitingTime){
