@@ -29,8 +29,13 @@ var cartoMap;
 
     $("#livesearch-holder > form > input")
     .on("input", function() {
-        resetTimelineColor(600);
-        update();
+        if(filterMain.val() == "" && filterLeft.val() == ""){
+            resetApp();
+        }
+        else{
+            resetTimelineColor(600);
+            update();
+        }
     });
 
     $("#lemma-and-or-selector").change(function(){
@@ -141,6 +146,34 @@ var cartoMap;
             }, 750);
         }, 500);
     });
+
+    // RESET APP CONTROL
+
+    $("#reset-app-button").on("click", function() {
+        resetApp();
+    });
+
+    function resetApp(){
+        w2ui['content'].hide('left');
+        showHideLemmaList(false);
+        $("#filterLeft").val("");
+        $("#filterMain").val("");
+        $("#lemma-graph").html("");
+        $("#lemma-list-table").html("");
+        setTimeout(function () {
+            cartoMap.refresh();
+            setTimeout(function () {
+                cartoMap.zoomTo(
+                    [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
+                    "latlong",1,zoomDelay
+                );
+                resetBucketResolution();
+                setTimeout(function () {
+                    update();
+                }, zoomDelay);
+            }, 750);
+        }, 500);
+    }
 
     // TOOLTIP SHOW CONTROL INITIAL ACTIVATION
     $('#tooltip-checkbox').val($(this).is(':checked'));
@@ -339,6 +372,8 @@ var cartoMap;
             maxYear++;
             minYear--;
         }
+
+        console.log(yearDim.top(Infinity));
 
         var years = [];
         for(var i=parseInt(minYear)-1; i<=maxYear; i++){years.push(i);}
@@ -611,8 +646,8 @@ var cartoMap;
             // Reset opacity of all
             d3.selectAll("g.featureLayer")
             .style("opacity", "0.8")
-            .style("stroke-width","0px")
-            .style("stroke","black");
+            // .style("stroke-width","0px")
+            // .style("stroke","black");
 
             // Show lemmas contained in the bucket
             var lemmaListTable = $('#lemma-list-table');
@@ -797,12 +832,12 @@ var cartoMap;
             // Highlight this, low opacity of others
             d3.selectAll("g.featureLayer")
             .style("opacity", "0.2")
-            .style("stroke-width","0px")
-            .style("stroke","black");
+            // .style("stroke-width","0px")
+            // .style("stroke","black");
             d3.select(this)
             .style("opacity","0.8")
-            .style("stroke-width","4px")
-            .style("stroke","#2b91fc");
+            // .style("stroke-width","4px")
+            // .style("stroke","#2b91fc");
 
             // Only if the user wants to see the tooltip
             if($("#tooltip-checkbox").is(":checked")) {
@@ -878,8 +913,8 @@ var cartoMap;
             // Reset opacity of all
             d3.selectAll("g.featureLayer")
             .style("opacity", "0.8")
-            .style("stroke-width","0px")
-            .style("stroke","black");
+            // .style("stroke-width","0px")
+            // .style("stroke","black");
 
             resetTimelineColor(0);
             tooltip.hide();

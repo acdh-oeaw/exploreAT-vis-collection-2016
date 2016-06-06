@@ -440,6 +440,19 @@ text {
     margin: 0px 6px;
 }
 
+#reset-app-button {
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    padding: 3px 8px;
+    background-color: #2b91fc;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: .8em;
+}
+
 
 
 #timeline {
