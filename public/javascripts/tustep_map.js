@@ -233,8 +233,7 @@ var cartoMap;
         geohashBuckets = resp.aggregations.ortMain.buckets;
 
         geohashBuckets.forEach(function(bucket){
-            console.log(bucket);
-            bucket.years.buckets.forEach(function(year){
+             bucket.years.buckets.forEach(function(year){
                 tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
             });
         });
@@ -656,7 +655,7 @@ var cartoMap;
 
                 getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                    generateLemmaGraphFromAggregations(resp.aggregations);
+                    //generateLemmaGraphFromAggregations(resp.aggregations);
 
                     var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                     var foundLemmas = [];
@@ -2090,6 +2089,7 @@ var cartoMap;
 
     function getDataFromElastic() {
         var body;
+        var temp = !$("#nontemporal-checkbox").is(":checked");
 
         if (temp) {
             body = {
@@ -2150,10 +2150,10 @@ var cartoMap;
         }
         else{
             if($("#lemma-and-or-selector option:selected").val() == "and"){
-                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", temp);
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", null, temp);
             }
             else{
-                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", temp);
+                body["query"] = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", null, temp);
             }
         }
 
@@ -2172,10 +2172,10 @@ var cartoMap;
         var queryObj;
         if ((filterMain.val() !== undefined && filterMain.val().length !== 0) || (filterLeft.val() !== undefined && filterLeft.val().length !== 0)){
             if($("#lemma-and-or-selector option:selected").val() == "and"){
-                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", geo_hash);
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "and", geo_hash, !$("#nontemporal-checkbox").is(":checked"));
             }
             else{
-                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", geo_hash);
+                queryObj = getQueryObjectForParams(filterMain.val(), filterLeft.val(), "or", geo_hash, !$("#nontemporal-checkbox").is(":checked"));
             }
         }
 
