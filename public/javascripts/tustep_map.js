@@ -164,6 +164,9 @@ var cartoMap;
         $("#lemma-graph").html("");
         $("#lemma-list-table").html("");
         $('#nontemporal-checkbox').removeAttr('checked');
+        timelineChart.filter(null);
+        timelineChart.filterAll();
+        dc.redrawAll();
         refreshLemmaTree = true;
         clickedGeoHash = "";
         setTimeout(function () {
@@ -171,7 +174,7 @@ var cartoMap;
             setTimeout(function () {
                 cartoMap.zoomTo(
                     [[originalBBox[0][0]+2,originalBBox[0][1]-.8],[originalBBox[1][0]+2,originalBBox[1][1]-.8]],
-                    "latlong",1,zoomDelay
+                    "latlong",.8,zoomDelay
                 );
                 resetBucketResolution();
                 setTimeout(function () {
