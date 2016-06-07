@@ -1,4 +1,4 @@
-var cartoMap;
+var mainExports = {};
 (function() {
 
     // ELASTIC
@@ -707,7 +707,7 @@ var cartoMap;
 
                 getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                    //generateLemmaGraphFromAggregations(resp.aggregations);
+                    generateLemmaGraphFromAggregations(resp.aggregations);
 
                     var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                     var foundLemmas = [];
@@ -1114,13 +1114,17 @@ function generateLemmaGraphFromAggregations(resp_aggregations) {
     communities = _.sortBy(communities, "population");
 
     // $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
-    $("#lemma-graph").html("");
+    var lemmaGraph = $("#lemma-graph");
+    lemmaGraph.html("");
+    lemmaGraph.append('<div id="com-graph"></div>');
+    $("#com-graph").css({'height': '100%'});
+
 
     w2ui['content'].show('left');
 
 
     setTimeout(function () {
-        d3.lemmaGraph('#lemma-graph')
+        d3.lemmaGraph('#com-graph')
         .nodes(nodes)
         .links(links)
         .communities(communities)
@@ -1153,15 +1157,23 @@ function plotInMap(leftLemma,andOr,mainLemma){
     }, 750);
 }
 
+    mainExports.plotInMap = plotInMap;
 
 function generateTreeGraphForLemma(lemma,where){
 
     if(generatingTree) return;
     generatingTree = true;
 
-    $("#lemma-graph").html("");
 
-    $("#lemma-graph").append(function(){
+    if($("#tree-graph").length != 0){
+        $("#tree-graph").html("");
+    }
+    else {
+        $("#com-graph").css({'height': '50%'});
+        $("#lemma-graph").append('<div id="tree-graph"></div>>');
+    }
+
+    $("#tree-graph").append(function(){
         var html = '<div id="info-tree">';
         html += 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>main</strong> lemma';
         html += '</div>';
@@ -1340,15 +1352,15 @@ function generateTreeGraphForLemma(lemma,where){
         // });
 
         ////////
-
-        $("#lemma-graph").append('<div id="lemma-graph-left"></div>')
-        $("#lemma-graph").append('<div id="lemma-graph-right"></div>')
+        var lemmaGraph = $("#tree-graph");
+        lemmaGraph.append('<div id="tree-graph-left"></div>');
+        lemmaGraph.append('<div id="tree-graph-right"></div>');
 
         if(dataMain.length > 0) generateTreeSide(lemma,dataMain,"right");
         if(dataLeft.length > 0) generateTreeSide(lemma,dataLeft,"left");
 
         if(dataLeft.length > 0 && dataMain.length > 0){
-            $("#lemma-graph").append(function(){
+            $("#tree-graph").append(function(){
                 var html = '<div id="toggle-tree">';
                 html += '<div>Toggle Tree</div>';
                 html += '</div>';
@@ -1356,17 +1368,17 @@ function generateTreeGraphForLemma(lemma,where){
             })
 
             $("#toggle-tree").on("click", function(){
-                if(d3.select("#lemma-graph-right").classed("hidden") == true){
-                    d3.select("#lemma-graph-right").classed("hidden",false);
-                    $("#lemma-graph-right").show();
+                if(d3.select("#tree-graph-right").classed("hidden") == true){
+                    d3.select("#tree-graph-right").classed("hidden",false);
+                    $("#tree-graph-right").show();
                     $("#info-tree").html(function(){
                         var html = 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>main</strong> lemma';
                         return html;
                     })
                 }
                 else{
-                    d3.select("#lemma-graph-right").classed("hidden",true);
-                    $("#lemma-graph-right").hide();
+                    d3.select("#tree-graph-right").classed("hidden",true);
+                    $("#tree-graph-right").hide();
                     $("#info-tree").html(function(){
                         var html = 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>left</strong> lemma';
                         return html;
@@ -1378,13 +1390,15 @@ function generateTreeGraphForLemma(lemma,where){
         generatingTree = false;
     });
 }
+    
+    mainExports.generateTreeGraphForLemma = generateTreeGraphForLemma;
 
 function generateTreeSide(lemma, data, side){
 
     var treeData = {
         "name" : lemma,
         "children" : []
-    }
+    };
 
     _.forEach(data, function(hit){
         treeData.children.push(hit);
@@ -1410,8 +1424,8 @@ function generateTreeSide(lemma, data, side){
     var maxRelationsSecondLevel = 0;
 
     // size of the diagram
-    var viewerWidth = $("#lemma-graph").width();
-    var viewerHeight = $("#lemma-graph").height();
+    var viewerWidth = $("#tree-graph").width();
+    var viewerHeight = $("#tree-graph").height();
 
     var tree = d3.layout.tree()
     .size([viewerHeight, viewerWidth]);
@@ -1537,7 +1551,7 @@ function generateTreeSide(lemma, data, side){
     }
 
     // define the baseSvg, attaching a class for styling and the zoomListener
-    var baseSvg = d3.select("#lemma-graph-"+side).append("svg")
+    var baseSvg = d3.select("#tree-graph-"+side).append("svg")
     .attr("width", viewerWidth)
     .attr("height", viewerHeight)
     .attr("class", "overlaysvg "+side)
@@ -2575,6 +2589,5 @@ function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only
         var latLonBox = [[sw.lon,sw.lat],[ne.lon,ne.lat]];
         return latLonBox;
     }
-
-
 })();
+

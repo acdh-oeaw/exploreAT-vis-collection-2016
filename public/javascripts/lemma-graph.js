@@ -3,6 +3,8 @@
         color = null,
         labelSize = null,
         svg = null,
+        comMenu = null,
+        nodeMenu = null,
         width,
         height,
         domElement,
@@ -31,6 +33,51 @@
 
         var selection = d3.select(domElement);
         var bbox = selection.node().getBoundingClientRect();
+
+
+        comMenu = [
+            {
+                title: 'Search in map (Community)',
+                action: function(elm, d, i) {
+                    console.log('Item #1 clicked!');
+                    console.log('The data for this item is: ' + JSON.stringify(d));
+                },
+                disabled: false // optional, defaults to false
+            },
+            {
+                title: 'Bla',
+                action: function(elm, d, i) {
+                    console.log('Item #2 clicked!');
+                    console.log('The data for this item is: ' + JSON.stringify(d));
+                }
+            }
+        ];
+
+        nodeMenu = [
+            {
+                title: 'Search in map',
+                action: function(elm, d, i) {
+                    console.log('Item #3 clicked!');
+                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    if (d.mainLemma) {
+                        mainExports.plotInMap(null, 'and', d.name);
+                    } else {
+                        mainExports.plotInMap(d.name, 'and', null);
+                    }
+
+                },
+                disabled: false // optional, defaults to false
+            },
+            {
+                title: 'Plot relations',
+                action: function(elm, d, i) {
+                    console.log('Item #4 clicked!');
+                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    mainExports.generateTreeGraphForLemma(d.name, 'bucket');
+                }
+            }
+        ];
+
 
         color = d3.scale.category20();
 
@@ -86,7 +133,8 @@
                 })
                 .style("stroke-linejoin", "round")
                 .style("opacity", .2)
-                .attr("d", groupPath);
+                .attr("d", groupPath)
+                .on('contextmenu', d3.contextMenu(comMenu)); // attach menu to element
 
             pathSelection
                 .attr("d", groupPath)
@@ -418,22 +466,15 @@
                 .call(force.drag());
 
 
-            // nodeEnter.append("circle")
-            //     .attr("r", function (d) {
-            //         return  d.weight;
-            //     })
-            //     .style("fill", function(d) { return color(d.community); })
-            //     .style("stroke", function(d) {
-            //         return color(d.community); })
-            //     .style("stroke-width", "1px");
-
             nodeEnter.append("text")
                 .style("text-anchor", "middle")
                 .style("stroke", function(d) { return d3.rgb(color(d.community)).darker(1); })
                 .style("stroke-width", "0.5px")
                 .style("font-size", function (d) { return labelSize(d.weight)+'px';})
                 // .attr("y", 15)
-                .text(function(d) {return d.name;});
+                .text(function(d) {return d.name;})
+                .on('contextmenu', d3.contextMenu(nodeMenu));
+
 
             nodeEnter.append("title")
                 .text(function(d) { return d.community });
