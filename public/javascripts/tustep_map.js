@@ -11,6 +11,7 @@ var cartoMap;
 
     var ndx; // crossfilter handle
     var tustepData = [];
+    var tustepDataNoYears = [];
     var timelineChart = dc.barChart('#timeline');
 
     var allDim, yearDim;
@@ -252,6 +253,7 @@ var cartoMap;
         function createDataStructure(resp) {
 
             tustepData = [];
+            tustepDataNoYears = [];
             geohashBuckets = resp.aggregations.ortMain.buckets;
 
             geohashBuckets.forEach(function(bucket){
@@ -260,9 +262,10 @@ var cartoMap;
                         tustepData.push({"hash":bucket.key, "year":year.key_as_string, "docs":year.doc_count});
                     });
                 }
+                if (bucket.noYear !== undefined) {
+                    tustepDataNoYears.push({"hash":bucket.key, "year":"noYear", "docs":bucket.noYear.doc_count});
+                }
             });
-
-            // console.log("TUSTEPDATA");
 
             minYear = _.min(tustepData, function(reg){return parseInt(reg.year);}).year;
             maxYear = _.max(tustepData, function(reg){return parseInt(reg.year);}).year;
@@ -394,6 +397,7 @@ var cartoMap;
             _.forEach(geoFeatures, function(feature){
                 totalLemmas += feature.properties.doc_count;
             });
+
             $("#timeline-lemma-count").html(totalLemmas);
 
             // console.log(yearDim.top(Infinity)[yearDim.top(Infinity).length-1].year); // minYear
@@ -949,6 +953,15 @@ function generateCrossGeoFeatures() {
             _.each(entriesForHash, function(entry){
                 geoObject.doc_count += parseInt(entry.docs);
             });
+
+            // Take the non-temporal data into account only if no brushing is applied
+            if (timelineChart.filters().length == 0) {
+                _.each(tustepDataNoYears, function(data){
+                    if(geoObject.key == data.hash){
+                        geoObject.doc_count += parseInt(data.docs);
+                    }
+                });
+            }
 
             if(geoObject.doc_count > 0)
             newGeoHashBuckets.push(geoObject);
