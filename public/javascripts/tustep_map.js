@@ -669,7 +669,7 @@ var cartoMap;
 
                 // Reset opacity of all
                 d3.selectAll("g.featureLayer")
-                .style("opacity", "0.8")
+                    .style("opacity", "0.8");
                 // .style("stroke-width","0px")
                 // .style("stroke","black");
 

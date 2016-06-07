@@ -65,12 +65,9 @@
                     return "translate("+d.x+","+d.y+")";
                 });
 
-            svg.selectAll("path")
-                .data(nest)
-                .attr("d", groupPath)
-                .enter().insert("path", "g")
-                .style("fill", groupFill)
-                .style("stroke", groupFill)
+            var pathSelection = svg.selectAll("path").data(nest, function (d) {return d.key});
+
+            pathSelection.enter().insert("path", "g")
                 .style("stroke-width", function (d) {
                     return 40 * zoom.scale();
                 })
@@ -78,10 +75,20 @@
                 .style("opacity", .2)
                 .attr("d", groupPath);
 
-            svg.selectAll("path")
+            pathSelection
+                .attr("d", groupPath)
                 .style("stroke-width", function (d) {
                     return 40 * zoom.scale();
-                });
+                })
+                .style("fill", groupFill)
+                .style("stroke", groupFill);
+
+
+            svg.selectAll("path")
+                .data(nest)
+                .exit()
+                .remove();
+
 
         });
         
@@ -387,9 +394,6 @@
 
             linkSelection
                 .exit()
-                .transition()
-                .duration(2000)
-                .style("opacity", 0)
                 .remove();
 
             var nodeSelection = svg.selectAll("g.node").data(data_nodes, function (d) {return d.name});
@@ -426,25 +430,17 @@
                 .on("mousedown", function(d) { d3.event.stopPropagation();})
                 .on("mouseout", function(d) {}	);
 
-            nodeSelection.exit()
-                .transition()
-                .duration(2000)
-                .style("opacity", 0)
-                .remove();
-
-
-            svg.selectAll("path")
-                .data(currentNest)
+            nodeSelection
                 .exit()
-                .transition()
-                .duration(2000)
-                .style("opacity", 0)
                 .remove();
+
 
             force
                 .nodes(data_nodes)
                 .links(data_links)
                 .start();
+
+            force.tick();
 
         };
 
