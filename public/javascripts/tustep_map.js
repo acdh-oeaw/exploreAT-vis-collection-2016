@@ -33,6 +33,7 @@ var cartoMap;
     .on("input", function() {
         if(filterMain.val() == "" && filterLeft.val() == ""){
             //resetApp();
+            w2ui['content'].hide('left');
         }
         else{
             resetTimelineColor(600);
@@ -699,7 +700,7 @@ var cartoMap;
 
                 getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
 
-                    generateLemmaGraphFromAggregations(resp.aggregations);
+                    //generateLemmaGraphFromAggregations(resp.aggregations);
 
                     var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                     var foundLemmas = [];
