@@ -25,12 +25,14 @@ var cartoMap;
     // LEMMA SEARCH VARIABLES
 
     var filterMain, filterLeft;
-    var treeRootLemma = "";
+    var lemmaTreeRootWord = "";
+    var lemmaTreeScope = "";
+    var generatingTree = false;
 
     $("#livesearch-holder > form > input")
     .on("input", function() {
         if(filterMain.val() == "" && filterLeft.val() == ""){
-            resetApp();
+            //resetApp();
         }
         else{
             resetTimelineColor(600);
@@ -161,6 +163,8 @@ var cartoMap;
         $("#lemma-graph").html("");
         $("#lemma-list-table").html("");
         $('#nontemporal-checkbox').removeAttr('checked');
+        refreshLemmaTree = true;
+        clickedGeoHash = "";
         setTimeout(function () {
             cartoMap.refresh();
             setTimeout(function () {
@@ -179,6 +183,8 @@ var cartoMap;
     // NONTEMPORAL CHECKBOX LISTENER
     $('#nontemporal-checkbox').change(
         function(){
+            update();
+            refreshTreeGraphForLemma();
             if ($(this).is(':checked')) {
                 //alert('checked');
             }
@@ -455,6 +461,8 @@ var cartoMap;
             // setTimeout(function () {
             //     resetTimelineColor();
             // }, 200);
+
+            refreshTreeGraphForLemma(lemmaTreeRootWord,lemmaTreeScope);
         }
 
         function updateTimelineYscale(geoFeatures){
@@ -550,6 +558,15 @@ var cartoMap;
                 return el.properties.doc_count;
             }).properties.doc_count;
         }
+
+
+        function refreshTreeGraphForLemma(lemma,scope){
+            if(w2ui['content'].get('left').hidden == false)
+                if($("#info-tree").length > 0)
+                    if(lemma != undefined && scope != undefined)
+                        generateTreeGraphForLemma(lemma,scope);
+        }
+
 
         function refreshGridFeatures(){
             getGridDataFromElastic()
@@ -686,69 +703,8 @@ var cartoMap;
 
                     var wordBuckets = resp.aggregations.mainLemma.buckets.sort(function(a,b) {return b.doc_count - a.doc_count;});
                     var foundLemmas = [];
-
                     var counter = 0;
-                    // if(filterMain.val() != "" || filterLeft.val() != ""){
-                    //     for(var i = 0; i<d.doc_count || i<20; i++){
-                    //         if(filterMain.val() != "" && filterLeft.val() == ""){
-                    //             if(wordBuckets[i].key == filterMain.val()) {
-                    //                 lemmaListTable.append(function(){
-                    //                     var html = '<div class="lemma-list-row">';
-                    //                     html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                    //                     html += '<div class="lemma-list-actions">';
-                    //                     html += '<div class="lemma-button relations">Plot Relations</div>';
-                    //                     html += '<div class="lemma-button map">Plot in Map</div>';
-                    //                     html += '</div>';
-                    //                     html += '</div>';
-                    //                     return html;
-                    //                 });
-                    //                 counter++;
-                    //                 foundLemmas.push(wordBuckets[i].key);
-                    //             }
-                    //         }
-                    //         else if(filterLeft.val() != "" && filterMain.val() == ""){
-                    //             if(wordBuckets[i].leftLemma.buckets != undefined &&
-                    //                 wordBuckets[i].leftLemma.buckets.length > 0){
-                    //                     for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
-                    //                         if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
-                    //                             lemmaListTable.append(function(){
-                    //                                 var html = '<div class="lemma-list-row">';
-                    //                                 html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                    //                                 html += '<div class="lemma-list-actions">';
-                    //                                 html += '<div class="lemma-button relations">Plot Relations</div>';
-                    //                                 html += '<div class="lemma-button map">Plot in Map</div>';
-                    //                                 html += '</div>';
-                    //                                 html += '</div>';
-                    //                                 return html;
-                    //                             });
-                    //                             counter++;
-                    //                             foundLemmas.push(wordBuckets[i].key);
-                    //                         }
-                    //                     }
-                    //                 }
-                    //         }
-                    //         else if(filterMain.val() != "" && filterLeft.val() != ""){
-                    //             if(wordBuckets[i].key == filterMain.val()){
-                    //                 for(var k=0; k<wordBuckets[i].leftLemma.buckets.length; k++){
-                    //                     if(wordBuckets[i].leftLemma.buckets[k].key == filterLeft.val()){
-                    //                         lemmaListTable.append(function(){
-                    //                             var html = '<div class="lemma-list-row">';
-                    //                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                    //                             html += '<div class="lemma-list-actions">';
-                    //                             html += '<div class="lemma-button relations">Plot Relations</div>';
-                    //                             html += '<div class="lemma-button map">Plot in Map</div>';
-                    //                             html += '</div>';
-                    //                             html += '</div>';
-                    //                             return html;
-                    //                         });
-                    //                         counter++;
-                    //                         foundLemmas.push(wordBuckets[i].key);
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
+
                     if(filterMain.val() != "" && filterMain.val() != "*"){
                         $("#lemma-list-detail").html("");
                         for(var i = 0; i<wordBuckets.length; i++){
@@ -757,7 +713,8 @@ var cartoMap;
                                     var html = '<div class="lemma-list-row">';
                                     html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
                                     html += '<div class="lemma-list-actions">';
-                                    html += '<div class="lemma-button relations">Plot Relations</div>';
+                                    html += '<div class="lemma-button relations-db">Plot Relations in Dataset</div>';
+                                    html += '<div class="lemma-button relations-bucket">Plot Relations in Bucket</div>';
                                     html += '<div class="lemma-button map">Plot in Map</div>';
                                     html += '</div>';
                                     html += '</div>';
@@ -785,7 +742,8 @@ var cartoMap;
                                             var html = '<div class="lemma-list-row">';
                                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
                                             html += '<div class="lemma-list-actions">';
-                                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                                            html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                                            html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
                                             html += '<div class="lemma-button map">Plot in Map</div>';
                                             html += '</div>';
                                             html += '</div>';
@@ -801,7 +759,8 @@ var cartoMap;
                                             var html = '<div class="lemma-list-row">';
                                             html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
                                             html += '<div class="lemma-list-actions">';
-                                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                                            html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                                            html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
                                             html += '<div class="lemma-button map">Plot in Map</div>';
                                             html += '</div>';
                                             html += '</div>';
@@ -821,7 +780,8 @@ var cartoMap;
                             var html = '<div class="lemma-list-row">';
                             html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
                             html += '<div class="lemma-list-actions">';
-                            html += '<div class="lemma-button relations">Plot Relations</div>';
+                            html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                            html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
                             html += '<div class="lemma-button map">Plot in Map</div>';
                             html += '</div>';
                             html += '</div>';
@@ -834,9 +794,19 @@ var cartoMap;
 
             // Lemma List Listeners
 
-            d3.selectAll(".lemma-button.relations").data(wordBuckets)
+            d3.selectAll(".lemma-button.relations.rel-db").data(wordBuckets)
             .on("click",function(lemmaBucket,i){
-                generateTreeGraphForLemma(foundLemmas[i]);
+                lemmaTreeRootWord = foundLemmas[i];
+                lemmaTreeScope = "db";
+                generateTreeGraphForLemma(lemmaTreeRootWord,lemmaTreeScope);
+                w2ui['content'].show('left');
+            });
+
+            d3.selectAll(".lemma-button.relations.rel-bucket").data(wordBuckets)
+            .on("click",function(lemmaBucket,i){
+                lemmaTreeRootWord = foundLemmas[i];
+                lemmaTreeScope = "bucket";
+                generateTreeGraphForLemma(lemmaTreeRootWord,lemmaTreeScope);
                 w2ui['content'].show('left');
             });
 
@@ -1167,7 +1137,10 @@ function plotInMap(leftLemma,andOr,mainLemma){
 }
 
 
-function generateTreeGraphForLemma(lemma){
+function generateTreeGraphForLemma(lemma,where){
+
+    if(generatingTree) return;
+    generatingTree = true;
 
     $("#lemma-graph").html("");
 
@@ -1178,7 +1151,7 @@ function generateTreeGraphForLemma(lemma){
         return html;
     })
 
-    getAllRecordsForWord(lemma).then(function (resp) {
+    getAllRecordsForWord(lemma,where).then(function (resp) {
 
         var asLeftLemma = [];
         var asMainLemma = [];
@@ -1194,8 +1167,20 @@ function generateTreeGraphForLemma(lemma){
             if(object.name == undefined) return;
             object.count = 1;
             object.years = [];
-            if(hit._source.startYear != undefined){
-                object.years.push(parseInt(hit._source.startYear));
+            if (!$("#nontemporal-checkbox").is(':checked')) {
+                if(hit._source.startYear != undefined &&
+                hit._source.startYear >= selectedMinYear &&
+                hit._source.startYear <= selectedMaxYear){
+                    object.years.push(parseInt(hit._source.startYear));
+                }
+                else{
+                    return; // Save only lemmas withing the selected year range, discard rest
+                }
+            }
+            else{
+                if(hit._source.startYear != undefined){
+                    object.years.push(parseInt(hit._source.startYear));
+                }
             }
 
             // If the record already exists, do not push it, just add to the count
@@ -1372,6 +1357,8 @@ function generateTreeGraphForLemma(lemma){
                 }
             })
         }
+
+        generatingTree = false;
     });
 }
 
@@ -1805,10 +1792,12 @@ function generateTreeSide(lemma, data, side){
             };
 
             // Highlight the links between the root and the active node
-            var nodeParentName = d.parent.name;
+            var nodeParentName = "";
+            if(d.parent != undefined){nodeParentName = d.parent.name;}
             var nodeName = d.name;
             var links = d3.selectAll(".link-tree");
             _.forEach(links[0], function(link){
+                if(d.name == lemma) return;
                 // Me with parent
                 if(link.__data__.source.name == d.parent.name && link.__data__.target.name == d.name){
                     //d3.select(link).moveToFront();
@@ -2246,7 +2235,7 @@ function getLemmasInGeoHashBucket(geo_hash) {
     });
 }
 
-function getAllRecordsForWord(word) {
+function getAllRecordsForWord(word,where) {
 
     word = word
     .replace('{','?')
@@ -2255,27 +2244,56 @@ function getAllRecordsForWord(word) {
     .replace(':','?')
     .replace('}','?');
 
+    var boolBlock = {};
+
+    if(where == "db"){ // Fetch from all database
+        boolBlock = {
+            "should": [
+                {
+                    "query_string": {
+                        "default_field": "mainLemma",
+                        "query": word
+                    }
+                },
+                {
+                    "query_string": {
+                        "default_field": "leftLemma",
+                        "query": word
+                    }
+                }
+            ]
+        }
+    }
+    else if(where == "bucket"){ // Fetch only from the selected bucket
+        boolBlock = {
+            "must": [{
+                "prefix": {
+                    "gisOrt.geohash": clickedGeoHash
+                }
+            }],
+            "should": [
+                {
+                    "query_string": {
+                        "default_field": "mainLemma",
+                        "query": word
+                    }
+                },
+                {
+                    "query_string": {
+                        "default_field": "leftLemma",
+                        "query": word
+                    }
+                }
+            ]
+        }
+    }
+
     return esClient.search({
         index: 'tustepgeo2',
         body: {
             "size": 10000,
             "query": {
-                "bool": {
-                    "should": [
-                        {
-                            "query_string": {
-                                "default_field": "mainLemma",
-                                "query": word
-                            }
-                        },
-                        {
-                            "query_string": {
-                                "default_field": "leftLemma",
-                                "query": word
-                            }
-                        }
-                    ]
-                }
+                "bool": boolBlock
             }
         }
     });
