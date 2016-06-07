@@ -50,7 +50,20 @@
             .call(zoom)
             .append("g")
             .style("pointer-events", "all");
-        
+
+        d3.select(domElement).select("svg")
+            .append('marker')
+            .attr("id", "Triangle")
+            .attr("refX", 6)
+            .attr("refY", 3)
+            .attr("markerUnits", 'userSpaceOnUse')
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 9)
+            .attr("orient", 'auto')
+            .append('path')
+            .attr("d", 'M 0 0 6 3 0 6 1.5 3');
+
+
         _currentNode   = null;
         _needsFiltering = true;
 
@@ -376,8 +389,6 @@
                 currentNest = nest;
             }
 
-
-
             var linkSelection = svg.selectAll("line.link")
                 .data(data_links, function (d) {return d.source.name + "-" + d.target.name});
             linkSelection
@@ -391,6 +402,8 @@
                     return d3.scale.linear().range([color(d.source.community), color(d.target.community)])
                         .interpolate(d3.interpolateHcl)(d.source.weight / (d.source.weight + d.target.weight));
                 });
+
+            linkSelection.attr("marker-end", "url(#Triangle)");
 
             linkSelection
                 .exit()
