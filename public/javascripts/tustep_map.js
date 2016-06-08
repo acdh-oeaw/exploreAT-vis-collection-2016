@@ -1154,10 +1154,11 @@ function plotInMap(leftLemma,andOr,mainLemma){
         d3.selectAll("#live-search > input").classed("flash",false);
     }, 200);
 
-    $("#filterLeft").val(leftLemma);
-    $("#filterMain").val(mainLemma);
-    filterMain = $("#filterMain");
-    filterLeft = $("#filterLeft");
+
+
+    $("#filterLeft").val(filterSearchString(leftLemma));
+    $("#filterMain").val(filterSearchString(mainLemma));
+
     $("#lemma-and-or-selector").val(andOr);
     update();
     cartoMap.refresh();
@@ -2309,13 +2310,7 @@ function getLemmasInGeoHashBucket(geo_hash) {
 
 function getAllRecordsForWord(word,where) {
 
-    word = word
-    .replace('{','?')
-    .replace('<','?')
-    .replace('>','?')
-    .replace(':','?')
-    .replace('}','?');
-
+    word = filterSearchString(word);
     var boolBlock = {};
 
     if(where == "db"){ // Fetch from all database
@@ -2372,24 +2367,20 @@ function getAllRecordsForWord(word,where) {
     });
 }
 
+
+    function filterSearchString(string) {
+        var pattern = /\{|<|>|:|}|\$|\^/g;
+        return string.replace(pattern, '?');
+    }
+
 function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only) {
 
     if (mainLemma) {
-        mainLemma = mainLemma
-        .replace('{','?')
-        .replace('<','?')
-        .replace('>','?')
-        .replace(':','?')
-        .replace('}','?');
+        mainLemma = filterSearchString(mainLemma);
     }
 
     if (leftLemma) {
-        leftLemma = leftLemma
-        .replace('{','?')
-        .replace('<','?')
-        .replace('>','?')
-        .replace(':','?')
-        .replace('}','?');
+        leftLemma = filterSearchString(leftLemma);
     }
 
     var queryArray = [];
@@ -2491,7 +2482,8 @@ function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only
                                     "field": "startYear"
                                 }
                             }],
-                            "should": queryArray
+                            "should": queryArray,
+                            "minimum_should_match": 1
                         }
                     };
                 } else {
@@ -2502,7 +2494,9 @@ function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only
                                     "gisOrt.geohash": geohash
                                 }
                             }],
-                            "should": queryArray
+                            "should": queryArray,
+                            "minimum_should_match": 1
+
                         }
                     };
                 }
@@ -2515,13 +2509,15 @@ function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only
                                     "field": "startYear"
                                 }
                             }],
-                            "should": queryArray
+                            "should": queryArray,
+                            "minimum_should_match": 1
                         }
                     }
                 } else {
                     return {
                         "bool" : {
-                            "should": queryArray
+                            "should": queryArray,
+                            "minimum_should_match": 1
                         }
                     };}
                 }

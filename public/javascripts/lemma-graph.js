@@ -39,8 +39,27 @@
             {
                 title: 'Search in map (Community)',
                 action: function(elm, d, i) {
-                    // console.log('Item #1 clicked!');
-                    // console.log('The data for this item is: ' + JSON.stringify(d));
+                    console.log('Item #1 clicked!');
+                    console.log('Will search for community ' + d.key);
+                    var mainLemmas = [],
+                        leftLemmas = [],
+                        mainLemmasSearchString,
+                        leftLemmasSearchString;
+                    _.forEach(d.values, function (value) {
+                        console.log(value.name + ' is main: ' + value.mainLemma);
+                        if (value.mainLemma)
+                            mainLemmas.push(value.name);
+                        else
+                            leftLemmas.push(value.name);
+                    });
+                    var sepString = ' | ';
+                    if (mainLemmas.length > 1) mainLemmasSearchString = mainLemmas.join(sepString);
+                    else mainLemmasSearchString = mainLemmas[0];
+                    if (leftLemmas.length > 1) leftLemmasSearchString = leftLemmas.join(sepString);
+                    else leftLemmasSearchString = leftLemmas[0];
+
+                    mainExports.plotInMap(leftLemmasSearchString, 'or', mainLemmasSearchString);
+
                 },
                 disabled: false // optional, defaults to false
             },
@@ -403,7 +422,6 @@
 
             select.on("change", function() {
                 filterLevel = parseInt(this.value);
-                // console.log('Will filter with value ' + filterLevel);
                 _needsFiltering = true;
                 lemmaGraph.update();
             });
