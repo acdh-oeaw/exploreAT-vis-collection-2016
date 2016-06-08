@@ -39,16 +39,16 @@
             {
                 title: 'Search in map (Community)',
                 action: function(elm, d, i) {
-                    console.log('Item #1 clicked!');
-                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    // console.log('Item #1 clicked!');
+                    // console.log('The data for this item is: ' + JSON.stringify(d));
                 },
                 disabled: false // optional, defaults to false
             },
             {
                 title: 'Bla',
                 action: function(elm, d, i) {
-                    console.log('Item #2 clicked!');
-                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    // console.log('Item #2 clicked!');
+                    // console.log('The data for this item is: ' + JSON.stringify(d));
                 }
             }
         ];
@@ -57,8 +57,8 @@
             {
                 title: 'Search in map',
                 action: function(elm, d, i) {
-                    console.log('Item #3 clicked!');
-                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    // console.log('Item #3 clicked!');
+                    // console.log('The data for this item is: ' + JSON.stringify(d));
                     if (d.mainLemma) {
                         mainExports.plotInMap(null, 'and', d.name);
                     } else {
@@ -71,8 +71,8 @@
             {
                 title: 'Plot relations',
                 action: function(elm, d, i) {
-                    console.log('Item #4 clicked!');
-                    console.log('The data for this item is: ' + JSON.stringify(d));
+                    // console.log('Item #4 clicked!');
+                    // console.log('The data for this item is: ' + JSON.stringify(d));
                     mainExports.generateTreeGraphForLemma(d.name, 'bucket');
                 }
             }
@@ -89,7 +89,6 @@
 
         d3.select(domElement).append("select")
             .attr("id", "population-select");
-
 
         svg = d3.select(domElement).append("svg")
             .attr("width", '100%')
@@ -152,7 +151,7 @@
 
 
         });
-        
+
         var groupFill = function (d) {
           return color(d.values[0].community)
         };
@@ -332,7 +331,7 @@
         lemmaGraph.nodes = function (someNodes) {
             if (!arguments.length) return originalNodes;
             originalNodes = someNodes;
-            console.log('Will represent ' + someNodes.length + ' nodes');
+            // console.log('Will represent ' + someNodes.length + ' nodes');
             originalNest = d3.nest()
                 .key(function(d) { return d.community; })
                 .entries(originalNodes);
@@ -360,12 +359,12 @@
             if (!arguments.length) return communities;
             communities = someCommunities;
             _.forEach(communities, function (com) {
-                console.log('Community ' + com.id + ' has ' + com.population + ' members');
+                // console.log('Community ' + com.id + ' has ' + com.population + ' members');
             });
 
             var popMinMax = d3.extent(someCommunities, function (d) { return d.population});
 
-            console.log('Max and min community populations: ' + popMinMax[1] + ' ' + popMinMax[0]);
+            // console.log('Max and min community populations: ' + popMinMax[1] + ' ' + popMinMax[0]);
 
             // filterLevel = Math.round((popMinMax[1] + popMinMax[0]) / 2);
 
@@ -396,7 +395,7 @@
                 var opt = select.append('option')
                             .attr('value', el);
                 if (el == filterLevel) {
-                    console.log('filterLevel is ' + filterLevel);
+                    // console.log('filterLevel is ' + filterLevel);
                     opt.attr('selected', true);
                 }
                 opt.html(el + ' members');
@@ -404,7 +403,7 @@
 
             select.on("change", function() {
                 filterLevel = parseInt(this.value);
-                console.log('Will filter with value ' + filterLevel);
+                // console.log('Will filter with value ' + filterLevel);
                 _needsFiltering = true;
                 lemmaGraph.update();
             });

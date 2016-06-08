@@ -84,10 +84,7 @@ var mainExports = {};
     // ZOOM CONTROLS HANDLER
 
     $('.zoomcontrol').bind('click', function() {
-        console.log(cartoMap.projection());
         var projection = cartoMap.projection();
-        console.log(JSON.stringify(projection.invert(40, 10)));
-        console.log(JSON.stringify(cartoMap.zoom().translate()));
     });
 
     // TILES + COUNTRY BORDERS + GRID BASE
@@ -233,7 +230,6 @@ var mainExports = {};
                         refreshGeoFeatures();
                     }
                     else {
-                        console.log("no results")
                         // Clear the timeline
                         timelineChart.selectAll("rect.bar").remove();
 
@@ -1116,20 +1112,36 @@ function generateLemmaGraphFromAggregations(resp_aggregations) {
     // $("#graph-node-number").html('<span>' + nodes.length + ' lemmas</span>');
     var lemmaGraph = $("#lemma-graph");
     lemmaGraph.html("");
-    lemmaGraph.append('<div id="com-graph"></div>');
-    $("#com-graph").css({'height': '100%'});
+    lemmaGraph.append(function(){
+        var html = "";
+        html += '<div id="com-graph">';
+        if(comNodes.length == 0 || comLinks.length == 0){
+            html += '<div id="info-com"><strong>No relations found</strong> for the selected bucket';
+        }
+        else {
+            html += '<div id="info-com">Showing <strong>community</strong> graph for the selected bucket';
+        }
+        html += '</div>';
+        html += '</div>';
+        return html;
 
+    });
+    $("#com-graph").css({'height': '100%'});
 
     w2ui['content'].show('left');
 
-
-    setTimeout(function () {
-        d3.lemmaGraph('#com-graph')
-        .nodes(nodes)
-        .links(links)
-        .communities(communities)
-        .update();
-    }, 1000);
+    if(comNodes.length == 0 || comLinks.length == 0){
+        return;
+    }
+    else {
+        setTimeout(function () {
+            d3.lemmaGraph('#com-graph')
+            .nodes(nodes)
+            .links(links)
+            .communities(communities)
+            .update();
+        }, 1000);
+    }
 }
 
 
@@ -1164,7 +1176,6 @@ function generateTreeGraphForLemma(lemma,where){
     if(generatingTree) return;
     generatingTree = true;
 
-
     if($("#tree-graph").length != 0){
         $("#tree-graph").html("");
     }
@@ -1191,8 +1202,8 @@ function generateTreeGraphForLemma(lemma,where){
             object.years = [];
             if (!$("#nontemporal-checkbox").is(':checked')) {
                 if(hit._source.startYear != undefined &&
-                hit._source.startYear >= selectedMinYear &&
-                hit._source.startYear <= selectedMaxYear){
+                parseInt(hit._source.startYear) >= selectedMinYear &&
+                parseInt(hit._source.startYear) <= selectedMaxYear){
                     object.years.push(parseInt(hit._source.startYear));
                 }
                 else{
@@ -1249,7 +1260,7 @@ function generateTreeGraphForLemma(lemma,where){
 
         function generateDataForLemmas(asLeftOrMainlemma,uniqueCounts){
             var data = [];
-            for(var i=1; i<uniqueCounts[0]; i++){
+            for(var i=1; i<=uniqueCounts[0]; i++){
 
                 var firstLevelNode = {};
                 firstLevelNode.name = i+"+ Relations";
@@ -2345,7 +2356,8 @@ function getAllRecordsForWord(word,where) {
                         "query": word
                     }
                 }
-            ]
+            ],
+            "minimum_should_match" : 1
         }
     }
 
