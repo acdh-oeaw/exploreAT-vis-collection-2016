@@ -886,11 +886,12 @@ text {
     font-size: .8em;
     background-color: #fafafa;
     border-bottom: 1px dotted rgba(0, 0, 0, .3);
+    border-top: 1px dotted rgba(0, 0, 0, .3);
 }
 
 #toggle-tree {
     position: absolute;
-    top: 0px;
+    top: 2px;
     width: 100%;
     text-align: center;
     padding: 10px;

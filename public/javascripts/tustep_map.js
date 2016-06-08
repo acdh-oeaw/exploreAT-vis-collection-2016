@@ -1170,15 +1170,8 @@ function generateTreeGraphForLemma(lemma,where){
     }
     else {
         $("#com-graph").css({'height': '50%'});
-        $("#lemma-graph").append('<div id="tree-graph"></div>>');
+        $("#lemma-graph").append('<div id="tree-graph"></div>');
     }
-
-    $("#tree-graph").append(function(){
-        var html = '<div id="info-tree">';
-        html += 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>main</strong> lemma';
-        html += '</div>';
-        return html;
-    })
 
     getAllRecordsForWord(lemma,where).then(function (resp) {
 
@@ -1356,8 +1349,38 @@ function generateTreeGraphForLemma(lemma,where){
         lemmaGraph.append('<div id="tree-graph-left"></div>');
         lemmaGraph.append('<div id="tree-graph-right"></div>');
 
-        if(dataMain.length > 0) generateTreeSide(lemma,dataMain,"right");
-        if(dataLeft.length > 0) generateTreeSide(lemma,dataLeft,"left");
+        if(dataMain.length > 0) {
+            $("#tree-graph").append(function(){
+                var html = '<div id="info-tree">';
+                html += 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>main</strong> lemma';
+                html += '</div>';
+                return html;
+            });
+            generateTreeSide(lemma,dataMain,"right");
+        }
+
+        if(dataLeft.length > 0) {
+            if($("#info-tree").length == 0){
+                $("#tree-graph").append(function(){
+                    var html = '<div id="info-tree">';
+                    html += 'Showing relations for <strong>"'+lemma+'"</strong> as <strong>left</strong> lemma';
+                    html += '</div>';
+                    return html;
+                });
+            }
+            generateTreeSide(lemma,dataLeft,"left");
+        }
+
+        if(dataLeft.length == 0 && dataMain.length == 0){
+            $("#tree-graph").append(function(){
+                var html = '<div id="info-tree">';
+                html += 'No relations found for <strong>"'+lemma+'"</strong> ';
+                if(where == "db") html += 'in the dataset';
+                if(where == "bucket") html += 'in the selected bucket';
+                html += '</div>';
+                return html;
+            });
+        }
 
         if(dataLeft.length > 0 && dataMain.length > 0){
             $("#tree-graph").append(function(){
@@ -1390,7 +1413,7 @@ function generateTreeGraphForLemma(lemma,where){
         generatingTree = false;
     });
 }
-    
+
     mainExports.generateTreeGraphForLemma = generateTreeGraphForLemma;
 
 function generateTreeSide(lemma, data, side){
@@ -1802,7 +1825,14 @@ function generateTreeSide(lemma, data, side){
             if(d.parent.name != lemma){
                 if(side == "right"){plotInMap(d.name,"and",root.name);}
                 else if(side == "left"){plotInMap(root.name,"and",d.name);}
+                w2ui['content'].hide('left');
+                setTimeout(function () {
+                    $("#lemma-graph").html("");
+                    clickedGeoHash = "";
+                    cartoMap.refresh();
+                }, 500);
                 showHideLemmaList(false);
+                tooltip.hide();
             }
         })
         .on("mouseover", function(d,i){
@@ -2590,4 +2620,3 @@ function getQueryObjectForParams(mainLemma, leftLemma, andOr, geohash, temp_only
         return latLonBox;
     }
 })();
-
