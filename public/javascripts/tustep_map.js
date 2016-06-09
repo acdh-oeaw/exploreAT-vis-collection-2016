@@ -34,7 +34,7 @@ var mainExports = {};
         .on("input", function() {
             if(filterMain.val() == "" && filterLeft.val() == ""){
                 //resetApp();
-                w2ui['content'].hide('left');
+                //w2ui['content'].hide('left');
             }
             else{
                 resetTimelineColor(600);
@@ -2317,187 +2317,232 @@ var mainExports = {};
         word = filterSearchString(word);
         var boolBlock = {};
 
-        // We're looking only at cases with the specified mainLemma AND leftLemma
-        if(filterMain.val() != "" && filterLeft.val() != ""){
-            if(where == "db"){ // Fetch from all database
-                boolBlock = {
-                    "must": [
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": filterMain.val()
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": filterLeft.val()
-                            }
+        // // We're looking only at cases with the specified mainLemma AND leftLemma
+        // if(filterMain.val() != "" && filterLeft.val() != ""){
+        //     if(where == "db"){ // Fetch from all database
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": filterMain.val()
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": filterLeft.val()
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        //     else if(where == "bucket"){ // Fetch only from the selected bucket
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "prefix": {
+        //                         "gisOrt.geohash": clickedGeoHash
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": filterMain.val()
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": filterLeft.val()
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // }
+        //
+        // // We're looking only at cases with the specified mainLemma
+        // else if(filterMain.val() != "" && filterLeft.val() == ""){
+        //     if(where == "db"){ // Fetch from all database
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": filterMain.val()
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": word
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        //     else if(where == "bucket"){ // Fetch only from the selected bucket
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "prefix": {
+        //                         "gisOrt.geohash": clickedGeoHash
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": filterMain.val()
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": word
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // }
+        //
+        // // We're looking only at cases with the specified leftLemma
+        // else if(filterMain.val() == "" && filterLeft.val() != ""){
+        //     if(where == "db"){ // Fetch from all database
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": word
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": filterLeft.val()
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        //     else if(where == "bucket"){ // Fetch only from the selected bucket
+        //         boolBlock = {
+        //             "must": [
+        //                 {
+        //                     "prefix": {
+        //                         "gisOrt.geohash": clickedGeoHash
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "mainLemma",
+        //                         "query": word
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string":{
+        //                         "default_field": "leftLemma",
+        //                         "query": filterLeft.val()
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // }
+        //
+        // // Basic case, no search filter is applied
+        // else if(filterMain.val() == "" && filterLeft.val() == ""){
+        //     if(where == "db"){ // Fetch from all database
+        //         boolBlock = {
+        //             "should": [
+        //                 {
+        //                     "query_string": {
+        //                         "default_field": "mainLemma",
+        //                         "query": word
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string": {
+        //                         "default_field": "leftLemma",
+        //                         "query": word
+        //                     }
+        //                 }
+        //             ],
+        //             "minimum_should_match" : 1
+        //         }
+        //     }
+        //     else if(where == "bucket"){ // Fetch only from the selected bucket
+        //         boolBlock = {
+        //             "must": [{
+        //                 "prefix": {
+        //                     "gisOrt.geohash": clickedGeoHash
+        //                 }
+        //             }],
+        //             "should": [
+        //                 {
+        //                     "query_string": {
+        //                         "default_field": "mainLemma",
+        //                         "query": word
+        //                     }
+        //                 },
+        //                 {
+        //                     "query_string": {
+        //                         "default_field": "leftLemma",
+        //                         "query": word
+        //                     }
+        //                 }
+        //             ],
+        //             "minimum_should_match" : 1
+        //         }
+        //     }
+        // }
+
+        if(where == "db"){ // Fetch from all database
+            boolBlock = {
+                "should": [
+                    {
+                        "query_string": {
+                            "default_field": "mainLemma",
+                            "query": word
                         }
-                    ]
-                }
+                    },
+                    {
+                        "query_string": {
+                            "default_field": "leftLemma",
+                            "query": word
+                        }
+                    }
+                ],
+                "minimum_should_match" : 1
             }
-            else if(where == "bucket"){ // Fetch only from the selected bucket
-                boolBlock = {
-                    "must": [
-                        {
-                            "prefix": {
-                                "gisOrt.geohash": clickedGeoHash
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": filterMain.val()
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": filterLeft.val()
-                            }
+        }
+        else if(where == "bucket"){ // Fetch only from the selected bucket
+            boolBlock = {
+                "must": [{
+                    "prefix": {
+                        "gisOrt.geohash": clickedGeoHash
+                    }
+                }],
+                "should": [
+                    {
+                        "query_string": {
+                            "default_field": "mainLemma",
+                            "query": word
                         }
-                    ]
-                }
+                    },
+                    {
+                        "query_string": {
+                            "default_field": "leftLemma",
+                            "query": word
+                        }
+                    }
+                ],
+                "minimum_should_match" : 1
             }
         }
 
-        // We're looking only at cases with the specified mainLemma
-        else if(filterMain.val() != "" && filterLeft.val() == ""){
-            if(where == "db"){ // Fetch from all database
-                boolBlock = {
-                    "must": [
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": filterMain.val()
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": word
-                            }
-                        }
-                    ]
-                }
-            }
-            else if(where == "bucket"){ // Fetch only from the selected bucket
-                boolBlock = {
-                    "must": [
-                        {
-                            "prefix": {
-                                "gisOrt.geohash": clickedGeoHash
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": filterMain.val()
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": word
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-
-        // We're looking only at cases with the specified leftLemma
-        else if(filterMain.val() == "" && filterLeft.val() != ""){
-            if(where == "db"){ // Fetch from all database
-                boolBlock = {
-                    "must": [
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": word
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": filterLeft.val()
-                            }
-                        }
-                    ]
-                }
-            }
-            else if(where == "bucket"){ // Fetch only from the selected bucket
-                boolBlock = {
-                    "must": [
-                        {
-                            "prefix": {
-                                "gisOrt.geohash": clickedGeoHash
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "mainLemma",
-                                "query": word
-                            }
-                        },
-                        {
-                            "query_string":{
-                                "default_field": "leftLemma",
-                                "query": filterLeft.val()
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-
-        // Basic case, no search filter is applied
-        else if(filterMain.val() == "" && filterLeft.val() == ""){
-            if(where == "db"){ // Fetch from all database
-                boolBlock = {
-                    "should": [
-                        {
-                            "query_string": {
-                                "default_field": "mainLemma",
-                                "query": word
-                            }
-                        },
-                        {
-                            "query_string": {
-                                "default_field": "leftLemma",
-                                "query": word
-                            }
-                        }
-                    ],
-                    "minimum_should_match" : 1
-                }
-            }
-            else if(where == "bucket"){ // Fetch only from the selected bucket
-                boolBlock = {
-                    "must": [{
-                        "prefix": {
-                            "gisOrt.geohash": clickedGeoHash
-                        }
-                    }],
-                    "should": [
-                        {
-                            "query_string": {
-                                "default_field": "mainLemma",
-                                "query": word
-                            }
-                        },
-                        {
-                            "query_string": {
-                                "default_field": "leftLemma",
-                                "query": word
-                            }
-                        }
-                    ],
-                    "minimum_should_match" : 1
-                }
-            }
-        }
         return esClient.search({
             index: 'tustepgeo2',
             body: {
