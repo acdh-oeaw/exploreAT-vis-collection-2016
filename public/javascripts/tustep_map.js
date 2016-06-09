@@ -386,6 +386,8 @@ var mainExports = {};
         dc.renderAll();
         resetCrossfilterData();
         //resetTimelineColor();
+
+        mainExports.timelineChart = timelineChart;
     }
 
     function updateTimelineInfoLabels(geoFeatures){
@@ -1127,10 +1129,13 @@ var mainExports = {};
                 return node.name == bucket.key;
             });
             if (bucketIndex == -1) {
+                var years = [];
+                _.forEach(bucket.years.buckets, function(year){years.push(parseInt(year.key_as_string))});
                 bucketIndex = nodes.push({
                         "name"      : bucket.key,
                         "mainLemma" : true,
-                        "weight": 0
+                        "weight": 0,
+                        "years" : years
                     }) - 1;
             }
             _.forEach(bucket.leftLemma.buckets, function (bucket_leftLemma) {
@@ -1138,9 +1143,12 @@ var mainExports = {};
                     return node.name == bucket_leftLemma.key;
                 });
                 if (leftLemmaIndex == -1) {
+                    var years = [];
+                    _.forEach(bucket_leftLemma.years.buckets, function(year){years.push(parseInt(year.key_as_string))});
                     leftLemmaIndex = nodes.push({
                             "name": bucket_leftLemma.key,
-                            "weight" : 0
+                            "weight" : 0,
+                            "years" : years
                         }) - 1;
                 }
                 var linkIndex = _.findIndex(links, function(link) {
@@ -2382,6 +2390,16 @@ var mainExports = {};
                         "leftLemma": {
                             "terms": {
                                 "field": "leftLemma.raw"
+                            },
+                            "aggs": {
+                                "years": {
+                                    "date_histogram": {
+                                        "field": "startYear",
+                                        "interval": (365*yearResolution)+"d",
+                                        "time_zone": "Europe/Berlin",
+                                        "min_doc_count": 1
+                                    }
+                                }
                             }
                         },
                         "years": {

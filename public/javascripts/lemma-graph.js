@@ -497,9 +497,29 @@
                 .text(function(d) { return d.community });
 
 
-            nodeEnter.on("mouseover", function(d) {})
-                .on("mousedown", function(d) { d3.event.stopPropagation();})
-                .on("mouseout", function(d) {}	);
+            nodeEnter.on("mouseover", function(d) {
+                if(d.years != undefined && d.years.length > 0){
+                    setTimeout(function () {
+                        // Highlight related years in timeline
+                        mainExports.timelineChart.selectAll('rect.bar').each(function(dBar){
+                            if(d.years.indexOf(parseInt(dBar.x)) > -1){
+                                d3.select(this)/*.transition().duration(500)*/.style("fill", "#2b91fc");
+                            }
+                            else {
+                                d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
+                            }
+                        });
+                    }, 100);
+                }
+            })
+            .on("mousedown", function(d) { d3.event.stopPropagation();})
+            .on("mouseout", function(d) {
+                setTimeout(function () {
+                    mainExports.timelineChart.selectAll('rect.bar').each(function(dBar){
+                        d3.select(this)/*.transition().duration(500)*/.style("fill", "black");
+                    });
+                }, 0/*waitingTime*/);
+            });
 
             nodeSelection
                 .exit()
