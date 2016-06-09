@@ -7,6 +7,8 @@ var mainExports = {};
         hosts: "http:\/\/localhost:9200\/"
     });
 
+    var indexName = 'tustepgeo3';
+
     // CROSSFILTER SHARED DATA
 
     var ndx; // crossfilter handle
@@ -714,7 +716,7 @@ var mainExports = {};
 
                 if(d.properties.doc_count == 1){
                     getSingleRecordFullData().then(function(resp){
-
+                        
                         if(resp.hits.hits[0]._source.leftLemma != undefined &&
                         resp.hits.hits[0]._source.leftLemma != ""){
                             $("#single-lemma-left").show();
@@ -2405,7 +2407,7 @@ var mainExports = {};
             body["size"] = 0;
 
         return esClient.search({
-            index: 'tustepgeo2',
+            index: indexName,
             body: body
         });
     }
@@ -2466,7 +2468,7 @@ var mainExports = {};
         };
 
         return esClient.search({
-            index: 'tustepgeo2',
+            index: indexName,
             body: body
         });
     }
@@ -2703,7 +2705,7 @@ var mainExports = {};
         }
 
         return esClient.search({
-            index: 'tustepgeo2',
+            index: indexName,
             body: {
                 size: 10000,
                 query: {
@@ -2784,7 +2786,7 @@ var mainExports = {};
         }
 
         return esClient.search({
-            index: 'tustepgeo2',
+            index: indexName,
             body: {
                 size: 10000,
                 query: {
@@ -2975,7 +2977,7 @@ var mainExports = {};
         };
 
         return esClient.search({
-            index: 'tustepgeo2',
+            index: indexName,
             body: body
         });
     }
