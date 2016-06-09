@@ -201,7 +201,7 @@ function processRecord(record) {
                             gisGemDict.hasOwnProperty(placeMatch.gemeinde_id)) {
                             lemma.gisGemeinde = gisGemDict[placeMatch.gemeinde_id];
                         }
-                        return Promise.resolve(lemma);
+                        return insertOtherFieldsForRecord(lemma, record);
                     } else {
                         query = "SELECT ST_AsGeoJSON(GISort.the_geom) AS gisort, " +
                             "ST_AsGeoJSON(GISgemeinde.the_geom) AS gisgemeinde " +
@@ -217,14 +217,14 @@ function processRecord(record) {
                 } else if (placeMatch.gemeinde_id > -1) {
                     if (gisGemDict.hasOwnProperty(placeMatch.gemeinde_id)) {
                         lemma.gisGemeinde = gisGemDict[placeMatch.gemeinde_id];
-                        return Promise.resolve(lemma);
+                        return insertOtherFieldsForRecord(lemma, record);
                     }
                     query = "SELECT ST_AsGeoJSON(GISgemeinde.the_geom) AS gisgemeinde " +
                         "FROM GISgemeinde LEFT JOIN gemeinde ON GISgemeinde.id = gemeinde.gis_gemeinde_id " +
                         "WHERE gemeinde.id = ?";
                     params = [placeMatch.gemeinde_id];
                 } else {
-                    return Promise.resolve(lemma);
+                    return insertOtherFieldsForRecord(lemma, record);
                 }
                 if (query == undefined)
                     console.log('Stop');
@@ -252,7 +252,7 @@ function processRecord(record) {
                                 placesWithNoResults[lemma.ortName] = {"params": params, "count" : 1};
                             }
                         }
-                        return Promise.resolve(lemma);
+                        return insertOtherFieldsForRecord(lemma, record);
                     })
                     .catch(function (err) {
                         return Promise.reject(err);
