@@ -145,7 +145,9 @@ function processFile(file) {
         .then(function (result) {
             if (result.hasOwnProperty("records")) {
                 if (result.records.hasOwnProperty("record")) {
-                    return Promise.mapSeries(result.records.record, processRecord).then(function(fileResults) {
+                    return Promise.mapSeries(_.each(result.records.record, function(element) {
+                        _.extend(element, {fileName: file});
+                    }), processRecord).then(function(fileResults) {
                         console.log('Finished processing file, indexing...');
                         return indexResults(fileResults.filter(function(item) { return item !== undefined}));
                     });
@@ -239,7 +241,7 @@ function processRecord(record) {
                             if (result.gisgemeinde !== undefined) {
                                 result.gisgemeinde = result.gisgemeinde.replace('P', 'p');
                                 var gemObj = JSON.parse(result.gisgemeinde);
-                                lemma.gisGemeinde = gemObj
+                                lemma.gisGemeinde = gemObj;
                                 var index = params.length > 1 ? 1 : 0;
                                 gisGemDict[params[index]] = gemObj;
                             }
@@ -263,17 +265,32 @@ function processRecord(record) {
                     unmatchedPlaces[lemma.ortName] = 1;
                 }
 
-                return Promise.resolve(lemma);
+                return insertOtherFieldsForRecord(lemma, record);
                 // return lemma;
             }
         } else {
-            return Promise.resolve(lemma);
+            return insertOtherFieldsForRecord(lemma, record);
             // return lemma;
         }
     } else {
         console.log('Record has no fields');
         return Promise.resolve();
     }
+}
+
+function insertOtherFieldsForRecord(lemmaObj, record) {
+    var already = ["HL", "O"];
+    var recNo = record['$'].n;
+    lemmaObj['tustep'] = {};
+    _.chain(record.field)
+        .filter(function (field) { return already.indexOf(field['$'].name) == -1})
+        .forEach(function (field) {
+           lemmaObj.tustep[field['$'].name] = field['_'];
+        });
+    lemmaObj.tustep.recordNumber = recNo;
+    lemmaObj.tustep.fileName = record.fileName;
+    lemmaObj.tustep.orig = record.orig[0];
+    return Promise.resolve(lemmaObj);
 }
 
 
@@ -389,7 +406,7 @@ function indexResults(results) {
     console.log('Results length is ' + results.length);
     var bulk_request = [];
     results.forEach(function(result) {
-        bulk_request.push({index: {_index: 'tustepgeo', _type: 'tustepgeo-type'}});
+        bulk_request.push({index: {_index: 'tustepgeo3', _type: 'tustepgeo-type'}});
         bulk_request.push(result);
     });
     //index and flush
