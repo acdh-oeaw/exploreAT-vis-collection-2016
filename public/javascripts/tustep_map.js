@@ -187,12 +187,20 @@ var mainExports = {};
         function(){
             update();
             refreshTreeGraphForLemma();
-            if ($(this).is(':checked')) {
-                //alert('checked');
+
+            // Only if the lemma list tab is open, refresh it
+            if(d3.select("#lemma-list-holder").classed("collapsed") == false){
+                getLemmasInGeoHashBucket(clickedGeoHash).then(function (resp) {
+                    generateLemmaList(resp.aggregations);
+                });
             }
-            else {
-                //alert('unchecked');
-            }
+
+            // if ($(this).is(':checked')) {
+            //     //alert('checked');
+            // }
+            // else {
+            //     //alert('unchecked');
+            // }
         });
 
     // TOOLTIP SHOW CONTROL INITIAL ACTIVATION
@@ -345,6 +353,13 @@ var mainExports = {};
         });
         b.on('brushend.custom', function() {
             timelineChart.userIsBrushing = false;
+
+            // Only if the lemma list tab is open, refresh it
+            if(d3.select("#lemma-list-holder").classed("collapsed") == false){
+                getLemmasInGeoHashBucket(clickedGeoHash).then(function (resp) {
+                    generateLemmaList(resp.aggregations);
+                });
+            }
         });
 
         // Update the map after any brushing action
@@ -921,21 +936,37 @@ var mainExports = {};
             $("#lemma-list-detail").html("");
             for(var i = 0; i<wordBuckets.length; i++){
                 if(wordBuckets[i].key == filterMain.val()){
-                    lemmaListTable.append(function(){
-                        var html = '<div class="lemma-list-row">';
-                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                        html += '<div class="lemma-list-actions">';
-                        html += '<div class="lemma-button relations-db">Plot Relations in Dataset</div>';
-                        html += '<div class="lemma-button relations-bucket">Plot Relations in Bucket</div>';
-                        html += '<div class="lemma-button map">Plot in Map</div>';
-                        html += '</div>';
-                        html += '</div>';
-                        return html;
+                    var isInRange = false;
+                    _.forEach(wordBuckets[i].years.buckets,function(yearBucket){
+                        if(parseInt(yearBucket.key_as_string) >= selectedMinYear &&
+                        parseInt(yearBucket.key_as_string) <= selectedMaxYear)
+                            isInRange = true;
                     });
-                    counter++;
-                    foundLemmas.push(wordBuckets[i].key);
+                    // Non-temp are always added if needed
+                    if ($("#nontemporal-checkbox").is(':checked')) {
+                        // Take the non-temporal data into account only if no brushing is applied
+                        if (timelineChart.filters().length == 0) {
+                            if(wordBuckets[i].years.buckets[0] == undefined){
+                                isInRange = true;
+                            }
+                        }
+                    }
+                    if(isInRange) {
+                        lemmaListTable.append(function(){
+                            var html = '<div class="lemma-list-row">';
+                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                            html += '<div class="lemma-list-actions">';
+                            html += '<div class="lemma-button relations-db">Plot Relations in Dataset</div>';
+                            html += '<div class="lemma-button relations-bucket">Plot Relations in Bucket</div>';
+                            html += '<div class="lemma-button map">Plot in Map</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            return html;
+                        });
+                        counter++;
+                        foundLemmas.push(wordBuckets[i].key);
+                    }
                 }
-
             }
         }
         else { // filterMain == "*" && filterMain == ""
@@ -950,56 +981,108 @@ var mainExports = {};
                     _.forEach(wordBuckets[i].leftLemma.buckets, function(relatedLeftLemma){
                         if(filterLeft.val().indexOf("?") > -1 || filterLeft.val().indexOf("*") > -1){
                             if(relatedLeftLemma.key.indexOf(filterLeft.val().replace("?","").replace("*","")) > -1){
-                                lemmaListTable.append(function(){
-                                    var html = '<div class="lemma-list-row">';
-                                    html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                    html += '<div class="lemma-list-actions">';
-                                    html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
-                                    html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
-                                    html += '<div class="lemma-button map">Plot in Map</div>';
-                                    html += '</div>';
-                                    html += '</div>';
-                                    return html;
+                                var isInRange = false;
+                                _.forEach(wordBuckets[i].years.buckets,function(yearBucket){
+                                    if(parseInt(yearBucket.key_as_string) >= selectedMinYear &&
+                                    parseInt(yearBucket.key_as_string) <= selectedMaxYear)
+                                        isInRange = true;
                                 });
-                                counter++;
-                                foundLemmas.push(wordBuckets[i].key);
+                                // Non-temp are always added if needed
+                                if ($("#nontemporal-checkbox").is(':checked')) {
+                                    // Take the non-temporal data into account only if no brushing is applied
+                                    if (timelineChart.filters().length == 0) {
+                                        if(wordBuckets[i].years.buckets[0] == undefined){
+                                            isInRange = true;
+                                        }
+                                    }
+                                }
+                                if(isInRange) {
+                                    lemmaListTable.append(function(){
+                                        var html = '<div class="lemma-list-row">';
+                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                        html += '<div class="lemma-list-actions">';
+                                        html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                                        html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
+                                        html += '<div class="lemma-button map">Plot in Map</div>';
+                                        html += '</div>';
+                                        html += '</div>';
+                                        return html;
+                                    });
+                                    counter++;
+                                    foundLemmas.push(wordBuckets[i].key);
+                                }
                             }
                         }
                         else{
                             if(relatedLeftLemma.key == filterLeft.val()){
-                                lemmaListTable.append(function(){
-                                    var html = '<div class="lemma-list-row">';
-                                    html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                                    html += '<div class="lemma-list-actions">';
-                                    html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
-                                    html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
-                                    html += '<div class="lemma-button map">Plot in Map</div>';
-                                    html += '</div>';
-                                    html += '</div>';
-                                    return html;
+                                var isInRange = false;
+                                _.forEach(wordBuckets[i].years.buckets,function(yearBucket){
+                                    if(parseInt(yearBucket.key_as_string) >= selectedMinYear &&
+                                    parseInt(yearBucket.key_as_string) <= selectedMaxYear)
+                                        isInRange = true;
                                 });
-                                counter++;
-                                foundLemmas.push(wordBuckets[i].key);
+                                // Non-temp are always added if needed
+                                if ($("#nontemporal-checkbox").is(':checked')) {
+                                    // Take the non-temporal data into account only if no brushing is applied
+                                    if (timelineChart.filters().length == 0) {
+                                        if(wordBuckets[i].years.buckets[0] == undefined){
+                                            isInRange = true;
+                                        }
+                                    }
+                                }
+                                if(isInRange) {
+                                    lemmaListTable.append(function(){
+                                        var html = '<div class="lemma-list-row">';
+                                        html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                                        html += '<div class="lemma-list-actions">';
+                                        html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                                        html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
+                                        html += '<div class="lemma-button map">Plot in Map</div>';
+                                        html += '</div>';
+                                        html += '</div>';
+                                        return html;
+                                    });
+                                    counter++;
+                                    foundLemmas.push(wordBuckets[i].key);
+                                }
                             }
                         }
                     });
                 }
             }
-            else { // filterLeft == "*" && filterLeft == ""
+            else { // filterLeft == "*" && filterLeft == ""+
                 $("#lemma-list-detail").html("");
-                for(var i = 0; i<20 && i<wordBuckets.length; i++){
-                    lemmaListTable.append(function(){
-                        var html = '<div class="lemma-list-row">';
-                        html += '<strong>'+(i+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
-                        html += '<div class="lemma-list-actions">';
-                        html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
-                        html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
-                        html += '<div class="lemma-button map">Plot in Map</div>';
-                        html += '</div>';
-                        html += '</div>';
-                        return html;
+                for(var i = 0; counter<20 && i<wordBuckets.length; i++){
+                    var isInRange = false;
+                    _.forEach(wordBuckets[i].years.buckets,function(yearBucket){
+                        if(parseInt(yearBucket.key_as_string) >= selectedMinYear &&
+                        parseInt(yearBucket.key_as_string) <= selectedMaxYear)
+                            isInRange = true;
                     });
-                    foundLemmas.push(wordBuckets[i].key);
+                    // Non-temp are always added if needed
+                    if ($("#nontemporal-checkbox").is(':checked')) {
+                        // Take the non-temporal data into account only if no brushing is applied
+                        if (timelineChart.filters().length == 0) {
+                            if(wordBuckets[i].years.buckets[0] == undefined){
+                                isInRange = true;
+                            }
+                        }
+                    }
+                    if(isInRange) {
+                        lemmaListTable.append(function(){
+                            var html = '<div class="lemma-list-row">';
+                            html += '<strong>'+(counter+1)+'.</strong> <span class="lemma-list-word">'+wordBuckets[i].key+'</span>';
+                            html += '<div class="lemma-list-actions">';
+                            html += '<div class="lemma-button relations rel-db">Plot Relations in Dataset</div>';
+                            html += '<div class="lemma-button relations rel-bucket">Plot Relations in Bucket</div>';
+                            html += '<div class="lemma-button map">Plot in Map</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            return html;
+                        });
+                        counter++;
+                        foundLemmas.push(wordBuckets[i].key);
+                    }
                 }
             }
         }
@@ -2300,9 +2383,17 @@ var mainExports = {};
                             "terms": {
                                 "field": "leftLemma.raw"
                             }
+                        },
+                        "years": {
+                            "date_histogram": {
+                                "field": "startYear",
+                                "interval": (365*yearResolution)+"d",
+                                "time_zone": "Europe/Berlin",
+                                "min_doc_count": 1
+                            }
                         }
                     }
-                }
+                },
             }
         };
 
