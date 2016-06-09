@@ -927,6 +927,98 @@ text {
     margin-top: -4px;
 }
 
+#single-lemma-holder {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.15);
+    text-align: center;
+    line-height: 50%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+#single-lemma-box {
+    width: 380px;
+    height: 180px;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.5);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#single-lemma-box-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#single-lemma-box-closer {
+    width: 22px;
+    height: 22px;
+    float: right;
+    position: relative;
+    color: white;
+    background-color: #2b91fc;
+    font-size: .8em;
+    line-height: 22px;
+    border-radius: 0 0 0 4px;
+    border: 1px solid rgba(0,0,0,0);
+    z-index: 9999;
+}
+
+#single-lemma-box-closer:hover {
+
+    background-color: #1871ce;
+    cursor: pointer;
+
+    -webkit-transition: all ease-in-out .1s;
+      -moz-transition: all ease-in-out .1s;
+      -o-transition: all ease-in-out .1s;
+      transition: all ease-in-out .1s;
+}
+
+#single-lemma-header {
+    position: relative;
+    height: 40px;
+    padding: 10px;
+    padding-top: 30px;
+    font-size: 1.6em;
+    font-weight: 800;
+    color: black;
+}
+
+#single-lemma-left, #single-lemma-main {
+    display: inline-block;
+}
+
+#single-lemma-picture {
+    position: relative;
+    width: 38%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#single-lemma-data {
+    position: relative;
+    width: 50%;
+    display: inline-block;
+    text-align: left;
+    padding-left: 10px;
+    vertical-align: top;
+}
+
+.single-lemma-info {
+    margin: 10px;
+    font-size: .8em;
+}
+
 
 /* WORD CLOUD CSS */
 

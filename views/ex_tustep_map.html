@@ -39,86 +39,25 @@
 
 <body>
 <div id="content"></div>
-    <!--<div id="header">-->
-        <!--<div class="title">ExploreAT!</div>-->
-        <!--<div id="loader-wrapper">-->
-            <!--<div id="loadFromLemma" class="load-block">Load <b>Lemma</b> Data</div>-->
-            <!--<div id="loadFromBeleg" class="load-block">Load <b>Beleg</b> Data</div>-->
-            <!--<div id="spinner" class="hidden">-->
-                <!--<span>Loading data from the database...<br>This may take some time.</span>-->
-                <!--<br><br>-->
-                <!--<i class="fa fa-circle-o-notch fa-spin fa-2x"></i>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div id="fieldFilter" class="filter-box hidden">-->
-            <!--<h1>Word Filter</h1>-->
-            <!--<h2>Find words containing what you type</h2>-->
-            <!--<input type="text" id="searchField" placeholder="Word...">-->
-            <!--&lt;!&ndash; <button type="button" id="searchFieldButton">Search</button> &ndash;&gt;-->
-            <!--<button type="button" id="clearFieldButton">Clear</button>-->
-        <!--</div>-->
-        <!--<div id="speechFilter" class="filter-box hidden">-->
-            <!--<h1>Part Of Speech Filter</h1>-->
-            <!--<h2>Click to highlight any particular kind of word</h2>-->
-        <!--</div>-->
-        <!--<div id="yearFilter" class="filter-box hidden">-->
-            <!--<h1>Year Filter</h1>-->
-            <!--<h2>Show only words sourced between the selected years</h2>-->
-            <!--<div id="sliderWrapper">-->
-                <!--<div id="sliderYears"></div>-->
-                <!--<span id="minYearLabel" class="yearLabel"></span>-->
-                <!--<span id="maxYearLabel" class="yearLabel"></span>-->
-            <!--</div>-->
-            <!--<div id="checkYearWrapper">-->
-                <!--<input id="checkYear" type="checkbox" name="checkYear" value="checkYear" checked> Show words without a registered date-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<br>-->
-    <!--</div>-->
-    <!--<div id="map"></div>-->
-    <!--<div id="livesearch-holder" class="holder overmap">-->
-        <!--<form id="live-search" class="searchBox overmap">-->
-            <!--<input type="text" class="text-input" id="filterLeft" placeholder="Search by left lemma" value="" style="width: 200px">-->
-            <!--<input type="text" class="text-input" id="filterMain" placeholder="Search by main lemma" value="" style="width: 200px">-->
-        <!--</form>-->
-    <!--</div>-->
-    <!--<div id="timeline-holder" class="holder overmap">-->
-      <!--<div id="timeline-info-holder">-->
-        <!--<div class="timeline-info-years">Showing data from <span id="timeline-filter-start"></span> to <span id="timeline-filter-end"></span></div>-->
-        <!--<div class="timeline-info-docs">A total of <span id="timeline-lemma-count"></span> lemmas are being represented</div>-->
-        <!--<span class="reset-holder"><a id="timeline-reset">Reset Timeline</a></span>-->
-      <!--</div>-->
-      <!--<div id="timeline-resolution-holder">-->
-        <!--<div class="timeline-resolution-label">Timeline <strong>Resolution</strong></div>-->
-        <!--<select name="timeline-resolution-selector" id="timeline-resolution-selector">-->
-          <!--<option value="1" selected>Per Year</option>-->
-          <!--<option value="5">Per 5 Years</option>-->
-          <!--<option value="10">Per 10 Years</option>-->
-          <!--<option value="25">Per 25 Years</option>-->
-        <!--</select>-->
-      <!--</div>-->
-      <!--<div id="timeline" class="dc-chart"></div>-->
-    <!--</div>-->
-    <!--<div id="bucket-holder" class="holder overmap">-->
-      <!--<div class="bucket-resolution-label">Lemma Buckets Resolution Level</div>-->
-      <!--<select name="bucket-resolution-selector" id="bucket-resolution-selector">-->
-        <!--<option value="7" selected>1st Level</option>-->
-        <!--<option value="8">2nd Level</option>-->
-        <!--<option value="9">3rd Level</option>-->
-        <!--<option value="10">4th Level</option>-->
-        <!--<option value="11">5th Level</option>-->
-      <!--</select>-->
-    <!--</div>-->
-    <!--<div id="lemma-list-holder" class="holder overmap collapsed">-->
-        <!--<div id="lemma-list-handle" class="holder">&laquo;</div>-->
-        <!--<div class="lemma-list-label">Contained Lemmas</div>-->
-        <!--<div id="lemma-list-table">-->
-            <!---->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-
 <div id="tooltip"></div>
+<div id="single-lemma-holder" class="overmap" style="display:none">
+    <div id="single-lemma-box">
+        <div id="single-lemma-box-content">
+            <div id="single-lemma-box-closer">X</div>
+            <div id="single-lemma-header">
+                <div id="single-lemma-left">(<span>über</span>)</div>
+                <div id="single-lemma-main"><span>rot</span></div>
+            </div>
+            <div id="single-lemma-picture">
+                <img src="asd.png"/>
+            </div>
+            <div id="single-lemma-data">
+                <div class="single-lemma-info location"><strong>Location: </strong><span>Viena</span></div>
+                <div class="single-lemma-info typeofword"><strong>Type of Word: </strong><span>Verb</span></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 

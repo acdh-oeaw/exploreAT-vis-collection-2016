@@ -182,7 +182,8 @@ var mainExports = {};
         }, 500);
     }
 
-    // NONTEMPORAL CHECKBOX LISTENER
+    // NON-TEMPORAL CHECKBOX LISTENER
+
     $('#nontemporal-checkbox').change(
         function(){
             update();
@@ -221,6 +222,12 @@ var mainExports = {};
     $(document).mousemove(function(e){
         var tooltipW = 150, tooltipH = 150;
         tooltip.css({'top': e.pageY - tooltip.height()/2 - tooltipYmodifier,'left': e.pageX - tooltip.width()/2});
+    });
+
+    // SINGLE RECORD OVERLAY CLOSER LISTENER
+
+    $("#single-lemma-box-closer").on("click", function(){
+        $("#single-lemma-holder").fadeOut();
     });
 
     // APP START (First update)
@@ -703,6 +710,49 @@ var mainExports = {};
                             }, zoomDelay-850
                         );
                     }, 750);
+                }
+
+                if(d.properties.doc_count == 1){
+                    getSingleRecordFullData().then(function(resp){
+
+                        if(resp.hits.hits[0]._source.leftLemma != undefined &&
+                        resp.hits.hits[0]._source.leftLemma != ""){
+                            $("#single-lemma-left").show();
+                            $("#single-lemma-left > span").html(resp.hits.hits[0]._source.leftLemma);
+                        }
+                        else {
+                            $("#single-lemma-left").hide();
+                        }
+
+                        if(resp.hits.hits[0]._source.mainLemma != undefined &&
+                        resp.hits.hits[0]._source.mainLemma != ""){
+                            $("#single-lemma-main").show();
+                            $("#single-lemma-main > span").html(resp.hits.hits[0]._source.mainLemma);
+                        }
+                        else {
+                            $("#single-lemma-main").hide();
+                        }
+
+                        if(resp.hits.hits[0]._source.ortName != undefined &&
+                        resp.hits.hits[0]._source.ortName != ""){
+                            $(".single-lemma-info.location").show();
+                            $(".single-lemma-info.location > span").html(resp.hits.hits[0]._source.ortName);
+                        }
+                        else {
+                            $(".single-lemma-info.location").hide();
+                        }
+
+                        if(resp.hits.hits[0]._source.wordType != undefined &&
+                        resp.hits.hits[0]._source.wordType != ""){
+                            $(".single-lemma-info.typeofword").show();
+                            $(".single-lemma-info.typeofword > span").html(resp.hits.hits[0]._source.wordType);
+                        }
+                        else {
+                            $(".single-lemma-info.typeofword").hide();
+                        }
+
+                        $("#single-lemma-holder").fadeIn();
+                    });
                 }
 
                 // Reset opacity of all
@@ -2662,6 +2712,88 @@ var mainExports = {};
             }
         });
     }
+
+
+    function getSingleRecordFullData(){
+
+        var leftLemma = filterLeft.val();
+        var mainLemma = filterMain.val();
+
+        if (mainLemma) {mainLemma = filterSearchString(mainLemma);}
+        if (leftLemma) {leftLemma = filterSearchString(leftLemma);}
+
+        var boolBlock = {};
+
+        boolBlock = {
+            "must": [
+                {
+                    "prefix": {
+                        "gisOrt.geohash": clickedGeoHash
+                    }
+                }
+            ],
+            "should" : [],
+            "minimum_should_match" : 0
+        };
+
+        if($("#lemma-and-or-selector").val() == "and"){
+            if(mainLemma != ""){
+                boolBlock.must.push(
+                    {
+                        "query_string": {
+                            "default_field": "mainLemma",
+                            "query": mainLemma
+                        }
+                    }
+                );
+            }
+            if(leftLemma != ""){
+                boolBlock.must.push(
+                    {
+                        "query_string": {
+                            "default_field": "leftLemma",
+                            "query": leftLemma
+                        }
+                    }
+                );
+            }
+        }
+
+        else if($("#lemma-and-or-selector").val() == "or"){
+            boolBlock.minimum_should_match = 1;
+            if(mainLemma != ""){
+                boolBlock.should.push(
+                    {
+                        "query_string": {
+                            "default_field": "mainLemma",
+                            "query": mainLemma
+                        }
+                    }
+                );
+            }
+            if(leftLemma != ""){
+                boolBlock.should.push(
+                    {
+                        "query_string": {
+                            "default_field": "leftLemma",
+                            "query": leftLemma
+                        }
+                    }
+                );
+            }
+        }
+
+        return esClient.search({
+            index: 'tustepgeo2',
+            body: {
+                size: 10000,
+                query: {
+                    bool: boolBlock
+                }
+            }
+        });
+    }
+
 
     function filterSearchString(string) {
         var pattern = /\{|<|>|:|}|\$|\^/g;
