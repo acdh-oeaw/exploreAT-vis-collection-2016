@@ -62,13 +62,6 @@
 
                 },
                 disabled: false // optional, defaults to false
-            },
-            {
-                title: 'Bla',
-                action: function(elm, d, i) {
-                    // console.log('Item #2 clicked!');
-                    // console.log('The data for this item is: ' + JSON.stringify(d));
-                }
             }
         ];
 
