@@ -70,3 +70,7 @@ npm-debug.log
 bower_components
 config/production.json
 config/stage.json
+results.json
+scripts/discarded-lemmas.json
+scripts/noresults.json
+scripts/unmatched.json

@@ -10,8 +10,8 @@ body {
 	color: #595959;
 	border-bottom: 1px solid gainsboro;
 	text-align: center;
-	padding: 10px 0;
-
+	padding: 20px 0;
+	margin-bottom: 20px;
 }
 
 h1 {
@@ -156,4 +156,44 @@ span.yellow {
 	display: none;
 }
 
+#content {
+  margin: 0 auto;
+}
 
+svg {
+  border: 1px solid black;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+
+.tick line {
+  fill: none;
+  stroke: #000;
+}
+
+.dot {
+  opacity: .05;
+  fill: black;
+}
+
+.dot:hover {
+  opacity: .8;
+  fill: red;
+}
+
+.tooltip {
+  position: absolute;
+  /*width: 200px;
+  height: 28px;*/
+  pointer-events: none;
+  font-size: .8em;
+  background-color: white;
+  padding: 2px 4px;
+  border: 1px solid black;
+  border-radius: 3px;
+}

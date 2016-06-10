@@ -1,0 +1,68 @@
+{
+  "tustepgeo2" : {
+    "mappings" : {
+      "tustepgeo-type" : {
+        "properties" : {
+          "endYear" : {
+            "type" : "date",
+            "format" : "strict_year"
+          },
+          "gisGemeinde" : {
+            "type" : "geo_shape",
+            "tree" : "quadtree",
+            "precision" : "1000.0m"
+          },
+          "gisOrt" : {
+            "type" : "geo_point",
+            "geohash" : true,
+            "geohash_prefix" : true,
+            "geohash_precision" : 6
+          },
+          "isMain" : {
+            "type" : "boolean"
+          },
+          "leftLemma" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "mainLemma" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "ortName" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "startYear" : {
+            "type" : "date",
+            "format" : "strict_year"
+          },
+          "wordType" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
