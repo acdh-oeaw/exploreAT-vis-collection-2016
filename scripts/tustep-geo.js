@@ -21,7 +21,7 @@ var gisGemDict = {};
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    host: elasticEndpoint
+    host: 'localhost:9200'
 });
 
 if (process.argv[2] == 'undefined' || process.argv[2].length == 0) {

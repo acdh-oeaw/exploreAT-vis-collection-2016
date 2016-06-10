@@ -4,7 +4,7 @@ var mainExports = {};
     // ELASTIC
 
     var esClient = new $.es.Client({
-        hosts: "http:\/\/localhost:9200\/"
+        hosts: elasticEndpoint
     });
 
     var indexName = 'tustepgeo3';
