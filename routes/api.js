@@ -19,6 +19,7 @@ Flickr.authenticate(flickrOptions, function(error, flickr) {
 });
 
 var mysqlConfig = config.get('mysql');
+var elasticEndpoint = config.get('elasticsearch').host;
 
 var MySQL      = require('mysql');
 var dbClient = MySQL.createConnection({
@@ -181,6 +182,11 @@ router.get('/colorLemma/:name', function(req, res, next) {
         // `rows.info.metadata` contains the metadata
         res.json({rows: rows});
     });
+});
+
+
+router.get('/elasticEndpoint', function (req, res, next) {
+    res.send(elasticEndpoint);
 });
 
 // router.get('/es/bedeutung/:inputString', function(req, res, next) {

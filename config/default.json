@@ -11,5 +11,8 @@
       "userId": "***REMOVED***",
       "accessToken": "***REMOVED***",
       "accessTokenSecret": "***REMOVED***"
+  },
+  "elasticsearch": {
+      "host": "localhost:9200"
   }
 }

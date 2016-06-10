@@ -66,6 +66,7 @@
 <script src="javascripts/d3-legend.min.js"></script>
 
 <script>
+    var elasticEndpoint;
     $(function () {
         $('#content').w2layout({
             name: 'content',
@@ -108,18 +109,26 @@
         });
 
         w2ui['content'].load('main','map', '', function () {
-
             $.ajax({
-                crossDomain: true,
-                dataType: "script",
-                url: "javascripts/tustep_map.js",
-                success: function(){
-                    console.log('Success');
+                url: "/api/elasticEndpoint",
+                success: function (data) {
+                    elasticEndpoint = data;
+                    $.ajax({
+                        crossDomain: true,
+                        dataType: "script",
+                        url: "javascripts/tustep_map.js",
+                        success: function(){
+                            console.log('Success');
+                        },
+                        error: function(){
+                            console.log('ohps');
+                        }
+                    })
                 },
-                error: function(){
+                error: function () {
                     console.log('ohps');
                 }
-            })
+            });
         });
 });
 
