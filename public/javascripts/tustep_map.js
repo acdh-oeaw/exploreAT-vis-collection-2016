@@ -15,6 +15,7 @@ var mainExports = {};
     var tustepData = [];
     var tustepDataNoYears = [];
     var timelineChart = dc.barChart('#timeline');
+    var maxHeightBar = undefined;
 
     var allDim, yearDim;
     var groupOfDocsPerYear;
@@ -37,6 +38,7 @@ var mainExports = {};
             if(filterMain.val() == "" && filterLeft.val() == ""){
                 //resetApp();
                 //w2ui['content'].hide('left');
+                update();
             }
             else{
                 resetTimelineColor(600);
@@ -250,6 +252,9 @@ var mainExports = {};
                         // Clear the timeline
                         timelineChart.selectAll("rect.bar").remove();
 
+                        // Hide the legend
+                        $("#legend-holder").hide();
+
                         // No geofeatures == remove layer
                         geoFeaturesLayer
                             .features([]);
@@ -285,6 +290,9 @@ var mainExports = {};
     }
 
     function refreshCrossfilter(){
+
+        // Show the legend
+        $("#legend-holder").show();
 
         if(ndx == null){
             ndx = crossfilter(tustepData);
@@ -344,7 +352,8 @@ var mainExports = {};
                 yearDim.top(Infinity)[0].year // maxYear
             ]))
             .centerBar(true)
-            .margins(margins);
+            .margins(margins)
+            .transitionDuration(1);
         timelineChart.xAxis().tickValues(_.unique(_.pluck(yearDim.top(Infinity),"year")).sort().filter(function(el, index) {return index % 10 === 1;}));
         //timelineChart.yAxis().tickValues(0);
 
@@ -379,27 +388,65 @@ var mainExports = {};
                 .attr('transform', 'translate(-10,10) rotate(315)');
         });
 
-        // timelineChart.on("postRedraw", function() {
-        //
-        //     // Recalculate bar heights
-        //     var allTimelineBars = timelineChart.selectAll('rect.bar')[0];
-        //     var maxHeight = d3.max(allTimelineBars, function(d) {
-        //         return $(d).attr("height");
-        //     });
-        //
-        //     var heightScale = d3.scale.linear()
-        //         .range([0,maxHeight/2,maxHeight])
-        //         .domain([0, docCountMeanOverall, maxDocCountOverall]);
-        //
-        //     timelineChart.selectAll('rect.bar').each(function(dBar){
-        //         console.log(d3.select(this)[0][0].attr("y"))
-        //         var newHeight = heightScale(d3.select(this)[0][0].y);
-        //         var newY = 50 - newHeight;
-        //         // d3.select(this)
-        //         // .attr("height", newHeight)
-        //         // .attr("y", newY);
-        //     });
-        // });
+
+
+        timelineChart.on("postRedraw", function() {
+
+            // Recalculate bar heights
+            var allTimelineBars = timelineChart.selectAll('rect.bar')[0];
+            if(maxHeightBar == undefined){
+                maxHeightBar = d3.max(allTimelineBars, function(d) {
+                    return parseInt($(d).attr("height"));
+                });
+            }
+
+            var maxDocsYear = d3.max(allTimelineBars, function(d){
+                return parseInt(d3.select(d)[0][0].__data__.y);
+            });
+            var meanDocsYear = d3.mean(allTimelineBars, function(d){
+                return parseInt(d3.select(d)[0][0].__data__.y);
+            });
+
+            if(maxDocsYear == 1 || maxDocsYear == 0 || allTimelineBars.length == 0){
+                $(".customizedtimeline").remove();
+                return;
+            }
+
+            var heightScale = d3.scale.linear()
+                .range([0,maxHeightBar/2,maxHeightBar])
+                .domain([0, meanDocsYear/(Math.sqrt(meanDocsYear)/2), maxDocsYear]);
+
+            timelineChart.selectAll('rect.bar').each(function(dBar){
+                var y = d3.select(this)[0][0].__data__.y;
+                var newHeight = heightScale(y);
+                var newY = 50 - newHeight;
+                d3.select(this)
+                .attr("height", newHeight)
+                .attr("y", newY);
+            });
+
+
+            $("g.axis.y").prepend(document.createElementNS("http://www.w3.org/2000/svg", "g"));
+            $("g.axis.y > g:nth-child(1)").append(document.createElementNS("http://www.w3.org/2000/svg", "line"));
+            $("g.axis.y > g:nth-child(1)").append(document.createElementNS("http://www.w3.org/2000/svg", "text"));
+
+            $("g.axis.y > g:nth-child(1)")
+            .attr("transform","translate(0,25)")
+            .attr("style","opacity:1")
+            .attr("class","tick customizedtimeline");
+
+            $("g.axis.y > g:nth-child(1) > line")
+            .attr("x2","-6")
+            .attr("y2","0");
+
+            $("g.axis.y > g:nth-child(1) > text").html(parseInt(meanDocsYear/(Math.sqrt(meanDocsYear)/2)));
+            $("g.axis.y > g:nth-child(1) > text")
+            .attr("dy",".32em")
+            .attr("x","-9")
+            .attr("style","text-anchor: end")
+            .attr("y","0");
+        });
+
 
 
         // Reset == Remove filters and redraw
