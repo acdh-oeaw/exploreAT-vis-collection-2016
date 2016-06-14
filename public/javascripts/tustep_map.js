@@ -412,9 +412,10 @@ var mainExports = {};
                 return;
             }
 
+            var meanValue = parseInt(meanDocsYear/(Math.sqrt(meanDocsYear)/2));
             var heightScale = d3.scale.linear()
                 .range([0,maxHeightBar/2,maxHeightBar])
-                .domain([0, meanDocsYear/(Math.sqrt(meanDocsYear)/2), maxDocsYear]);
+                .domain([0, meanValue, maxDocsYear]);
 
             timelineChart.selectAll('rect.bar').each(function(dBar){
                 var y = d3.select(this)[0][0].__data__.y;
@@ -439,7 +440,7 @@ var mainExports = {};
             .attr("x2","-6")
             .attr("y2","0");
 
-            $("g.axis.y > g:nth-child(1) > text").html(parseInt(meanDocsYear/(Math.sqrt(meanDocsYear)/2)));
+            $("g.axis.y > g:nth-child(1) > text").html(meanValue);
             $("g.axis.y > g:nth-child(1) > text")
             .attr("dy",".32em")
             .attr("x","-9")
