@@ -877,10 +877,10 @@ var mainExports = {};
                     // });
 
                     var w = 24, h = 24, r = 12;
-                    var color = d3.scale.category20c();
-                    var color = d3.scale.ordinal()
-                        .domain([featureCount,restCount])
-                        .range(["#2b91fc", "#d6eaff"]);
+                    // var color = d3.scale.category20c();
+                    // var color = d3.scale.ordinal()
+                    //     .domain([featureCount,restCount])
+                    //     .range(["#2b91fc", "#d6eaff"]);
 
                     var data = [{"label":"Feature", "value":featureCount},
                         {"label":"All", "value":restCount}];
@@ -902,7 +902,8 @@ var mainExports = {};
                     var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
                     arcs.append("svg:path")
                         .attr("fill", function(d, i){
-                            return color(i);
+                            if (i==0) return "#2b91fc";
+                            else return "#d6eaff";
                         })
                         .attr("d", function (d) {
                             return arc(d);
