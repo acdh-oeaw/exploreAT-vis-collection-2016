@@ -1847,7 +1847,7 @@ var mainExports = {};
             y = -source.x0;
             x = x * scale + viewerWidth / 2;
             y = y * scale + viewerHeight / 2;
-            d3.select('g').transition()
+            d3.select('.overlaysvg > g').transition()
                 .duration(duration)
                 .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
             zoomListener.scale(scale);
