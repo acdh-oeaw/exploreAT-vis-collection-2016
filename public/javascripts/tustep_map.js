@@ -389,7 +389,9 @@ var mainExports = {};
         });
 
 
-
+        timelineChart.on("preRedraw", function() {
+            $('g.tick.custom').remove();
+        });
         timelineChart.on("postRedraw", function() {
 
             // Recalculate bar heights
@@ -426,15 +428,14 @@ var mainExports = {};
                 .attr("y", newY);
             });
 
-
             $("g.axis.y").prepend(document.createElementNS("http://www.w3.org/2000/svg", "g"));
             $("g.axis.y > g:nth-child(1)").append(document.createElementNS("http://www.w3.org/2000/svg", "line"));
             $("g.axis.y > g:nth-child(1)").append(document.createElementNS("http://www.w3.org/2000/svg", "text"));
 
             $("g.axis.y > g:nth-child(1)")
+            .attr("class","tick custom")
             .attr("transform","translate(0,25)")
-            .attr("style","opacity:1")
-            .attr("class","tick customizedtimeline");
+            .attr("style","opacity:1");
 
             $("g.axis.y > g:nth-child(1) > line")
             .attr("x2","-6")
