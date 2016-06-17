@@ -1394,21 +1394,21 @@ var mainExports = {};
                             }
                         });
                     }
-                    else if(i%10==0 && i<50){
+                    else if(i%10==0 && i<30){
                         _.forEach(asLeftOrMainlemma, function(record){
                             if(record.count >= i && record.count < i+10){
                                 firstLevelNode.children.push(record);
                             }
                         });
                     }
-                    else if(i%25==0 && i<100){
+                    else if(i%25==0 && i<100 && i>=30){
                         _.forEach(asLeftOrMainlemma, function(record){
                             if(record.count >= i && record.count < i+25){
                                 firstLevelNode.children.push(record);
                             }
                         });
                     }
-                    else if(i%50==0){
+                    else if(i%50==0 && i>=100){
                         _.forEach(asLeftOrMainlemma, function(record){
                             if(record.count >= i && record.count < i+50){
                                 firstLevelNode.children.push(record);
