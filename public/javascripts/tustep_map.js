@@ -665,8 +665,9 @@ var mainExports = {};
     function refreshTreeGraphForLemma(lemma,scope){
         if(w2ui['content'].get('left').hidden == false)
             if($("#info-tree").length > 0)
-                if(lemma != undefined && scope != undefined)
+                if(lemma != undefined && lemma!="" && scope != undefined && scope != ""){
                     generateTreeGraphForLemma(lemma,scope);
+                }
     }
 
 
@@ -1139,7 +1140,7 @@ var mainExports = {};
             });
             if (bucketIndex == -1) {
                 var years = [];
-                _.forEach(bucket.years.buckets, function(year){years.push(parseInt(year.key_as_string))});
+                _.forEach(bucket.years.buckets, function(year){years.push(parseInt(year.key_as_string)+1)});
                 bucketIndex = nodes.push({
                         "name"      : bucket.key,
                         "mainLemma" : true,
@@ -1153,7 +1154,7 @@ var mainExports = {};
                 });
                 if (leftLemmaIndex == -1) {
                     var years = [];
-                    _.forEach(bucket_leftLemma.years.buckets, function(year){years.push(parseInt(year.key_as_string))});
+                    _.forEach(bucket_leftLemma.years.buckets, function(year){years.push(parseInt(year.key_as_string)+1)});
                     leftLemmaIndex = nodes.push({
                             "name": bucket_leftLemma.key,
                             "weight" : 0,
