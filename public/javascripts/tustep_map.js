@@ -770,21 +770,6 @@ var mainExports = {};
                 // Hide tooltip
                 tooltip.hide();
 
-                // Zoom and rise resolution
-                if(bucketResolution < 11){
-                    resetTimelineColor(600);
-                    setTimeout(function () { // Wait for the toggle left, then center
-                        cartoMap.refresh();
-                        cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
-                        setTimeout(
-                            function() {
-                                bucketResolution +=1;
-                                $("#bucket-resolution-selector").val(bucketResolution);
-                                update();
-                            }, zoomDelay-850
-                        );
-                    }, 750);
-                }
 
                 if(d.properties.doc_count == 1){
                     getSingleRecordFullData().then(function(resp){
@@ -827,18 +812,33 @@ var mainExports = {};
 
                         $("#single-lemma-holder").fadeIn();
                     });
+                } else {
+                    // Zoom and rise resolution
+                    if(bucketResolution < 11){
+                        resetTimelineColor(600);
+                        setTimeout(function () { // Wait for the toggle left, then center
+                            cartoMap.refresh();
+                            cartoMap.zoomTo(getBoundingBoxLatLon(d.properties.bounds),"latlong",.2,zoomDelay);
+                            setTimeout(
+                                function() {
+                                    bucketResolution +=1;
+                                    $("#bucket-resolution-selector").val(bucketResolution);
+                                    update();
+                                }, zoomDelay-850
+                            );
+                        }, 750);
+                    }
+                    // Reset opacity of all
+                    d3.selectAll("g.featureLayer")
+                        .style("opacity", "0.8");
+                    // .style("stroke-width","0px")
+                    // .style("stroke","black");
+
+                    getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
+                        generateLemmaGraphFromAggregations(resp.aggregations);
+                        generateLemmaList(resp.aggregations);
+                    });
                 }
-
-                // Reset opacity of all
-                d3.selectAll("g.featureLayer")
-                    .style("opacity", "0.8");
-                // .style("stroke-width","0px")
-                // .style("stroke","black");
-
-                getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
-                    generateLemmaGraphFromAggregations(resp.aggregations);
-                    generateLemmaList(resp.aggregations);
-                });
             });
         featureLayer.unbind('mouseover');
         featureLayer.unbind('mouseout');
@@ -941,7 +941,8 @@ var mainExports = {};
     function generateCrossGeoFeatures() {
 
         var newGeoHashBuckets = [];
-        var hashStringArray = _.unique(_.pluck(yearDim.top(Infinity),"hash"));
+        var hashStringArray = _.unique(_.pluck(yearDim.top(Infinity),"hash").concat(_.pluck(tustepDataNoYears,"hash")));
+
 
         if(yearDim.top(Infinity).length == 0){
             return [];
@@ -980,6 +981,10 @@ var mainExports = {};
 
                 if(geoObject.doc_count > 0)
                     newGeoHashBuckets.push(geoObject);
+            });
+
+            newGeoHashBuckets = _.filter(newGeoHashBuckets, function (el) {
+                return el.doc_count > 0;
             });
 
             return _.map(newGeoHashBuckets, function (hash_bucket) {
