@@ -772,48 +772,51 @@ var mainExports = {};
                 tooltip.hide();
 
 
-                if(d.properties.doc_count == 1){
+                if(d.properties.doc_count <= 4){
                     getSingleRecordFullData().then(function(resp){
 
                         $("#single-lemma-data").html("");
 
-                        var lemma = resp.hits.hits[0]._source;
+                        _.forEach(resp.hits.hits, function (hit) {
+                            var lemma = hit._source;
 
-                        if(resp.hits.hits[0]._source.leftLemma != undefined &&
-                        resp.hits.hits[0]._source.leftLemma != ""){
-                            $("#single-lemma-left").show();
-                            $("#single-lemma-left > span").html(resp.hits.hits[0]._source.leftLemma);
-                        }
-                        else {
-                            $("#single-lemma-left").hide();
-                        }
-
-                        if(resp.hits.hits[0]._source.mainLemma != undefined &&
-                        resp.hits.hits[0]._source.mainLemma != ""){
-                            $("#single-lemma-main").show();
-                            $("#single-lemma-main > span").html(resp.hits.hits[0]._source.mainLemma);
-                        }
-                        else {
-                            $("#single-lemma-main").hide();
-                        }
-
-                        // Show all TUSTEP fields available for the lemma
-                        var keys = Object.keys(lemma.tustep);
-
-                        _.forEach(keys, function(key){
-                            if(key != "fileName" && key != "recordNumber" && key != "orig"){
-                                $("#single-lemma-data").append(function(){
-                                    var html = "";
-                                    html += "<div class='single-lemma-info'>";
-                                    html += "<strong>"+key+": </strong>";
-                                    html += lemma.tustep[key];
-                                    html += "</div>";
-                                    return html;
-                                })
+                            if(hit._source.leftLemma != undefined &&
+                                hit._source.leftLemma != ""){
+                                $("#single-lemma-left").show();
+                                $("#single-lemma-left > span").html(hit._source.leftLemma);
                             }
-                        })
+                            else {
+                                $("#single-lemma-left").hide();
+                            }
 
-                        $("#single-lemma-holder").fadeIn();
+                            if(hit._source.mainLemma != undefined &&
+                                hit._source.mainLemma != ""){
+                                $("#single-lemma-main").show();
+                                $("#single-lemma-main > span").html(hit._source.mainLemma);
+                            }
+                            else {
+                                $("#single-lemma-main").hide();
+                            }
+
+                            // Show all TUSTEP fields available for the lemma
+                            var keys = Object.keys(lemma.tustep);
+
+                            _.forEach(keys, function(key){
+                                if(key != "fileName" && key != "recordNumber" && key != "orig"){
+                                    $("#single-lemma-data").append(function(){
+                                        var html = "";
+                                        html += "<div class='single-lemma-info'>";
+                                        html += "<strong>"+key+": </strong>";
+                                        html += lemma.tustep[key];
+                                        html += "</div>";
+                                        return html;
+                                    })
+                                }
+                            });
+
+                            $("#single-lemma-holder").fadeIn();
+                        });
+
                     });
                 } else {
                     // Zoom and rise resolution
