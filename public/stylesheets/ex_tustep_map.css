@@ -943,7 +943,7 @@ text {
     position: absolute;
     left: 0;
     right: 0;
-    top: 10%;
+    top: 20%;
     margin: auto;
     background-color: white;
     border: 1px solid rgba(0,0,0,.5);
@@ -1012,6 +1012,8 @@ text {
     padding-left: 10px;
     vertical-align: top;
     margin-bottom: 20px;
+    max-height: 200px;
+    overflow: scroll;
 }
 
 .single-lemma-info {

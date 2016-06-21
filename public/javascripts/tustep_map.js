@@ -775,6 +775,8 @@ var mainExports = {};
                 if(d.properties.doc_count == 1){
                     getSingleRecordFullData().then(function(resp){
 
+                        $("#single-lemma-data").html("");
+
                         var lemma = resp.hits.hits[0]._source;
 
                         if(resp.hits.hits[0]._source.leftLemma != undefined &&
