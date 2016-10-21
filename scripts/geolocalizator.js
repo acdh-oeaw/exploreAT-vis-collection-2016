@@ -46,11 +46,12 @@ var totalCount = _.reduce(places, function(memo, place) {
 
 var localizedPlaces = storage.getItemSync('geolocalized');
 
-console.log(localizedPlaces.length + ' localized places');
 
 if (localizedPlaces == undefined) {
     localizedPlaces = [];
 }
+
+console.log(localizedPlaces.length + ' localized places');
 
 function saveGeolocalizedPlace(place, row) {
     var processedPlaces = storage.getItemSync('geolocalized');
