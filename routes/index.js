@@ -1,21 +1,39 @@
 var express = require('express');
+var passport = require('passport');
 var router = express.Router();
 
 /* GET home page. */
 
-router.get('/', function(req,res) {
+router.get('/', isLoggedIn, function(req,res) {
     res.render('index');
+});
+
+router.get('/login', function(req, res, next) {
+    res.render('login.ejs', { message: req.flash('loginMessage') });
+});
+
+router.get('/signup', function(req, res) {
+    res.render('signup.ejs', { message: req.flash('loginMessage') });
+});
+
+router.get('/profile', isLoggedIn, function(req, res) {
+    res.render('profile.ejs', { user: req.user });
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
 });
 
 // router.get('/ex_persons', function(req,res) {
 //     res.render('ex_persons');
 // });
 
-router.get('/ex_words', function(req,res) {
+router.get('/ex_words', isLoggedIn, function(req,res) {
     res.render('ex_words');
 });
 
-router.get('/ex_words_sources', function(req,res) {
+router.get('/ex_words_sources', isLoggedIn, function(req,res) {
     res.render('ex_words_sources');
 });
 
@@ -27,35 +45,35 @@ router.get('/ex_words_sources', function(req,res) {
 //     res.render('ex_word_circles');
 // });
 
-router.get('/ex_word_treemap', function(req,res) {
+router.get('/ex_word_treemap', isLoggedIn, function(req,res) {
     res.render('ex_word_treemap');
 });
 
-router.get('/ex_fragebogen_data_div', function(req,res) {
+router.get('/ex_fragebogen_data_div', isLoggedIn, function(req,res) {
     res.render('ex_fragebogen_data_div');
 });
 
-router.get('/ex_fragebogen_data_tree', function(req,res) {
+router.get('/ex_fragebogen_data_tree', isLoggedIn, function(req,res) {
     res.render('ex_fragebogen_data_tree');
 });
 
-router.get('/ex_fragebogen_data_circles', function(req,res) {
+router.get('/ex_fragebogen_data_circles', isLoggedIn, function(req,res) {
     res.render('ex_fragebogen_data_circles');
 });
 
-router.get('/ex_tustep_matrix', function(req,res) {
+router.get('/ex_tustep_matrix', isLoggedIn, function(req,res) {
     res.render('ex_tustep_matrix');
 });
 
-router.get('/ex_tustep_scatter', function(req,res) {
+router.get('/ex_tustep_scatter', isLoggedIn, function(req,res) {
     res.render('ex_tustep_scatter');
 });
 
-router.get('/map', function(req,res) {
+router.get('/map', isLoggedIn, function(req,res) {
     res.render('map');
 });
 
-router.get('/ex_tustep_map', function(req,res) {
+router.get('/ex_tustep_map', isLoggedIn, function(req,res) {
     res.render('ex_tustep_map');
 });
 
@@ -63,4 +81,23 @@ router.get('/ex_tustep_map', function(req,res) {
 //     res.render('ex_colors');
 // });
 
+router.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/',
+    failureRedirect: '/signup',
+    failureFlash: true
+}));
+
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}));
+
+
 module.exports = router;
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.redirect('/login');
+}

@@ -5,6 +5,9 @@
       "db": "dboe_1",
       "password": "***REMOVED***"
   },
+  "mongodb": {
+      "url": "mongodb://localhost/expressauth"
+  },
   "flickr": {
       "apiKey": "***REMOVED***",
       "apiSecret": "***REMOVED***",

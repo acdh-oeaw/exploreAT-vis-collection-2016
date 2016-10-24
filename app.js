@@ -4,12 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('config');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 
 var app = express();
+
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var mongoose = require('mongoose');
+var flash = require('connect-flash');
+var session = require('express-session');
+
+mongoose.connect(config.get('mongodb').url);
 
 
 // view engine setup
@@ -27,9 +36,20 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/bower_components',express.static(path.join(__dirname, '/bower_components')));
 //app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
+app.use(session({ secret: 'shhsecret',
+                    resave: false,
+                    saveUninitialized: false}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/api', api);
+
+require('./config/passport')(passport);
+
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
