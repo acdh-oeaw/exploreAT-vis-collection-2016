@@ -17,8 +17,9 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
 var session = require('express-session');
-
-mongoose.connect(config.get('mongodb').url);
+var mongoURL = config.get('mongodb').url;
+mongoose.connect(mongoURL);
+console.log(mongoURL);
 
 
 // view engine setup
