@@ -85,14 +85,14 @@ router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
 //     res.render('ex_colors');
 // });
 
-router.post('signup', passport.authenticate('local-signup', {
-    successRedirect: '/',
+router.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: './',
     failureRedirect: 'signup',
     failureFlash: true
 }));
 
-router.post('login', passport.authenticate('local-login', {
-    successRedirect: '/',
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect: './',
     failureRedirect: 'login',
     failureFlash: true
 }));
