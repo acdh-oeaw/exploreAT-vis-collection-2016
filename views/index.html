@@ -1,107 +1,119 @@
 
-<% include partials/head %>
+    <% include partials/head %>
 
-<body>
-<div class="col-sm-8 col-sm-offset-2">
-    <div id="page-wrapper">
-      <div id="header">
-        <h1>ExploreAT!</h1>
-        <h2>Available Visualizations</h2>
-        <h3>The following examples have been developed and tested in <strong>Google Chrome</strong>, and therefore this is the recommended browser to explore them.</h3>
-      </div>
-      <div id="content">
-        <a class="card-link" href="ex_words">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_words.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Geographical Lemmas
-              </div>
-              <div class="description">
-                Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map.
-              </div>
-            </div>
-          </div>
-        </a>
-        <a class="card-link" href="ex_words_sources">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_words_sources.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Word-Source Relations
-              </div>
-              <div class="description">
-                Geographical exploration of Lemmas, including filtering and relations between words based on the source they appear in when clicking on any of them.
-              </div>
-            </div>
-          </div>
-        </a>
-        <a class="card-link" href="ex_word_treemap">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_word_treemap.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Lemma Context Navigation
-              </div>
-              <div class="description">
-                Generate an image-aided treemap containing the most meaningful contexts where the searched lemma appears, and explore the occurences.
-              </div>
-            </div>
-          </div>
-        </a>
-        <a class="card-link" href="ex_fragebogen_data_div">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_fragebogen_data_div.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Raw Questionnaire Exploration
-              </div>
-              <div class="description">
-                Generate dynamic HTML based hierarchies with Questionnaires that hold Questions that reference Lemmas.
-              </div>
-            </div>
-          </div>
-        </a>
-        <a class="card-link" href="ex_fragebogen_data_tree">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_fragebogen_data_tree.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Hierarchical Questionnaire Tree
-              </div>
-              <div class="description">
-                Dynamic tree generation of Questionnaire hierarchies based on the content matching searches.
-              </div>
-            </div>
-          </div>
-        </a>
-        <a class="card-link" href="ex_fragebogen_data_circles">
-          <div class="card">
-            <div class="card-top">
-              <img src="img/home/ex_fragebogen_data_circles.png"/>
-            </div>
-            <div class="card-bottom">
-              <div class="name">
-                Circle Packed Questionnaires
-              </div>
-              <div class="description">
-                Questionnaire exploration through a hierarchy of packed circles which highlight relations between questions and lemmas.
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
+    <body>
+    <div class="container-fluid">
+        <div class="col-sm-8 col-sm-offset-2">
+          <h1><%= user.local.email %></h1>
+          <a href="signup"><i class="fa fa-user-plus"></i>&nbsp;Signup</a>
+            &nbsp;
+            <a href="login"><i class="fa fa-sign-in"></i>&nbsp;Login</a>
+            <div class="jumbotron text-center"><h1>Explore.AT!</h1></div>
+        </div>
     </div>
-</body>
 
-</html>
+    <div class="container-fluid">
+      <div class="col-sm-8 col-sm-offset-2">
+        <div id="page-wrapper">
+          <div id="header">
+            <h2>Available Visualizations</h2>
+            <h3>The following examples have been developed and tested in <strong>Google Chrome</strong>, and therefore this is the recommended browser to explore them.</h3>
+          </div>
+          <div id="content">
+            <a class="card-link" href="ex_words">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_words.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Geographical Lemmas
+                  </div>
+                  <div class="description">
+                    Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map.
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a class="card-link" href="ex_words_sources">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_words_sources.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Word-Source Relations
+                  </div>
+                  <div class="description">
+                    Geographical exploration of Lemmas, including filtering and relations between words based on the source they appear in when clicking on any of them.
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a class="card-link" href="ex_word_treemap">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_word_treemap.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Lemma Context Navigation
+                  </div>
+                  <div class="description">
+                    Generate an image-aided treemap containing the most meaningful contexts where the searched lemma appears, and explore the occurences.
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a class="card-link" href="ex_fragebogen_data_div">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_fragebogen_data_div.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Raw Questionnaire Exploration
+                  </div>
+                  <div class="description">
+                    Generate dynamic HTML based hierarchies with Questionnaires that hold Questions that reference Lemmas.
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a class="card-link" href="ex_fragebogen_data_tree">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_fragebogen_data_tree.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Hierarchical Questionnaire Tree
+                  </div>
+                  <div class="description">
+                    Dynamic tree generation of Questionnaire hierarchies based on the content matching searches.
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a class="card-link" href="ex_fragebogen_data_circles">
+              <div class="card">
+                <div class="card-top">
+                  <img src="img/home/ex_fragebogen_data_circles.png"/>
+                </div>
+                <div class="card-bottom">
+                  <div class="name">
+                    Circle Packed Questionnaires
+                  </div>
+                  <div class="description">
+                    Questionnaire exploration through a hierarchy of packed circles which highlight relations between questions and lemmas.
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+    </div>
+
+    </body>
+
+    </html>
