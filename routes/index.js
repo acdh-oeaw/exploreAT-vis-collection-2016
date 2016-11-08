@@ -4,8 +4,8 @@ var router = express.Router();
 
 /* GET home page. */
 
-router.get('/', isLoggedIn, function(req,res) {
-    res.render('index');
+router.get('/', function(req,res) {
+    res.render('index', { user : req.user });
 });
 
 router.get('/login', function(req, res, next) {
