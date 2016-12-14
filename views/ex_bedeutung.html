@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Mapping Austria | COLORS</title>
+    <style>
+
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+
+        .node {
+            stroke: #ddd;
+            fill: #000;
+            stroke-width: 1.5px;
+            r: 5;
+        }
+
+    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+</head>
+
+<body>
+
+<svg width="1200" height="600"></svg>
+
+<script>
+    var esClient = new $.es.Client({
+        hosts: 'localhost:9200'
+    });
+    var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+    var linkWidth = d3.scale
+
+    var manyBody = d3.forceManyBody();
+    manyBody.strength(-30);
+    manyBody.distanceMin(5);
+    manyBody.distanceMax(70);
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.id; }))
+            .force("charge", manyBody)
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+    //var linkScale = d3.scale.sqrt().domain([1,400]).range([3,15]);
+
+    update();
+
+    function update() {
+        var body="";
+        body += "{";
+        body += "  \"size\": 0,";
+        body += "  \"query\": {";
+        body += "    \"term\": {";
+        body += "      \"isMain\": true";
+        body += "    }";
+        body += "  },";
+        body += "  \"aggs\": {";
+        body += "    \"bd\": {";
+        body += "      \"terms\": {";
+        body += "        \"field\": \"tustep.BD\/LT1\",";
+        body += "        \"size\": 30,";
+        body += "        \"order\": {";
+        body += "          \"_count\": \"desc\"";
+        body += "        }";
+        body += "      },";
+        body += "      \"aggs\": {";
+        body += "        \"mainLemma\": {";
+        body += "          \"terms\": {";
+        body += "            \"field\": \"mainLemma.raw\",";
+        body += "            \"size\": 90,";
+        body += "            \"order\": {";
+        body += "              \"_count\": \"desc\"";
+        body += "            }";
+        body += "          }";
+        body += "        }";
+        body += "      }";
+        body += "    }";
+        body += "  }";
+        body += "}";
+
+
+        esClient.search({
+            index: 'tustepgeo3',
+            body: body
+        }).then(function(resp) {
+                    if (resp.aggregations.length !== 0) {
+                        createDataStructure(resp);
+
+                    }
+                });
+    }
+
+    function createDataStructure(resp) {
+        var     nodes = [],
+                links = [];
+
+        var buckets = resp.aggregations["bd"].buckets;
+
+        buckets.forEach(function(bd_bucket) {
+            var bd = bd_bucket.key.toLowerCase();
+            nodes.push({"id": bd, "type": "bd"});
+        });
+
+        buckets.forEach(function(bd_bucket){
+            var bd = bd_bucket.key.toLowerCase();
+            var firstIdx = _.findIndex(nodes, function (el) {
+                return el.id == bd;
+            });
+            bd_bucket.mainLemma.buckets.forEach(function(lemma_bucket) {
+                var idx = _.findIndex(nodes, function (el) {
+                    return el.id == lemma_bucket.key.toLowerCase();
+                });
+                if (-1 == idx) {
+                    idx = nodes.push({"id": lemma_bucket.key.toLowerCase(), "type": "lemma"}) - 1;
+                } else {
+                    var tempNode = nodes[idx];
+                    if (tempNode.type == "bd") {
+                        tempNode.type = "both";
+                        nodes[idx] = tempNode;
+                    }
+                }
+                if (idx > nodes.length -1)
+                    console.log('stop');
+                if (idx !== firstIdx)
+                    links.push({"source": lemma_bucket.key.toLowerCase(), "target": bd, "value": lemma_bucket.doc_count});
+            });
+        });
+
+        var link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("stroke-width", function(d) { return Math.sqrt(d.value); })
+                .attr("stroke", "black");
+
+        var node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("r", 5)
+                .attr("fill", function(d) { return color(d.type); })
+                .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended));
+
+        node.append("title")
+                .text(function(d) { return d.id; });
+
+        simulation
+                .nodes(nodes)
+                .on("tick", ticked);
+
+        simulation.force("link")
+                .links(links);
+
+        function ticked() {
+            link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        }
+
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+    }
+</script>
+
+
+
+</body>
+
+</html>
