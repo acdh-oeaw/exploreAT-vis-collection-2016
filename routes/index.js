@@ -77,6 +77,10 @@ router.get('/ex_tustep_map', isLoggedIn, function(req,res) {
     res.render('ex_tustep_map');
 });
 
+router.get('/ex_rdf_plants', isLoggedIn, function(req,res) {
+    res.render('ex_rdf_plants');
+});
+
 router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
     res.render('ex_bedeutung');
 });
