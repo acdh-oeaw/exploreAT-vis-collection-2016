@@ -1,11 +1,25 @@
+
+// skos:definition -> scientific name
+// ontolex:writtenRep -> common name
+// lexinfo:usageNote -> common name type
+// skos:inScheme -> source
+// geonames:name -> geography
+
+
+
 var fs = require('fs'),
-    xml2js = require('xml2js'),
-    _ = require('underscore')._;
+    xml2js = require('xml2js');
+_ = require('underscore')._;
+xml2json = require('xml2json');
 
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    host: 'localhost:9200'
-    ,log: 'trace'
+    //host: 'elastic:changeme@exploreat.usal.es/elasticsearch'
+    log: 'trace',
+    //host: 'https://exploreat.usal.es/elasticsearch',
+    //auth: 'elastic:changeme'
+    //,protocol: 'https'
+    hosts: ['https://elastic:beware.garlic.alum@exploreat.usal.es/elasticsearch/']
 });
 
 
@@ -33,12 +47,12 @@ function indexMultipleInstances(){
                 var entry = {};
                 if (item['$'] != undefined)                      entry.URI = item['$']['rdf:about'];
                 if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
-                if (item['geonames:name'] != undefined)          entry.geoname = item['geonames:name'][0];
-                if (item['lexinfo:usageNote'] != undefined)      entry.usageNote = item['lexinfo:usageNote'][0];
+                if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
+                if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
                 if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
                 if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                 if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
-                if (item['ontolex:writtenRep'] != undefined)     entry.writtenForm = item['ontolex:writtenRep'][0]['_'];
+                if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
                 if (item['rdf:type'] != undefined && item['rdf:type'].length > 0) {
                     if (item['rdf:type'].length < 2) {
                         entry.type = item['rdf:type'][0]['$']['rdf:resource'];
@@ -52,8 +66,8 @@ function indexMultipleInstances(){
                     }
                 }
                 if (item['rdfs:comment'] != undefined)       entry.comment = item['rdfs:comment'][0];
-                if (item['skos:definition'] != undefined)    entry.definition = item['skos:definition'][0];
-                if (item['skos:inScheme'] != undefined)      entry.scheme = item['skos:inScheme'][0]['$']['rdf:resource'];
+                if (item['skos:definition'] != undefined)    entry.scientificName = item['skos:definition'][0];
+                if (item['skos:inScheme'] != undefined)      entry.source = item['skos:inScheme'][0]['$']['rdf:resource'];
                 if (item['skos:related'] != undefined)       entry.relatedURI = item['skos:related'][0]['$']['rdf:resource'];
 
                 bulk_request.push({index: {_index: 'rdf-plants', _type: 'rdf-plants-type'}});
@@ -92,12 +106,12 @@ function indexUniqueInstances(){
                     if (item['$'] != undefined) {                    entry.URI = item['$']['rdf:about'];
                         entry.URItype = entry.URI.split("dboe/")[1].split("/")[0]; }
                     if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
-                    if (item['geonames:name'] != undefined)          entry.geoname = item['geonames:name'][0];
-                    if (item['lexinfo:usageNote'] != undefined)      entry.usageNote = item['lexinfo:usageNote'][0];
+                    if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
+                    if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
                     if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
                     if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
-                    if (item['ontolex:writtenRep'] != undefined)     entry.writtenForm = item['ontolex:writtenRep'][0]['_'];
+                    if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
                     if (item['rdf:type'] != undefined && item['rdf:type'].length > 0) {
                         if (item['rdf:type'].length < 2) {
                             entry.type = item['rdf:type'][0]['$']['rdf:resource'];
@@ -111,8 +125,8 @@ function indexUniqueInstances(){
                         }
                     }
                     if (item['rdfs:comment'] != undefined)       entry.comment = item['rdfs:comment'][0];
-                    if (item['skos:definition'] != undefined)    entry.definition = item['skos:definition'][0];
-                    if (item['skos:inScheme'] != undefined)      entry.scheme = item['skos:inScheme'][0]['$']['rdf:resource'];
+                    if (item['skos:definition'] != undefined)    entry.scientificName = item['skos:definition'][0];
+                    if (item['skos:inScheme'] != undefined)      entry.source = item['skos:inScheme'][0]['$']['rdf:resource'];
                     if (item['skos:related'] != undefined)       entry.relatedURI = item['skos:related'][0]['$']['rdf:resource'];
 
 
@@ -131,12 +145,12 @@ function indexUniqueInstances(){
                     var entry = {};
                     if (item['$'] != undefined)                      entry.URI = item['$']['rdf:about'];
                     if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
-                    if (item['geonames:name'] != undefined)          entry.geoname = item['geonames:name'][0];
-                    if (item['lexinfo:usageNote'] != undefined)      entry.usageNote = item['lexinfo:usageNote'][0];
+                    if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
+                    if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
                     if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
                     if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
-                    if (item['ontolex:writtenRep'] != undefined)     entry.writtenForm = item['ontolex:writtenRep'][0]['_'];
+                    if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
                     if (item['rdf:type'] != undefined && item['rdf:type'].length > 0) {
                         if (item['rdf:type'].length < 2) {
                             entry.type = item['rdf:type'][0]['$']['rdf:resource'];
@@ -150,8 +164,8 @@ function indexUniqueInstances(){
                         }
                     }
                     if (item['rdfs:comment'] != undefined)       entry.comment = item['rdfs:comment'][0];
-                    if (item['skos:definition'] != undefined)    entry.definition = item['skos:definition'][0];
-                    if (item['skos:inScheme'] != undefined)      entry.scheme = item['skos:inScheme'][0]['$']['rdf:resource'];
+                    if (item['skos:definition'] != undefined)    entry.scientificName = item['skos:definition'][0];
+                    if (item['skos:inScheme'] != undefined)      entry.source = item['skos:inScheme'][0]['$']['rdf:resource'];
                     if (item['skos:related'] != undefined)       entry.relatedURI = item['skos:related'][0]['$']['rdf:resource'];
 
 
