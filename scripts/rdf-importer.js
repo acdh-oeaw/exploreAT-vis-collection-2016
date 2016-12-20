@@ -12,14 +12,14 @@ var fs = require('fs'),
 _ = require('underscore')._;
 xml2json = require('xml2json');
 
+var config = require('config');
+var elasticConfig = config.get('elasticsearch');
+
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    //host: 'elastic:changeme@exploreat.usal.es/elasticsearch'
     log: 'trace',
-    //host: 'https://exploreat.usal.es/elasticsearch',
-    //auth: 'elastic:changeme'
-    //,protocol: 'https'
-    hosts: ['https://elastic:beware.garlic.alum@exploreat.usal.es/elasticsearch/']
+    hosts: ['https://'+elasticConfig.user+':'+elasticConfig.password+'@exploreat.usal.es/elasticsearch/']
+    //hosts: ['localhost:9200']
 });
 
 
@@ -49,7 +49,7 @@ function indexMultipleInstances(){
                 if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
                 if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
                 if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
-                if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
+                if (item['ontolex:isEvokedBy'] != undefined)     {if(item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "h" && item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "t") entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];}
                 if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                 if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
                 if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
@@ -108,7 +108,7 @@ function indexUniqueInstances(){
                     if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
                     if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
                     if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
-                    if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
+                    if (item['ontolex:isEvokedBy'] != undefined)     {if(item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "h" && item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "t") entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];}
                     if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
@@ -147,7 +147,7 @@ function indexUniqueInstances(){
                     if (item['dc:source'] != undefined)              entry.region = item['dc:source'][0];
                     if (item['geonames:name'] != undefined)          entry.geography = item['geonames:name'][0];
                     if (item['lexinfo:usageNote'] != undefined)      entry.commonNameType = item['lexinfo:usageNote'][0];
-                    if (item['ontolex:isEvokedBy'] != undefined)     entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];
+                    if (item['ontolex:isEvokedBy'] != undefined)     {if(item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "h" && item['ontolex:isEvokedBy'][0]['$']['rdf:resource'] != "t") entry.evokedByEntryWithURI = item['ontolex:isEvokedBy'][0]['$']['rdf:resource'];}
                     if (item['ontolex:lexicalForm'] != undefined)    entry.lexicalFormURI = item['ontolex:lexicalForm'][0]['$']['rdf:resource'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.language = item['ontolex:writtenRep'][0]['$']['xml:lang'];
                     if (item['ontolex:writtenRep'] != undefined)     entry.commonName = item['ontolex:writtenRep'][0]['_'];
@@ -176,7 +176,8 @@ function indexUniqueInstances(){
                 }
             });
 
-            function flatten (arr) { // Flatten array of arrays into one single array full of different values
+            // Flatten array of arrays into one single array full of different values
+            function flatten (arr) {
                 var newArr = [];
                 for (var i = 0; i < arr.length; i++) {
                     if (Array.isArray(arr[i])) {
@@ -202,6 +203,23 @@ function indexUniqueInstances(){
                     }
                 }
             });
+
+            // Remove "h" and "t" evokedByURI array entries (trash)
+            _.forEach(entries, function (entryToIndex) {
+                if(entryToIndex.evokedByEntryWithURI != undefined) {
+                    if(entryToIndex.evokedByEntryWithURI.length > 1){
+                        var idxToRemove = [];
+                        var i;
+                        _.forEach(entryToIndex.evokedByEntryWithURI, function(uri, idx){
+                            if(uri.length == 1) idxToRemove.push(idx);
+                        });
+                        while((i = idxToRemove.pop()) != null){
+                            entryToIndex.evokedByEntryWithURI.splice(i, 1);
+                        }
+                    }
+                }
+            });
+
 
             var bulk_request = [];
 
@@ -245,25 +263,3 @@ function deepmerge(foo, bar) {
     }
     return merged;
 }
-
-//
-// var ElasticsearchCSV = require('elasticsearch-csv');
-//
-// // create an instance of the importer with options
-// var esCSV = new ElasticsearchCSV({
-//     es: { index: 'nhlindex', type: 'nhltype', host: 'localhost:9200' },
-//     csv: { filePath: 'public/data/dbFull.csv', headers: true }
-// });
-//
-// console.log("import start")
-//
-// esCSV.import()
-//     .then(function (response) {
-//         console.log("import done")
-//         // Elasticsearch response for the bulk insert
-//         //console.log(response);
-//     }, function (err) {
-//         console.log("import error")
-//         // throw error
-//         throw err;
-//     });
