@@ -22,6 +22,7 @@
     "express": "~4.13.1",
     "express-session": "^1.14.1",
     "flickrapi": "^0.4.1",
+    "fs": "0.0.1-security",
     "glob": "^7.0.3",
     "jade": "~1.11.0",
     "mongoose": "^4.6.5",
@@ -36,7 +37,7 @@
     "semaphore": "^1.0.5",
     "serve-favicon": "^2.3.0",
     "underscore": "^1.8.3",
-    "xml2js": "^0.4.16",
-    "xml2json": "^0.10.0"
+    "xml2js": "^0.4.17",
+	"xml2json": "^0.10.0"
   }
 }

@@ -16,6 +16,8 @@
       "accessTokenSecret": "***REMOVED***"
   },
   "elasticsearch": {
-      "host": "localhost:9200"
+      "host": "localhost:9200",
+      "user": "elastic",
+      "password": "beware.garlic.alum"
   }
 }

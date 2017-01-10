@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 
-router.get('/', function(req,res) {
+router.get('/', isLoggedIn, function(req,res) {
     res.render('index', { user : req.user });
 });
 
@@ -75,6 +75,10 @@ router.get('/map', isLoggedIn, function(req,res) {
 
 router.get('/ex_tustep_map', isLoggedIn, function(req,res) {
     res.render('ex_tustep_map');
+});
+
+router.get('/ex_rdf_plants', isLoggedIn, function(req,res) {
+    res.render('ex_rdf_plants');
 });
 
 router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
