@@ -2,7 +2,10 @@ var express = require('express');
 var passport = require('passport');
 var router = express.Router();
 
+var app = express();
 /* GET home page. */
+
+console.log('Node env ' + app.settings.env);
 
 router.get('/', isLoggedIn, function(req,res) {
     res.render('index', { user : req.user });
@@ -25,9 +28,6 @@ router.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
-// router.get('/ex_persons', function(req,res) {
-//     res.render('ex_persons');
-// });
 
 router.get('/ex_words', isLoggedIn, function(req,res) {
     res.render('ex_words');
@@ -96,16 +96,21 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 router.post('/login', passport.authenticate('local-login', {
-    successRedirect: './',
     failureRedirect: 'login',
     failureFlash: true
-}));
+}), function (req, res) {
+    res.redirect(req.session.redirectTo);
+});
 
 
 module.exports = router;
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
+    if (req.isAuthenticated() || app.settings.env == 'development')
         return next();
-    res.redirect('login');
+    else {
+        req.session.redirectTo = req.path.replace('/','');
+        res.redirect('login');
+    }
+
 }

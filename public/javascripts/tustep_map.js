@@ -841,8 +841,15 @@ var mainExports = {};
                     // .style("stroke","black");
 
                     getLemmasInGeoHashBucket(d.properties.key).then(function (resp) {
-                        generateLemmaGraphFromAggregations(resp.aggregations);
-                        generateLemmaList(resp.aggregations);
+                        if (resp.hits.total < 4000) {
+                            generateLemmaGraphFromAggregations(resp.aggregations);
+                            generateLemmaList(resp.aggregations);
+                        } else {
+                            $('#too-many-hits').removeClass('collapsed');
+                            setTimeout(function () {
+                                $('#too-many-hits').addClass('collapsed');
+                            }, 5000);
+                        }
                     });
                 }
             });
