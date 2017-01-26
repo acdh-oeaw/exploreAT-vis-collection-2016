@@ -3,8 +3,10 @@
   <body>
     <div class="col-sm-8 col-sm-offset-2">
       <div class="jumbotron text-center">
-        <h1><span class="fa fa-sign-in"></span> Login</h1>
-
+        <h4><span class="fa fa-sign-in"></span> Login</h4>
+            <h5>This is the login homepage for the prototypes </h5>
+            <h5>In order to be able to access the pilot tool you need to request an invitation first. In case you haven't done so yet, please
+            <a href="mailto:theron@usal.es?Subject=ExploreAT!%20Prototypes%20Access%20Request" target="_top">drop us a line</a></h5>
         <% if (message != null) { %>
         	<div class="alert-danger"><%= message %></div>
         <% } %>
@@ -24,8 +26,7 @@
         </form>
       </div>
       <hr>
-      <span class="fa fa-sign-in"> Don't have an account?<a href="signup"> Signup</a></span>
-      <p>Or go <a href="./">home</a>.</p>
+      <p><a href="./">Home</a></p>
     </div>
   </body>
 </html>
