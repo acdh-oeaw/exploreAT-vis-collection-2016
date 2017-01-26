@@ -570,6 +570,28 @@ text {
     padding-top: 4px;
 }
 
+
+#too-many-hits {
+    position: absolute;
+    top: 300px;
+    left: -1px;
+    padding: 10px 20px 10px 30px;
+    width: 200px;
+    color: black;
+    background-color: lightyellow;
+    pointer-events: auto;
+    font-size: .8em;
+
+    -webkit-transition: all ease-in-out .35s;
+    -moz-transition: all ease-in-out .35s;
+    -o-transition: all ease-in-out .35s;
+    transition: all ease-in-out .35s;
+}
+
+#too-many-hits.collapsed {
+    left: -190px;
+}
+
 #data-split-info {
     position: absolute;
     top: 200px;
@@ -614,6 +636,8 @@ text {
     -o-transition: all ease-in-out .35s;
     transition: all ease-in-out .35s;
 }
+
+
 
 #lemma-list-holder.collapsed {
     right: -180px;
