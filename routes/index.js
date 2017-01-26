@@ -106,7 +106,7 @@ router.post('/login', passport.authenticate('local-login', {
 module.exports = router;
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
+    if (req.isAuthenticated() || app.settings.env == 'development')
         return next();
     else {
         req.session.redirectTo = req.path.replace('/','');
