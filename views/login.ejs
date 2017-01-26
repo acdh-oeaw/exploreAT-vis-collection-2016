@@ -1,32 +1,89 @@
 <% include partials/head %>
 
-  <body>
+<body>
     <div class="col-sm-8 col-sm-offset-2">
-      <div class="jumbotron text-center">
-        <h4><span class="fa fa-sign-in"></span> Login</h4>
-            <h5>This is the login homepage for the prototypes </h5>
-            <h5>In order to be able to access the pilot tool you need to request an invitation first. In case you haven't done so yet, please
-            <a href="mailto:theron@usal.es?Subject=ExploreAT!%20Prototypes%20Access%20Request" target="_top">drop us a line</a></h5>
-        <% if (message != null) { %>
-        	<div class="alert-danger"><%= message %></div>
-        <% } %>
+        <div class="page-header text-center">
+            <h1>exploreAT!</h1>
+        </div>
+        <div class="thumbnail">
+            <div style="padding: 20px;">The exploreAT! project aims to give insights into the richness of the German language in the Austrian area through a rich and unique collection of words from the Bavarian dialects recorded during the Austrian-Hungarian period and beyond. Originally collected by means of questionnaires, words were noted in handwriting on individual paper slips, covering topics from nature and food to religious festivities, etc.
+                <br><br>This tool allows to improve the comprehension of the big amount of data we’re dealing with (around 3.5 million records and 200k headwords) and therefore to foster the acquisition of meaningful conclusions regarding the dataset. With that, analysts can discover cultural issues and access them through means of language and visualization. This is possible thanks to the multidimensional approach to data analysis we’ve taken, based on the use of maps, projections and other visualization artifacts.</div>
+                <div style="padding: 20px;">
+                    You can use the tool by login into it through the next form,
+                    <a href="mailto:theron@usal.es?Subject=ExploreAT!%20Prototypes%20Access%20Request" target="_top">request an account</a> to use it,
+                    or <a href="https://exploreat.usal.es/publication/spatio-temporal-visual-analysis-tool-historical-dictionaries" target="_top">read the full paper</a> covering the exploreAT! project and the design decisions took during the development of the application.
+                </div>
+            </div>
+            <div class="jumbotron text-center">
+                <h4><span class="fa fa-sign-in"></span> Login</h4>
+                <h5>This is the login homepage for the prototypes </h5>
+                <h5>In order to be able to access the pilot tool you need to request an invitation first. In case you haven't done so yet, please
+                    <a href="mailto:theron@usal.es?Subject=ExploreAT!%20Prototypes%20Access%20Request" target="_top">drop us a line</a></h5>
+                    <% if (message != null) { %>
+                        <div class="alert-danger"><%= message %></div>
+                        <% } %>
 
-        <form action="login" method="post">
-          <div class="form-group">
-              <label>Email</label>
-              <input type="text" class="form-control" name="email">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password" />
-          </div>
-          <div>
-            <input type="submit" class="form-control" value="Submit" />
-          </div>
-        </form>
-      </div>
-      <hr>
-      <p><a href="./">Home</a></p>
-    </div>
-  </body>
-</html>
+                        <form action="login" method="post">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" name="email">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" name="password" />
+                            </div>
+                            <div>
+                                <input type="submit" class="form-control" value="Submit" />
+                            </div>
+                        </form>
+                    </div>
+                    <p>
+                        <button class="btn btn-block btn-primary collapsed" type="button" data-toggle="collapse" data-target="#tut" aria-expanded="false" aria-controls="tut">
+                            Read the tool's tutorial
+                        </button>
+                    </p>
+                    <div class="collapse" id="tut" aria-expanded="false">
+                        <div class="thumbnail" style="padding: 20px;">
+                            <img src="img/home/interface.jpg"/ class="img-tut">
+                            <br>
+                            The <strong>interface of the application is divided in four parts</strong>,
+                            although only three of them are presented from the beginning (1, 2 and 3)
+                            in the image. It can be reverted to its original appearance and status by
+                            clicking the top-right button (<strong>Restart Work Flow</strong>).
+                            <br><br>
+                            The <strong>first section (1)</strong> represents a spatial dimension of the data. The map
+                            can be explored by zooming and panning it, while also allows for the inclusion
+                            or exclusion of multiple features, and the change of the bucket (blue square
+                            regions in the map) resolution for them to hold more or less records and cover
+                            bigger or smaller portions of the geography.
+                            <br><br>
+                            In the <strong>second section (2)</strong> a temporal line is included. It represents the records
+                            of which the year they were recorded are known. They can be filtered by brushing,
+                            creating zones containing only a subset of the data by clicking and dragging the
+                            mouse over the timeline.
+                            <br><br>
+                            The <strong>third section (3)</strong> lets you look for concrete lemmas or combinations of
+                            lemmas, which will appear filtered both on the map and the timeline in real
+                            time. One or two lemmas can be inputted to fetch different results. When
+                            using the logical operator “AND”, both lemmas must appear on the searched word,
+                            while when using the operator “OR”, it’d be enough for one lemma of those
+                            inputted to appear in the word in order for the records related to it to
+                            be fetched as part of the results subset. Also, wildcards such as “ * ”
+                            (any set of characters) can be used in the input fields in order to look
+                            for partial lemmas.
+                            <br><br>
+                            Finally, the <strong>fourth section (4)</strong> allows for a social network analysis of
+                            the selected bucket. To do this, any bucket must be clicked to then explore
+                            it. The generated force directed graph includes all of the lemmas that appear
+                            in the selected bucket and highlights their relations. By right-clicking any
+                            lemma, a dendrogram can be created at the bottom of the social network analysis
+                            zone, in which the relations of the lemma and the others included in the
+                            selected bucket are highlighted.
+                        </div>
+                    </div>
+                    <hr>
+                    <p><a href="./">Home</a></p>
+                </div>
+            </body>
+
+            </html>
