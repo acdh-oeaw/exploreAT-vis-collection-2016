@@ -10,7 +10,7 @@ var boxString = "";
 
 var indexV = "11";
 
-var ip = 'http:\/\/'+'exploreat.usal.es';
+var ip = 'https:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
   hosts: ip+"/elasticsearch"
   // hosts: "http:\/\/localhost:9200"
