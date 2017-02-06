@@ -70,15 +70,15 @@ function createWords(inputString) {
   //   dataType: "json",
   //   async: true,
   //   success: function (resp) {
+
+    
   esClient.search({
     index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
     body: {
         query : {
           bool: {
-            must: [
-              { wildcard: { "dbo" : inputString.toLowerCase() }},
-              { not: { match: { "bedeutung.raw" : "--"  }}}
-            ]
+            must: { wildcard: { "dbo" : inputString.toLowerCase() }},
+            must_not: { match: { "bedeutung.raw" : "--"  }}
           }
         },
         // Get all the BEDEUTUNGs first
