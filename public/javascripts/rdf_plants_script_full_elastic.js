@@ -10,9 +10,21 @@ var mainExports = {};
 
     var indexName = 'rdf-plants-raw';
 
+
+    // Listeners
+
+    $( "#select-scientific" ).change(function() {
+        if(this.value != "") {
+            $("#common-list").html("");
+            lookfForCommonNamesGivenScientificName(this.value);
+            appendFlickrPicture(this.value,"scientific");
+        }
+    });
+
+
     // App body
 
-    lookfForCommonNamesGivenScientificName("Taraxacum");
+    //lookfForCommonNamesGivenScientificName("Taraxacum");
     //lookfForScientificNamesGivenCommonName("Maibloama");
 
     // ElasticSearch Query Processing Functions
@@ -50,7 +62,7 @@ var mainExports = {};
 
             for(var i=0; i<resp.hits.hits.length; i++){
                 plantURIids.push(resp.hits.hits[i]._source.URI.split("/")[resp.hits.hits[i]._source.URI.split("/").length-1]);
-                $('#content').append(resp.hits.hits[i]._source.scientificName+"<br>");
+                //$('#content').append(resp.hits.hits[i]._source.scientificName+"<br>");
                 //appendFlickrPicture(resp.hits.hits[i]._source.scientificName);
             }
 
@@ -104,6 +116,7 @@ var mainExports = {};
                     type: indexName+'-type',
                     size: 10000,
                     body: {
+                        sort: ["scientificName","commonName"],
                         query: {
                             "bool" : {
                                 "must": [
@@ -133,13 +146,19 @@ var mainExports = {};
 
                 esClient.search(queryObject).then(function (resp) {
 
-                    $('#content').append("<br>---<br><br>");
+                    //$('#content').append("<br>---<br><br>");
 
                     console.log("Finished with "+resp.hits.hits.length);
+                    $('#common-list').append("<ul class='ul-common'>");
                     for (var i = 0; i < resp.hits.hits.length; i++) {
                         if(resp.hits.hits[i] != undefined)
-                        $('#content').append((i+1)+". "+resp.hits.hits[i]._source.commonName+" ("+resp.hits.hits[i]._source.URItype+")<br>")
+                        var uriType = "";
+                        if(resp.hits.hits[i]._source.URItype == "book_name_form"){uriType = "Book Name";}
+                        if(resp.hits.hits[i]._source.URItype == "phonetic_name_form"){uriType = "Phonetic Name";}
+                        if(resp.hits.hits[i]._source.URItype == "written_name_form"){uriType = "Written Name";}
+                        $('.ul-common').append("<li class='li-common'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+")</li><br>")
                     }
+                    $('#common-list').append("</ul>");
 
                 }, function (err) {
                     console.trace(err.message);
@@ -189,7 +208,7 @@ var mainExports = {};
 
             for(var i=0; i<resp.hits.hits.length; i++){
                 cNameObjectURIids.push(resp.hits.hits[i]._source.URI.split("/")[resp.hits.hits[i]._source.URI.split("/").length-1]);
-                $('#content').append(resp.hits.hits[i]._source.commonName+"<br>");
+                $('#common-list').append(resp.hits.hits[i]._source.commonName+"<br>");
             }
 
             /// Look for scientific names referenced (evoked) by the located common name IDs
@@ -295,7 +314,7 @@ var mainExports = {};
 
     ///////
 
-    function appendFlickrPicture(term){
+    function appendFlickrPicture(term,zone){
 
         $.ajax({
             type: "GET",
@@ -313,7 +332,11 @@ var mainExports = {};
                     imgURL = 'https://farm'+photo.farm+'.staticflickr.com/'+photo.server+'/'+photo.id+'_'+photo.secret+'.jpg'
                 }
 
-                $("#content").prepend('<img src="'+imgURL+'" width="80px" height="auto"/><br>');
+                if(zone == "scientific"){
+                    $("#scientific-zone img").remove();
+                    $("#scientific-zone").append('<img src="'+imgURL+'" class="scientific-image"/>');
+                }
+
 
                 //root.children[i].photoURL = imgURL;
 

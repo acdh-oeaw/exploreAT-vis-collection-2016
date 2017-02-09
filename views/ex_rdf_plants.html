@@ -38,7 +38,28 @@
 </head>
 
 <body>
-<div id="content"></div>
+    <div id="webhead">
+        <h1>Plants RDF Explorer</h1>
+    </div>
+    <div id="content">
+        <div id="scientific-zone" class="zone">
+                <h2>Select a Scientific name to show its related Common names</h2>
+                <select name="query" id="select-scientific">
+                    <option value="">Select from the list</option>
+                    <option value="Achillea clavenae">Achillea clavenae</option>
+                    <option value="Achillea millefolium">Achillea millefolium</option>
+                    <option value="Bellis perennis">Bellis perennis</option>
+                    <option value="Convallaria majalis">Convallaria majalis</option>
+                    <option value="Lotus corniculatus">Lotus corniculatus</option>
+                    <option value="Taraxacum officinale">Taraxacum officinale</option>
+                    <option value="Veratrum album">Veratrum album</option>
+                </select>
+        </div>
+        <div id="common-zone" class="zone">
+            <center><h2>Common names for the selected Scientific name</h2></center>
+            <div id="common-list"></div>
+        </div>
+    </div>
 
 </body>
 
@@ -47,28 +68,28 @@
 <script src="javascripts/d3-legend.min.js"></script>
 
 <script>
-    var elasticEndpoint;
+var elasticEndpoint;
 
-    $.ajax({
-        url: "api/elasticEndpoint",
-        success: function (data) {
-            elasticEndpoint = data;
-            $.ajax({
-                crossDomain: true,
-                dataType: "script",
-                url: "javascripts/rdf_plants_script_full_elastic.js",
-                success: function(){
-                    console.log('Success loading script');
-                },
-                error: function(){
-                    console.log('ohps loading script');
-                }
-            })
-        },
-        error: function () {
-            console.log('ohps loading script');
-        }
-    });
+$.ajax({
+    url: "api/elasticEndpoint",
+    success: function (data) {
+        elasticEndpoint = data;
+        $.ajax({
+            crossDomain: true,
+            dataType: "script",
+            url: "javascripts/rdf_plants_script_full_elastic.js",
+            success: function(){
+                console.log('Success loading script');
+            },
+            error: function(){
+                console.log('ohps loading script');
+            }
+        })
+    },
+    error: function () {
+        console.log('ohps loading script');
+    }
+});
 
 </script>
 

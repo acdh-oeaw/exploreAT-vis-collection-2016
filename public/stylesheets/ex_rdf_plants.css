@@ -13,7 +13,7 @@ body, html {
 }
 
 h1 {
-	font-size: .9em;
+	font-size: 1.1em;
 }
 
 h2 {
@@ -23,11 +23,58 @@ h2 {
 	margin-bottom: 20px;
 }
 
+#webhead {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 1.5em;
+}
+
 #content {
   position: relative;
   width: 100%;
-  height: 100%;
 }
+
+#scientific-zone {
+    float: left;
+    text-align: center;
+}
+
+#common-zone {
+    float: right;
+}
+
+.zone {
+    width: 45%;
+    height: 300px;
+    overflow: scroll;
+    padding: 20px;
+}
+
+.ul-common {
+    text-align: center;
+    font-size: .9em;
+    list-style-position: inside;
+    list-style-type: none;
+    height: 240px;
+    overflow: scroll;
+}
+
+.li-common {
+    margin: 0px;
+    font-size: .9em;
+}
+
+.scientific-image {
+    max-height: 175px;
+    display: block;
+    border-radius: 4px;
+    margin: 20px auto;
+    margin-bottom: 0;
+}
+
+
+
+/******/
 
 .tooltip {
     background-color: rgba(200, 200, 200, 0.5);
