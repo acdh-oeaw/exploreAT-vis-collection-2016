@@ -130,11 +130,11 @@ router.post('/login', function(req, res, next) {
            jwtUser.username = user.local.username;
            jwtUser.id = user._id.toString();
            var token = jwt.sign(jwtUser, jwtConfig.secretOrKey, {
-               expiresIn: 60*60*5
+               expiresIn: 60*60*24
            });
            console.log(token);
            res.cookie('token', token);
-           res.redirect(req.session.redirectTo || '/');
+           res.redirect(req.session.redirectTo || './');
 
         });
     })(req, res, next);
