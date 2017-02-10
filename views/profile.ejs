@@ -8,9 +8,9 @@
         <span class="fa fa-sign-out"><a href="/"> Sign out</a></span>
         <hr>
         <div class="jumbotron">
-          <% if (user.local.email != null) { %>
-            <img src="https://avatars.io/gravatar/<%= user.local.email %>" class="img-circle"><br>
-            <strong>email</strong>: <%= user.local.email %><br>
+          <% if (user.local.username != null) { %>
+            <!--<img src="https://avatars.io/gravatar/<%= user.local.email %>" class="img-circle"><br>-->
+            <strong>email</strong>: <%= user.local.username %><br>
           <% } %>
         </div>
       </div>

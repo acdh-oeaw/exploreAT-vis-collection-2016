@@ -10,11 +10,18 @@ var boxString = "";
 
 var indexV = "11";
 
+
+var ESToken = getCookie("token");
+
+console.log(ESToken);
+
 var ip = 'https:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
-  hosts: ip+"/elasticsearch"
+    host: ip+"/elasticsearch"
   // hosts: "http:\/\/localhost:9200"
 });
+
+
 
 var img_tooltip = $('#imgTooltip');
 var lemma_tooltip = $('#lemmaTooltip');
@@ -71,10 +78,13 @@ function createWords(inputString) {
   //   async: true,
   //   success: function (resp) {
 
-    
+    console.log(ESToken);
+
   esClient.search({
-    index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
-    body: {
+      index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
+      headers: {
+          'Authorization' : "Bearer " + ESToken},
+      body: {
         query : {
           bool: {
             must: { wildcard: { "dbo" : inputString.toLowerCase() }},
@@ -116,7 +126,9 @@ function createWords(inputString) {
 
           // For each lade get only those lemmas where the lade is the same
           esClient.search({
-            index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
+              index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
+                  headers: {
+                      'Authorization' : "Bearer " + ESToken},
             body: {
                 query: {
                   bool: {

@@ -1,7 +1,12 @@
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
+var passportJWT = require("passport-jwt");
+var ExtractJwt = passportJWT.ExtractJwt;
+var JwtStrategy = passportJWT.Strategy;
+var ObjectId = require('mongoose').Types.ObjectId;
 
-module.exports = function(passport) {
+
+module.exports = function(passport, jwtConfig) {
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -12,21 +17,20 @@ module.exports = function(passport) {
     });
 
     passport.use('local-signup', new LocalStrategy({
-            usernameField: 'email',
+            usernameField: 'username',
             passwordField: 'password',
-            passReqToCallback: true,
+            passReqToCallback: true
         },
-        function(req, email, password, done) {
+        function(req, username, password, done) {
             process.nextTick(function() {
-                User.findOne({ 'local.email':  email }, function(err, user) {
+                User.findOne({ 'local.username': username}, function(err, user) {
                     if (err)
                         return done(err);
                     if (user) {
-                        return done(null, false, req.flash('signupMessage', 'That email is already in use.'));
+                        return done(null, false, req.flash('signupMessage', 'That username is already in use.'));
                     } else {
-                        User.findOne()
                         var newUser = new User();
-                        newUser.local.email = email;
+                        newUser.local.username = username;
                         newUser.local.password = newUser.generateHash(password);
                         newUser.save(function(err) {
                             if (err)
@@ -36,15 +40,15 @@ module.exports = function(passport) {
                     }
                 });
             });
-        }));
+    }));
 
     passport.use('local-login', new LocalStrategy({
-            usernameField: 'email',
+            usernameField: 'username',
             passwordField: 'password',
-            passReqToCallback: true,
+            passReqToCallback: true
         },
-        function(req, email, password, done) {
-            User.findOne({ 'local.email':  email }, function(err, user) {
+        function(req, username, password, done) {
+            User.findOne({ 'local.username':  username }, function(err, user) {
                 if (err)
                     return done(err);
                 if (!user)
@@ -53,5 +57,24 @@ module.exports = function(passport) {
                     return done(null, false, req.flash('loginMessage', 'Wrong password.'));
                 return done(null, user);
             });
-        }));
+    }));
+
+    var jwtOptions = {};
+    jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader();
+    jwtOptions.secretOrKey = jwtConfig.secretOrKey;
+
+    passport.use(new JwtStrategy(jwtOptions,
+        function (jwt_payload, done) {
+            console.log('payload received', jwt_payload);
+            User.findOne({_id: new ObjectId(jwt_payload.id)}, function (err, user) {
+                if (err) {
+                    return done(err, false);
+                }
+                if (user) {
+                    done(null, user);
+                } else {
+                    done(null, false)
+                }
+            });
+    }));
 };

@@ -5,14 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var config = require('config');
-
+var jwtConfig = config.get('jwt_config');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 
 var app = express();
 
+app.jwtConfig = jwtConfig;
 var passport = require('passport');
+
+
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
@@ -48,8 +51,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/api', api);
 
-require('./config/passport')(passport);
-
+require('./config/passport')(passport, jwtConfig);
 
 
 app.use(function(req, res, next) {

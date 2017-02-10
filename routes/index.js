@@ -1,8 +1,14 @@
 var express = require('express');
 var passport = require('passport');
+
+var jwt = require('jsonwebtoken');
+var _ = require('underscore');
 var router = express.Router();
 
 var app = express();
+
+var jwtConfig = require('config').get('jwt_config');
+
 /* GET home page. */
 
 console.log('Node env ' + app.settings.env);
@@ -85,9 +91,24 @@ router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
     res.render('ex_bedeutung');
 });
 
+// router.get('/token', isLoggedIn, function (req, res) {
+//     res.send(req.session.token)
+// });
+
 // router.get('/ex_colors', function(req,res) {
 //     res.render('ex_colors');
 // });
+
+
+
+
+router.get('/tokenTest', passport.authenticate('jwt', { session: false }),
+    function(req, res) {
+        res.send(req.user);
+    }
+);
+
+
 
 router.post('/signup', passport.authenticate('local-signup', {
     successRedirect: './',
@@ -95,13 +116,29 @@ router.post('/signup', passport.authenticate('local-signup', {
     failureFlash: true
 }));
 
-router.post('/login', passport.authenticate('local-login', {
-    failureRedirect: 'login',
-    failureFlash: true
-}), function (req, res) {
-    res.redirect(req.session.redirectTo);
-});
 
+router.post('/login', function(req, res, next) {
+    passport.authenticate('local-login', function(err, user, info) {
+        if (err) { return next(err) }
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        req.logIn(user, function (err) {
+           if (err) throw err;
+           var jwtUser = {};
+           jwtUser.username = user.local.username;
+           jwtUser.id = user._id.toString();
+           var token = jwt.sign(jwtUser, jwtConfig.secretOrKey, {
+               expiresIn: 60*60*5
+           });
+           console.log(token);
+           res.cookie('token', token);
+           res.redirect(req.session.redirectTo || '/');
+
+        });
+    })(req, res, next);
+});
 
 module.exports = router;
 
@@ -112,5 +149,4 @@ function isLoggedIn(req, res, next) {
         req.session.redirectTo = req.path.replace('/','');
         res.redirect('login');
     }
-
 }
