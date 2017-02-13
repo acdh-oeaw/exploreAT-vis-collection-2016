@@ -34,23 +34,25 @@ h2 {
   width: 100%;
 }
 
-#scientific-zone {
+#scientific-zone-up, #common-zone-down {
     float: left;
-    text-align: center;
 }
 
-#common-zone {
+#common-zone-up, #scientific-zone-down {
     float: right;
 }
 
 .zone {
+    text-align: center;
     width: 45%;
     height: 300px;
     overflow: scroll;
     padding: 20px;
+    margin: 20px auto;
+    border-top: 1px solid #ddd;
 }
 
-.ul-common {
+.ul-common-up, .ul-common-down {
     text-align: center;
     font-size: .9em;
     list-style-position: inside;
@@ -59,9 +61,15 @@ h2 {
     overflow: scroll;
 }
 
-.li-common {
+.li-common-up, .li-common-down {
     margin: 0px;
     font-size: .9em;
+}
+
+.li-common-up.selected, .li-common-down.selected {
+    padding: 6px;
+    border: 1px dotted #bbb;
+    border-radius: 4px;
 }
 
 .scientific-image {
@@ -70,6 +78,23 @@ h2 {
     border-radius: 4px;
     margin: 20px auto;
     margin-bottom: 0;
+}
+
+#scientific-plant-name {
+    margin: 0px;
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.img-mag {
+    max-height: 14px;
+    vertical-align: bottom;
+    margin-left: 6px;
+    opacity: .3;
+}
+.img-mag:hover{
+    cursor: pointer;
+    opacity: .7;
 }
 
 

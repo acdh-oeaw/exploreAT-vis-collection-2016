@@ -42,7 +42,7 @@
         <h1>Plants RDF Explorer</h1>
     </div>
     <div id="content">
-        <div id="scientific-zone" class="zone">
+        <div id="scientific-zone-up" class="zone">
                 <h2>Select a Scientific name to show its related Common names</h2>
                 <select name="query" id="select-scientific">
                     <option value="">Select from the list</option>
@@ -55,9 +55,20 @@
                     <option value="Veratrum album">Veratrum album</option>
                 </select>
         </div>
-        <div id="common-zone" class="zone">
-            <center><h2>Common names for the selected Scientific name</h2></center>
-            <div id="common-list"></div>
+        <div id="common-zone-up" class="zone">
+            <center><h2>Common names for the selected Scientific plant name</h2></center>
+            <div id="common-list-up"></div>
+        </div>
+        <div style="clear:both;"></div>
+        <div id="common-zone-down" class="zone">
+            <center><h2>Type any word to look for Common plant names</h2></center>
+            <input type="text" id="textField-common-name">
+            <button type="button" id="button-common-name">Search</button>
+            <div id="common-list-down"></div>
+        </div>
+        <div id="scientific-zone-down" class="zone">
+                <h2>Scientific name related to the selected Common plant name</h2>
+                <span id="scientific-plant-name"></span>
         </div>
     </div>
 
