@@ -32,7 +32,7 @@
     "leaflet": "^0.7.7",
     "latlon-geohash-bobbr": "^1.0.1",
     "d3-plugins": "*",
-    "d3-carto-map": "https://github.com/ale0xB/d3-carto-map.git",
+    "d3-carto-map": "https://github.com/ale0xB/d3-carto-map.git#8170b6d",
     "dcjs": "2.0.0-beta.29",
     "colorbrewer": "^1.0.0",
     "w2ui": "^1.4.3",
