@@ -27,10 +27,10 @@ var originalRoot = root;
 
 var circle;
 
-var ip = 'http:\/\/'+'exploreat.usal.es';
+var ESToken = getCookie("token");
+
 var client = new $.es.Client({
-  hosts: ip+"/elasticsearch"
-  // hosts: "http:\/\/localhost:9200"
+    host: getESHost()
 });
 
 
@@ -64,10 +64,12 @@ function createWords() {
 
     client.search({
       index: 'dboe-beleg_bedeutung_lemma',
+        headers: {
+            'Authorization' : "Bearer " + ESToken},
       body: {
         query: {
             bool: {
-                must: { match: {"lade": "001121"}},
+                must: { match: {"lade": "001121"}}
             }
         },
         function (error, response) {
@@ -79,6 +81,8 @@ function createWords() {
 
     client.search({
       index: 'dboe-beleg_bedeutung_lemma',
+        headers: {
+            'Authorization' : "Bearer " + ESToken},
       body: {
           // // Begin query.
           // query: {
@@ -136,7 +140,7 @@ function createWords() {
         children = {};
         children.name = ""+buckets[i].key;
         children.size = buckets[i].doc_count;
-        children.type = "node bedeutung"
+        children.type = "node bedeutung";
         children.children = new Array();
 
         root.children.push(children);
@@ -144,6 +148,8 @@ function createWords() {
 
       client.search({
         index: 'dboe-beleg_bedeutung_lemma',
+          headers: {
+              'Authorization' : "Bearer " + ESToken},
         body: {
             aggs: { aggregation: { terms: { field: "lade", "size": 10 } } }
         }

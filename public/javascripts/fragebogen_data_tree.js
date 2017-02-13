@@ -8,9 +8,12 @@ var processing = false;
 
 var boxString = "";
 
-var ip = 'http:\/\/'+'exploreat.usal.es';
+var ESToken = getCookie("token");
+
 var esClient = new $.es.Client({
-  hosts: ip+"/elasticsearch"
+    host: getESHost(),
+    headers: {
+        'Authorization' : "Bearer " + ESToken}
 });
 
 // var esClient = new $.es.Client({
@@ -89,6 +92,8 @@ function createWords(inputString) {
 
   esClient.search({
     index: 'dboe-beleg-frage-fragebogen-lemma',
+      headers: {
+          'Authorization' : "Bearer " + ESToken},
     size: 1000,
     body: {
       query : {

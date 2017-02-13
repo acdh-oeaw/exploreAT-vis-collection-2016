@@ -13,12 +13,8 @@ var indexV = "11";
 
 var ESToken = getCookie("token");
 
-console.log(ESToken);
-
-var ip = 'https:\/\/'+'exploreat.usal.es';
 var esClient = new $.es.Client({
-    host: ip+"/elasticsearch"
-  // hosts: "http:\/\/localhost:9200"
+    host: getESHost()
 });
 
 
@@ -77,8 +73,6 @@ function createWords(inputString) {
   //   dataType: "json",
   //   async: true,
   //   success: function (resp) {
-
-    console.log(ESToken);
 
   esClient.search({
       index: 'dboe-beleg_bedeutung_lemma_v'+indexV,

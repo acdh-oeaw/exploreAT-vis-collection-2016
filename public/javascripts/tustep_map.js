@@ -2,9 +2,12 @@ var mainExports = {};
 (function() {
 
     // ELASTIC
+    var ESToken = getCookie("token");
 
     var esClient = new $.es.Client({
-        hosts: elasticEndpoint
+        host: getESHost(),
+        headers: {
+            'Authorization' : "Bearer " + ESToken}
     });
 
     var indexName = 'tustepgeo3';
@@ -2375,6 +2378,8 @@ var mainExports = {};
 
         return esClient.search({
             index: indexName,
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: body
         });
     }
@@ -2436,6 +2441,8 @@ var mainExports = {};
 
         return esClient.search({
             index: indexName,
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: body
         });
     }
@@ -2673,6 +2680,8 @@ var mainExports = {};
 
         return esClient.search({
             index: indexName,
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: {
                 size: 10000,
                 query: {
@@ -2754,6 +2763,8 @@ var mainExports = {};
 
         return esClient.search({
             index: indexName,
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: {
                 size: 10000,
                 query: {
@@ -2945,6 +2956,8 @@ var mainExports = {};
 
         return esClient.search({
             index: indexName,
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: body
         });
     }

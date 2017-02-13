@@ -19,7 +19,6 @@ Flickr.authenticate(flickrOptions, function(error, flickr) {
 });
 
 var mysqlConfig = config.get('mysql');
-var elasticEndpoint = config.get('elasticsearch').host;
 
 var MySQL      = require('mysql');
 var dbClient = MySQL.createConnection({

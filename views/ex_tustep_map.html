@@ -58,9 +58,9 @@
         </div>
     </div>
 </div>
-
 </body>
 
+<script src="javascripts/eshelper.js"></script>
 <script src="javascripts/lemma-graph.js"></script>
 <script src="javascripts/jLouvain.js"></script>
 <script src="javascripts/d3-legend.min.js"></script>
@@ -110,25 +110,16 @@
 
         w2ui['content'].load('main','map', '', function () {
             $.ajax({
-                url: "api/elasticEndpoint",
-                success: function (data) {
-                    elasticEndpoint = data;
-                    $.ajax({
-                        crossDomain: true,
-                        dataType: "script",
-                        url: "javascripts/tustep_map.js",
-                        success: function(){
-                            console.log('Success');
-                        },
-                        error: function(){
-                            console.log('ohps');
-                        }
-                    })
+                crossDomain: true,
+                dataType: "script",
+                url: "javascripts/tustep_map.js",
+                success: function(){
+                    console.log('Success');
                 },
-                error: function () {
+                error: function(){
                     console.log('ohps');
                 }
-            });
+            })
         });
 });
 
