@@ -26,7 +26,7 @@ function checkCookie() {
 }
 
 function getESHost() {
-    if(window.location.href.indexOf('https')) {
+    if(window.location.href.indexOf('https') == 0) {
         return 'https://exploreat.usal.es/elasticsearch';
     } else {
         return 'http:\/\/localhost:9200'
