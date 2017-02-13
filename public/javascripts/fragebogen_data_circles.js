@@ -8,14 +8,14 @@ var processing = false;
 
 var boxString = "";
 
-var ip = 'http:\/\/'+'exploreat.usal.es';
+var ESToken = getCookie("token");
+
 var esClient = new $.es.Client({
-  hosts: ip+"/elasticsearch"
+    host: getESHost(),
+    headers: {
+        'Authorization' : "Bearer " + ESToken}
 });
 
-// var esClient = new $.es.Client({
-//   hosts: "http:\/\/localhost:9200\/"
-// });
 
 // AUTOMATIC INITIALIZATION
 //processing = true;
@@ -70,6 +70,8 @@ function createWords() {
 
   esClient.search({
     index: 'dboe-beleg-frage-fragebogen-lemma',
+      headers: {
+          'Authorization' : "Bearer " + ESToken },
     size: 1000,
     body: {
       query : {
