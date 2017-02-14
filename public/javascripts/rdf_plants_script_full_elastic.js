@@ -26,6 +26,12 @@ var mainExports = {};
         lookfForCommonNamesGivenCommonName($("#textField-common-name").val());
     });
 
+    $("#textField-common-name").on('keypress', function (e) {
+         if(e.which === 13){
+            $("#common-list-down").html("");
+            lookfForCommonNamesGivenCommonName($("#textField-common-name").val());
+         }
+   });
 
     // App body
 
@@ -473,7 +479,8 @@ var mainExports = {};
                             {
                                 "query_string": {
                                     "default_field": "commonName",
-                                    "query": commonName
+                                    "query": "*"+commonName+"*",
+                                    "phrase_slop": 1
                                 }
                             }
                         ]
