@@ -10,7 +10,6 @@ var mainExports = {};
 
     var indexName = 'rdf-plants-raw';
 
-
     // Listeners
 
     $( "#select-scientific" ).change(function() {
@@ -36,6 +35,7 @@ var mainExports = {};
     // App body
 
     var cNameObjectURIids = [];
+    var cNameObjects = [];
 
     //lookfForCommonNamesGivenScientificName("Taraxacum");
     //lookfForScientificNamesGivenCommonName("Maibloama");
@@ -218,6 +218,7 @@ var mainExports = {};
         }).then(function (resp) {
 
             cNameObjectURIids = [];
+            cNameObjects = [];
 
             for(var i=0; i<resp.hits.hits.length; i++){
                 cNameObjectURIids.push(resp.hits.hits[i]._source.URI.split("/")[resp.hits.hits[i]._source.URI.split("/").length-1]);
@@ -493,6 +494,7 @@ var mainExports = {};
 
             for(var i=0; i<resp.hits.hits.length; i++){
                 cNameObjectURIids.push(resp.hits.hits[i]._source.URI.split("/")[resp.hits.hits[i]._source.URI.split("/").length-1]);
+                cNameObjects.push(resp.hits.hits[i]._source);
             }
 
             console.log("Finished with "+resp.hits.hits.length);
@@ -512,6 +514,8 @@ var mainExports = {};
                     lookfForScientificNamesGivenCommonId(cNameObjectURIids[idx]);
                     $('.li-common-down').removeClass("selected");
                     $(this).parent().addClass("selected");
+                    $('#europeana-content').html("");
+                    callEuropeana(cNameObjects[idx]);
                 });
             });
 
@@ -550,6 +554,46 @@ var mainExports = {};
                     $("#scientific-zone-down .scientific-image").remove();
                     $("#scientific-zone-down").append('<img src="'+imgURL+'" class="scientific-image"/>');
                 }
+            }
+        });
+    }
+
+
+    ////////
+
+    function callEuropeana(plantObject){
+
+        var params = {
+          query: plantObject.commonName,
+          qf: "TYPE:IMAGE",
+          rows: 10
+        };
+
+        console.log(params);
+
+        $.ajax({
+            type: "POST",
+            url: "api/europeana",
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            async: true,
+            success: function (response) {
+                if(response.totalResults == 0){
+                    $('#europeana-commonName').html("There are no results for <strong>"+plantObject.commonName+"</strong>")
+                    return;
+                }
+
+                $('#europeana-commonName').html("Results for <strong>"+plantObject.commonName+"</strong>")
+                console.log(response);
+
+                _.forEach(response.items,function(euroRecord){
+                    var imgURL = euroRecord.edmPreview[0];
+                    $("#europeana-content .scientific-image").remove();
+                    $("#europeana-content").append('<img src="'+imgURL+'" class="europeana-image"/>');
+                });
+            },
+            error: function(error){
+                $('#europeana-content').html("There are no results for <strong>"+plantObject.commonName+"</strong>")
             }
         });
     }
