@@ -51,6 +51,8 @@ var mainExports = {};
         esClient.search({
             index: indexName,
             type: indexName+'-type',
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             size: 10000,
             body: {
                 query: {
@@ -86,6 +88,8 @@ var mainExports = {};
             var queryObject = {
                 index: indexName,
                 type: indexName+'-type',
+                headers: {
+                    'Authorization' : "Bearer " + ESToken},
                 size: 10000,
                 body: {
                     query: {
@@ -129,6 +133,8 @@ var mainExports = {};
                 queryObject = {
                     index: indexName,
                     type: indexName+'-type',
+                    headers: {
+                        'Authorization' : "Bearer " + ESToken},
                     size: 10000,
                     body: {
                         sort: ["scientificName","commonName"],
@@ -197,6 +203,8 @@ var mainExports = {};
         esClient.search({
             index: indexName,
             type: indexName+'-type',
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             size: 10000,
             body: {
                 query: {
@@ -232,6 +240,8 @@ var mainExports = {};
             var queryObject = {
                 index: indexName,
                 type: indexName+'-type',
+                headers: {
+                    'Authorization' : "Bearer " + ESToken},
                 size: 10000,
                 body: {
                     query: {
@@ -275,6 +285,8 @@ var mainExports = {};
                 queryObject = {
                     index: indexName,
                     type: indexName+'-type',
+                    headers: {
+                        'Authorization' : "Bearer " + ESToken},
                     size: 10000,
                     body: {
                         query: {
@@ -336,6 +348,8 @@ var mainExports = {};
         esClient.search({
             index: indexName,
             type: indexName+'-type',
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             size: 10000,
             body: {
                 query: {
@@ -370,6 +384,8 @@ var mainExports = {};
             var queryObject = {
                 index: indexName,
                 type: indexName+'-type',
+                headers: {
+                    'Authorization' : "Bearer " + ESToken},
                 size: 10000,
                 body: {
                     query: {
@@ -413,6 +429,8 @@ var mainExports = {};
                 queryObject = {
                     index: indexName,
                     type: indexName+'-type',
+                    headers: {
+                        'Authorization' : "Bearer " + ESToken},
                     size: 10000,
                     body: {
                         query: {
@@ -469,6 +487,8 @@ var mainExports = {};
         esClient.search({
             index: indexName,
             type: indexName+'-type',
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             size: 10000,
             body: {
                 query: {
@@ -601,5 +621,3 @@ var mainExports = {};
     }
 
 })();
-
-console.log("Plants aint a thing!")
