@@ -29,7 +29,7 @@
       user : "exploreat",
       host : "exploreat.usal.es",
       ref  : "origin/develop",
-      repo : "https://alex:033myLNRfjK@gitlab.grial.eu:usal-vis/exploreat.git",
+      repo : "***REMOVED***",
       path : "/usr/src/app/staging",
       "post-deploy" : "npm install ; bower install; pm2 startOrRestart ecosystem.json --env staging",
       env  : {
