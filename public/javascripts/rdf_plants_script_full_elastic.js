@@ -527,7 +527,7 @@ var mainExports = {};
                 if(resp.hits.hits[i]._source.URItype == "book_name_form"){uriType = "Book Name";}
                 if(resp.hits.hits[i]._source.URItype == "phonetic_name_form"){uriType = "Phonetic Name";}
                 if(resp.hits.hits[i]._source.URItype == "written_name_form"){uriType = "Written Name";}
-                $('.ul-common-down').append("<li class='li-common-down'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+") <img class='img-mag' id='plant-"+i+"' src='/img/resources/mag-glass.svg.png'/></li><br>")
+                $('.ul-common-down').append("<li class='li-common-down'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+") <img class='img-mag' id='plant-"+i+"' src='/exploreat/img/resources/mag-glass.svg.png'/></li><br>")
             }
             $('#common-list-down').append("</ul>");
 
