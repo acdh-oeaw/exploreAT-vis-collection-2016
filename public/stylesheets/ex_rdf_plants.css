@@ -186,3 +186,21 @@ h3 {
 .error {
     color: red;
 }
+
+rect.background {
+    fill: white;
+}
+
+.country {
+    fill: rgb(247,247,247);
+    stroke: lightgray;
+    stroke-width: 1px;
+}
+
+.pin {
+    opacity: .5;
+    fill: #31698A;
+}
+.pin:hover {
+    cursor: pointer;
+}

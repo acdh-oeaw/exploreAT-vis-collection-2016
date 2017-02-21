@@ -776,8 +776,11 @@ var mainExports = {};
 
         params = {
           query: queryString,
-          rows: 500
+          profile: "rich",
+          rows: 500,
         };
+
+        $('#map-header').html("<h3>Looking for geolocated docs...</h3>")
 
         $.ajax({
             type: "POST",
@@ -786,10 +789,31 @@ var mainExports = {};
             contentType: 'application/json',
             async: true,
             success: function (response) {
+                if(response.totalResults == 0){
+                    $('#map-header').htlm("<h3>There are <span class='error'>no geolocated docs</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    return;
+                }
+
                 console.log(response);
+
+                europeanaAllObjects = [];
+
+                if(response.totalResults == 0){
+                    return;
+                }
+
+                _.forEach(response.items, function(item, idx){
+                    if(item.edmPlaceLabel != undefined){
+                        europeanaAllObjects.push(item);
+                    }
+                });
+
+                console.log(europeanaAllObjects);
+
+                plotDataInMap();
             },
             error: function(error){
-                $('#europeana-map').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
+                $('#map-header').html("<h3>There was a <span class='error'timeout</span>. Please, try again.</h3>")
             }
         });
     }
@@ -806,5 +830,129 @@ var mainExports = {};
     }
 
     setupFloatingDivs();
+
+    // MAP CODE
+
+    var m_width = $("#map").width(),
+        width = 700,
+        height = 400,
+        country,
+        state;
+
+    var projection = d3.geo.mercator()
+        .scale(120)
+        .translate([width / 2, height / 1.5]);
+
+    var path = d3.geo.path()
+        .projection(projection);
+
+    var svg = d3.select("#map").append("svg")
+        .attr("preserveAspectRatio", "xMidYMid")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .attr("width", m_width)
+        .attr("height", m_width * height / width);
+
+    svg.append("rect")
+        .attr("class", "background")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", country_clicked);
+
+    var g = svg.append("g");
+
+    d3.json("/data/world/countries.topo.json", function(error, us) {
+      g.append("g")
+        .attr("id", "countries")
+        .selectAll("path")
+        .data(topojson.feature(us, us.objects.countries).features)
+        .enter()
+        .append("path")
+        .attr("id", function(d) { return d.id; })
+        .attr("d", path)
+        .attr("class", "country")
+        .on("click", country_clicked);
+    });
+
+    function zoom(xyz) {
+      g.transition()
+        .duration(750)
+        .attr("transform", "translate(" + projection.translate() + ")scale(" + xyz[2] + ")translate(-" + xyz[0] + ",-" + xyz[1] + ")")
+        .selectAll(["#countries"])
+        .style("stroke-width", 1.0 / xyz[2] + "px");
+    }
+
+    function get_xyz(d) {
+      var bounds = path.bounds(d);
+      var w_scale = (bounds[1][0] - bounds[0][0]) / width;
+      var h_scale = (bounds[1][1] - bounds[0][1]) / height;
+      var z = .96 / Math.max(w_scale, h_scale);
+      var x = (bounds[1][0] + bounds[0][0]) / 2;
+      var y = (bounds[1][1] + bounds[0][1]) / 2 + (height / z / 6);
+      return [x, y, z];
+    }
+
+    function country_clicked(d) {
+      g.selectAll(["#states"]).remove();
+      state = null;
+
+      if (country) {
+        g.selectAll("#" + country.id).style('display', null);
+      }
+
+      if (d && country !== d) {
+        var xyz = get_xyz(d);
+        country = d;
+          zoom(xyz);
+      } else {
+        var xyz = [width / 2, height / 1.5, 1];
+        country = null;
+        zoom(xyz);
+      }
+    }
+
+    $(window).resize(function() {
+      var w = $("#map").width();
+      svg.attr("width", w);
+      svg.attr("height", w * height / width);
+    });
+
+    // EUROPEANA DATA TO MAP
+
+    function plotDataInMap(){
+
+        var places = [];
+
+        _.forEach(europeanaAllObjects, function (object,idx) {
+            var place = {};
+            place.name = object.edmPlaceLabel[0].def;
+            place.location = {};
+            place.location.latitude = parseFloat(object.edmPlaceLatitude[0]) + (Math.random()/3);
+            place.location.longitude = parseFloat(object.edmPlaceLongitude[0]) + (Math.random()/3);
+            place.url = object.guid;
+            places.push(place);
+        });
+
+        $('.pin').remove();
+
+        if(places.length != 0){
+            $('#map-header').html("")
+        }
+
+        d3.select("#countries").selectAll(".pin")
+          .data(places)
+          .enter().append("circle")
+          .attr("r", 1)
+          .attr("transform", function(d) {
+            return "translate(" + projection([
+              d.location.longitude,
+              d.location.latitude
+            ]) + ")";
+          })
+          .attr("class", "pin")
+          .on("click", function(d){window.open(d.url, "_blank", "toolbar=1", "scrollbars=1", "resizable=1", "width=" + 500 + ", height=" + 500);})
+          .append("svg:title")
+            .text(function(d) { return d.name; })
+          ;
+    }
 
 })();

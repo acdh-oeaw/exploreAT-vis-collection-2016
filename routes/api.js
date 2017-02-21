@@ -79,6 +79,21 @@ router.post('/europeana', function(req, res, next) {
     //europeana ('record' + recordId, console.log);
 });
 
+router.post('/eurorecord', function(req, res, next){
+
+    function euroCallback (err, data) {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(data)
+        }
+    }
+    
+    var recordId = req.body.recordId;
+    europeana ('record' + recordId, euroCallback);
+});
+
 
 router.get('/region/:region_id', function(req, res, next) {
     dbClient.query('SELECT AsText(the_geom) AS geometry FROM GISregion WHERE id=?',req.params.region_id,
