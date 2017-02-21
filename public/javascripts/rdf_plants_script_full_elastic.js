@@ -38,6 +38,11 @@ var mainExports = {};
 
     var cNameObjectURIids = [];
     var cNameObjects = [];
+    var europeanaTextObjects = [];
+    var europeanaAudioObjects = [];
+    var europeanaVideoObjects = [];
+    var europeanaImageObjects = [];
+    var europeanaAllObjects = [];
 
     //lookfForCommonNamesGivenScientificName("Taraxacum");
     //lookfForScientificNamesGivenCommonName("Maibloama");
@@ -482,6 +487,9 @@ var mainExports = {};
 
     function lookfForCommonNamesGivenCommonName(commonName){
 
+        cNameObjects = [];
+        cNameObjectURIids = [];
+
         // Look for the URI id relative to the written common name provided by the user
 
         esClient.search({
@@ -527,7 +535,7 @@ var mainExports = {};
                 if(resp.hits.hits[i]._source.URItype == "book_name_form"){uriType = "Book Name";}
                 if(resp.hits.hits[i]._source.URItype == "phonetic_name_form"){uriType = "Phonetic Name";}
                 if(resp.hits.hits[i]._source.URItype == "written_name_form"){uriType = "Written Name";}
-                $('.ul-common-down').append("<li class='li-common-down'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+") <img class='img-mag' id='plant-"+i+"' src='/exploreat/img/resources/mag-glass.svg.png'/></li><br>")
+                $('.ul-common-down').append("<li class='li-common-down'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+") <img class='img-mag' id='plant-"+i+"' src='img/resources/mag-glass.svg.png'/></li><br>")
             }
             $('#common-list-down').append("</ul>");
 
@@ -536,7 +544,10 @@ var mainExports = {};
                     lookfForScientificNamesGivenCommonId(cNameObjectURIids[idx]);
                     $('.li-common-down').removeClass("selected");
                     $(this).parent().addClass("selected");
-                    $('#europeana-content').html("");
+                    $('#europeana-text').html("<h2>Texts</h2>");
+                    $('#europeana-audio').html("<h2>Audios</h2>");
+                    $('#europeana-video').html("<h2>Videos</h2>");
+                    $('#europeana-picture').html("<h2>Pictures</h2>");
                     callEuropeana(cNameObjects[idx]);
                 });
             });
@@ -585,13 +596,26 @@ var mainExports = {};
 
     function callEuropeana(plantObject){
 
-        var params = {
-          query: plantObject.commonName,
-          qf: "TYPE:IMAGE",
+        $('#europeana-commonName').html("Results for <strong>"+plantObject.commonName+"</strong>")
+
+        europeanaTextObjects = [];
+        europeanaAudioObjects = [];
+        europeanaVideoObjects = [];
+        europeanaImageObjects = [];
+        europeanaAllObjects = [];
+
+        var params = null;
+
+        var queryString = plantObject.commonName;
+        //var queryString = "latern";
+
+        // Text Fetch
+
+        params = {
+          query: queryString,
+          qf: "TYPE:TEXT",
           rows: 10
         };
-
-        console.log(params);
 
         $.ajax({
             type: "POST",
@@ -601,23 +625,186 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#europeana-commonName').html("There are no results for <strong>"+plantObject.commonName+"</strong>")
+                    $('#europeana-text').append("<h3>There are <span class='error'>no texts</span> for <strong>"+plantObject.commonName+"</h3></strong>")
                     return;
                 }
 
-                $('#europeana-commonName').html("Results for <strong>"+plantObject.commonName+"</strong>")
-                console.log(response);
+                europeanaTextObjects = response.items;
 
-                _.forEach(response.items,function(euroRecord){
-                    var imgURL = euroRecord.edmPreview[0];
-                    $("#europeana-content .scientific-image").remove();
-                    $("#europeana-content").append('<img src="'+imgURL+'" class="europeana-image"/>');
+                _.forEach(europeanaTextObjects,function(euroRecord,idx){
+                    var recordURL = euroRecord.guid;
+                    var recordTitle = "";
+                    if($.isArray(euroRecord.title)){recordTitle = euroRecord.title[0];}
+                    else{recordTitle = euroRecord.title;}
+                    $("#europeana-text").append('<a href="'+recordURL+'" target="_blank"><div class="europeana-card"><img class="europeana-card-image" src="img/resources/document.png"/><span id="text-'+idx+'">'+recordTitle+'</span></div>');
                 });
             },
             error: function(error){
-                $('#europeana-content').html("There are no results for <strong>"+plantObject.commonName+"</strong>")
+                $('#europeana-text').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
+            }
+        });
+
+        // Audio Fetch
+
+        params = {
+          query: queryString,
+          qf: "TYPE:SOUND",
+          rows: 10
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/europeana",
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            async: true,
+            success: function (response) {
+                if(response.totalResults == 0){
+                    $('#europeana-audio').append("<h3>There are <span class='error'>no audios</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    return;
+                }
+
+                europeanaAudioObjects = response.items;
+
+                _.forEach(europeanaAudioObjects,function(euroRecord,idx){
+                    var recordURL = euroRecord.guid;
+                    var recordTitle = "";
+                    if($.isArray(euroRecord.title)){recordTitle = euroRecord.title[0];}
+                    else{recordTitle = euroRecord.title;}
+                    $("#europeana-audio").append('<a href="'+recordURL+'" target="_blank"><div class="europeana-card"><img class="europeana-card-image" src="img/resources/audio.png"/><span id="audio-'+idx+'">'+recordTitle+'</div></span>');
+                });
+            },
+            error: function(error){
+                $('#europeana-audio').append("There are <span class='error'>no audios</span> for <strong>"+plantObject.commonName+"</strong>")
+            }
+        });
+
+        // Video Fetch
+
+        params = {
+          query: queryString,
+          qf: "TYPE:VIDEO",
+          rows: 10
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/europeana",
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            async: true,
+            success: function (response) {
+                if(response.totalResults == 0){
+                    $('#europeana-video').append("<h3>There are <span class='error'>no videos</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    return;
+                }
+
+                europeanaVideoObjects = response.items;
+
+                _.forEach(europeanaVideoObjects,function(euroRecord,idx){
+                    var recordURL = euroRecord.guid;
+                    var recordTitle = "";
+                    if($.isArray(euroRecord.title)){recordTitle = euroRecord.title[0];}
+                    else{recordTitle = euroRecord.title;}
+                    $("#europeana-video").append('<a href="'+recordURL+'" target="_blank"><div class="europeana-card"><img class="europeana-card-image" src="img/resources/video.png"/><span id="audio-'+idx+'">'+recordTitle+'</div></span>');
+                });
+            },
+            error: function(error){
+                $('#europeana-video').append("There are <span class='error'>no videos</span> for <strong>"+plantObject.commonName+"</strong>")
+            }
+        });
+
+        // Image Fetch
+
+        params = {
+          query: queryString,
+          qf: "TYPE:IMAGE",
+          rows: 10
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/europeana",
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            async: true,
+            success: function (response) {
+                if(response.totalResults == 0){
+                    $('#europeana-picture').append("<h3>There are <span class='error'>no images</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    return;
+                }
+
+                europeanaImageObjects = response.items;
+
+                _.forEach(europeanaImageObjects,function(euroRecord,idx){
+                    var imgURL = "";
+                    if(euroRecord.edmPreview != undefined) imgURL = euroRecord.edmPreview[0];
+                    var recordURL = euroRecord.guid;
+                    $("#europeana-picture .scientific-image").remove();
+                    $("#europeana-picture").append('<a href="'+recordURL+'" target="_blank"><img src="'+imgURL+'" class="europeana-image" id="image-'+idx+'" style="vertical-align:top;"/></a>');
+                });
+
+                $('.europeana-image').mouseover(function(){
+                    var imgID = $(this).attr("id").split("-")[1];
+                    var imgData = "";
+                    europeana_tooltip.show();
+                    if(europeanaImageObjects[imgID].dcTitleLangAware != undefined &&
+                    europeanaImageObjects[imgID].dcTitleLangAware.def != undefined &&
+                    europeanaImageObjects[imgID].dcTitleLangAware.def[0].length >= 16){
+                        imgData = '"<strong>'+europeanaImageObjects[imgID].dcTitleLangAware.def[0].substring(0, 16)+'...</strong>"';
+                    }
+                    else if(europeanaImageObjects[imgID].dcTitleLangAware != undefined &&
+                    europeanaImageObjects[imgID].dcTitleLangAware.def != undefined){
+                        imgData = '"<strong>'+europeanaImageObjects[imgID].dcTitleLangAware.def[0]+'</strong>"';
+                    }
+                    else {
+                        imgData = "the record";
+                    }
+                    europeana_tooltip.html('<strong>Click</strong> to access '+imgData+' on Europeana');
+                });
+                $('.europeana-image').mouseout(function(){
+                    europeana_tooltip.hide();
+                    europeana_tooltip.html('');
+                });
+            },
+            error: function(error){
+                $('#europeana-picture').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
+            }
+        });
+
+        // Fetch all and plot map related to locations of records found (if any has that info...)
+
+        params = {
+          query: queryString,
+          rows: 500
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/europeana",
+            data: JSON.stringify(params),
+            contentType: 'application/json',
+            async: true,
+            success: function (response) {
+                console.log(response);
+            },
+            error: function(error){
+                $('#europeana-map').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
             }
         });
     }
+
+
+    var europeana_tooltip = $('#europeana-tooltip');
+
+    function setupFloatingDivs() {
+        europeana_tooltip.hide();
+
+        $(document).mousemove(function(e){
+            europeana_tooltip.css({'top': e.pageY-30,'left': e.pageX-60});
+        });
+    }
+
+    setupFloatingDivs();
 
 })();
