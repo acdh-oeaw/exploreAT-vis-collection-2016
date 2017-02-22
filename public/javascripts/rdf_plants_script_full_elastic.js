@@ -19,6 +19,12 @@ var mainExports = {};
             $("#common-list-up").html("");
             lookfForCommonNamesGivenScientificName(this.value);
             appendFlickrPicture(this.value,"scientific-up");
+
+            $('#europeana-text').html("<h2>Texts</h2>");
+            $('#europeana-audio').html("<h2>Audios</h2>");
+            $('#europeana-video').html("<h2>Videos</h2>");
+            $('#europeana-picture').html("<h2>Pictures</h2>");
+            callEuropeana(this.value);
         }
     });
 
@@ -38,6 +44,7 @@ var mainExports = {};
 
     var cNameObjectURIids = [];
     var cNameObjects = [];
+    var cNameObjectsUp = [];
     var europeanaTextObjects = [];
     var europeanaAudioObjects = [];
     var europeanaVideoObjects = [];
@@ -173,18 +180,32 @@ var mainExports = {};
                 esClient.search(queryObject).then(function (resp) {
 
                     //$('#content').append("<br>---<br><br>");
+                    cNameObjectsUp = [];
 
                     console.log("Finished with "+resp.hits.hits.length);
                     $('#common-list-up').append("<ul class='ul-common-up'>");
                     for (var i = 0; i < resp.hits.hits.length; i++) {
                         if(resp.hits.hits[i] != undefined)
+                        cNameObjectsUp.push(resp.hits.hits[i]._source);
                         var uriType = "";
                         if(resp.hits.hits[i]._source.URItype == "book_name_form"){uriType = "Book Name";}
                         if(resp.hits.hits[i]._source.URItype == "phonetic_name_form"){uriType = "Phonetic Name";}
                         if(resp.hits.hits[i]._source.URItype == "written_name_form"){uriType = "Written Name";}
-                        $('.ul-common-up').append("<li class='li-common-up'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+")</li><br>")
+                        $('.ul-common-up').append("<li class='li-common-up'><strong>"+resp.hits.hits[i]._source.commonName+"</strong> ("+uriType+") <img class='img-mag' id='plant-up-"+i+"' src='img/resources/mag-glass.svg.png'/></li><br>")
                     }
                     $('#common-list-up').append("</ul>");
+
+                    _.forEach(cNameObjectsUp, function(cnId,idx){
+                        $("#plant-up-"+idx).click(function() {
+                            $('.li-common-up').removeClass("selected");
+                            $(this).parent().addClass("selected");
+                            $('#europeana-text').html("<h2>Texts</h2>");
+                            $('#europeana-audio').html("<h2>Audios</h2>");
+                            $('#europeana-video').html("<h2>Videos</h2>");
+                            $('#europeana-picture').html("<h2>Pictures</h2>");
+                            callEuropeana(cNameObjectsUp[idx]);
+                        });
+                    });
 
                 }, function (err) {
                     console.trace(err.message);
@@ -470,6 +491,8 @@ var mainExports = {};
                     $('#scientific-plant-name').html(resp.hits.hits[0]._source.scientificName)
                     appendFlickrPicture(resp.hits.hits[0]._source.scientificName,"scientific-down");
 
+
+
                 }, function (err) {
                     console.trace(err.message);
                 });
@@ -585,7 +608,17 @@ var mainExports = {};
                 }
                 else if(zone == "scientific-down"){
                     $("#scientific-zone-down .scientific-image").remove();
+                    $("#scientific-zone-down .img-mag").remove();
                     $("#scientific-zone-down").append('<img src="'+imgURL+'" class="scientific-image"/>');
+                    $("#scientific-plant-name").append("<img class='img-mag' id='sci-mag' src='img/resources/mag-glass.svg.png'/><br>");
+
+                    $("#sci-mag").click(function() {
+                        $('#europeana-text').html("<h2>Texts</h2>");
+                        $('#europeana-audio').html("<h2>Audios</h2>");
+                        $('#europeana-video').html("<h2>Videos</h2>");
+                        $('#europeana-picture').html("<h2>Pictures</h2>");
+                        callEuropeana(term);
+                    });
                 }
             }
         });
@@ -596,7 +629,16 @@ var mainExports = {};
 
     function callEuropeana(plantObject){
 
-        $('#europeana-commonName').html("Results for <strong>"+plantObject.commonName+"</strong>")
+        var queryString = "";
+
+        if($.type(plantObject) === "string"){queryString = plantObject;}
+        else{queryString = plantObject.commonName;}
+
+        console.log(queryString);
+
+        //var queryString = "bellis perennis";
+
+        $('#europeana-commonName').html("Results for <strong>"+queryString+"</strong>")
 
         europeanaTextObjects = [];
         europeanaAudioObjects = [];
@@ -605,9 +647,6 @@ var mainExports = {};
         europeanaAllObjects = [];
 
         var params = null;
-
-        var queryString = plantObject.commonName;
-        //var queryString = "latern";
 
         // Text Fetch
 
@@ -625,7 +664,7 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#europeana-text').append("<h3>There are <span class='error'>no texts</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    $('#europeana-text').append("<h3>There are <span class='error'>no texts</span> for <strong>"+queryString+"</h3></strong>")
                     return;
                 }
 
@@ -640,7 +679,8 @@ var mainExports = {};
                 });
             },
             error: function(error){
-                $('#europeana-text').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
+                console.log(error);
+                $('#europeana-text').append("There are <span class='error'>no results</span> for <strong>"+queryString+"</strong>")
             }
         });
 
@@ -660,7 +700,7 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#europeana-audio').append("<h3>There are <span class='error'>no audios</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    $('#europeana-audio').append("<h3>There are <span class='error'>no audios</span> for <strong>"+queryString+"</h3></strong>")
                     return;
                 }
 
@@ -675,7 +715,8 @@ var mainExports = {};
                 });
             },
             error: function(error){
-                $('#europeana-audio').append("There are <span class='error'>no audios</span> for <strong>"+plantObject.commonName+"</strong>")
+                console.log(error);
+                $('#europeana-audio').append("There are <span class='error'>no audios</span> for <strong>"+queryString+"</strong>")
             }
         });
 
@@ -695,7 +736,7 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#europeana-video').append("<h3>There are <span class='error'>no videos</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    $('#europeana-video').append("<h3>There are <span class='error'>no videos</span> for <strong>"+queryString+"</h3></strong>")
                     return;
                 }
 
@@ -710,7 +751,8 @@ var mainExports = {};
                 });
             },
             error: function(error){
-                $('#europeana-video').append("There are <span class='error'>no videos</span> for <strong>"+plantObject.commonName+"</strong>")
+                console.log(error);
+                $('#europeana-video').append("There are <span class='error'>no videos</span> for <strong>"+queryString+"</strong>")
             }
         });
 
@@ -730,11 +772,12 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#europeana-picture').append("<h3>There are <span class='error'>no images</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    $('#europeana-picture').append("<h3>There are <span class='error'>no images</span> for <strong>"+queryString+"</h3></strong>")
                     return;
                 }
 
                 europeanaImageObjects = response.items;
+                console.log(europeanaImageObjects)
 
                 _.forEach(europeanaImageObjects,function(euroRecord,idx){
                     var imgURL = "";
@@ -768,7 +811,8 @@ var mainExports = {};
                 });
             },
             error: function(error){
-                $('#europeana-picture').append("There are <span class='error'>no results</span> for <strong>"+plantObject.commonName+"</strong>")
+                console.log(error);
+                $('#europeana-picture').append("There are <span class='error'>no results</span> for <strong>"+queryString+"</strong>")
             }
         });
 
@@ -790,7 +834,7 @@ var mainExports = {};
             async: true,
             success: function (response) {
                 if(response.totalResults == 0){
-                    $('#map-header').htlm("<h3>There are <span class='error'>no geolocated docs</span> for <strong>"+plantObject.commonName+"</h3></strong>")
+                    $('#map-header').html("<h3>There are <span class='error'>no geolocated docs</span> for <strong>"+queryString+"</h3></strong>")
                     return;
                 }
 
@@ -813,6 +857,7 @@ var mainExports = {};
                 plotDataInMap();
             },
             error: function(error){
+                console.log(error);
                 $('#map-header').html("<h3>There was a <span class='error'timeout</span>. Please, try again.</h3>")
             }
         });
@@ -926,10 +971,12 @@ var mainExports = {};
             var place = {};
             place.name = object.edmPlaceLabel[0].def;
             place.location = {};
-            place.location.latitude = parseFloat(object.edmPlaceLatitude[0]) + (Math.random()/3);
-            place.location.longitude = parseFloat(object.edmPlaceLongitude[0]) + (Math.random()/3);
-            place.url = object.guid;
-            places.push(place);
+            if(object.edmPlaceLatitude != undefined && object.edmPlaceLongitude != undefined){
+                place.location.latitude = parseFloat(object.edmPlaceLatitude[0]) + (Math.random()/3);
+                place.location.longitude = parseFloat(object.edmPlaceLongitude[0]) + (Math.random()/3);
+                place.url = object.guid;
+                places.push(place);
+            }
         });
 
         $('.pin').remove();
