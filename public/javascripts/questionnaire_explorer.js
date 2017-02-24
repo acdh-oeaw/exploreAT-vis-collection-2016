@@ -44,7 +44,6 @@ var mainExports = {};
 
         //Construct the word cloud's SVG element
         var svg = d3.select(selector).append("svg")
-            .style("top-align")
             .attr("width", 500)
             .attr("height", 500)
             .append("g")
