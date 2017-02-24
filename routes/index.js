@@ -91,9 +91,13 @@ router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
     res.render('ex_bedeutung');
 });
 
+router.get('/ex_questionnaire_explorer', isLoggedIn, function(req,res) {
+    res.render('ex_questionnaire_explorer');
+});
+
 // router.get('/token', isLoggedIn, function (req, res) {
 //     res.send(req.session.token)
-// });
+ // });
 
 // router.get('/ex_colors', function(req,res) {
 //     res.render('ex_colors');
