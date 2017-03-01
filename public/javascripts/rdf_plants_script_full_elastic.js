@@ -10,7 +10,7 @@ var mainExports = {};
         host: getESHost()
     });
 
-    var indexName = 'rdf-plants-raw';
+    var indexName = 'exp-rdf-plants-raw';
 
     // Listeners
 
