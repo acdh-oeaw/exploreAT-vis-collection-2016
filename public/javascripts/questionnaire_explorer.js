@@ -10,7 +10,7 @@ var mainExports = {};
         host: getESHost()
     });
 
-    var indexName = 'tei-index';
+    var indexName = 'exp-tei-index';
 
     var svg = d3.select("#chordSVG"),
         width = +svg.attr("width"),
@@ -37,7 +37,7 @@ var mainExports = {};
 
             esClient.search({
                 index: indexName,
-                type: 'exp-tei-type',
+                type: 'tei-type',
                 headers: {
                     'Authorization' : "Bearer " + ESToken},
                 size: 10000,
