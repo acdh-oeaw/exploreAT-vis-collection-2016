@@ -37,7 +37,7 @@ var mainExports = {};
 
             esClient.search({
                 index: indexName,
-                type: 'tei-type',
+                type: 'exp-tei-type',
                 headers: {
                     'Authorization' : "Bearer " + ESToken},
                 size: 10000,
