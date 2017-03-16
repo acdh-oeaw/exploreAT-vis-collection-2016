@@ -1,0 +1,1382 @@
+{
+  "tustepgeo3" : {
+    "mappings" : {
+      "tustepgeo-type" : {
+        "properties" : {
+          "endYear" : {
+            "type" : "date",
+            "format" : "strict_year"
+          },
+          "gisGemeinde" : {
+            "type" : "geo_shape",
+            "tree" : "quadtree",
+            "precision" : "1000.0m"
+          },
+          "gisOrt" : {
+            "type" : "geo_point",
+            "geohash" : true,
+            "geohash_prefix" : true,
+            "geohash_precision" : 6
+          },
+          "isMain" : {
+            "type" : "boolean"
+          },
+          "leftLemma" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              }
+            }
+          },
+          "mainLemma" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              }
+            }
+          },
+          "ortName" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              }
+            }
+          },
+          "startYear" : {
+            "type" : "date",
+            "format" : "strict_year"
+          },
+          "tustep" : {
+            "properties" : {
+              "A" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ANMB" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ANMO" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ANMO/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/HL" : {
+                "type" : "string"
+              },
+              "BD/KT" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/KT/LW1" : {
+                "type" : "string"
+              },
+              "BD/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/KT1/KT2" : {
+                "type" : "string"
+              },
+              "BD/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/KT4" : {
+                "type" : "string"
+              },
+              "BD/LK1" : {
+                "type" : "string"
+              },
+              "BD/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1-2" : {
+                "type" : "string"
+              },
+              "BD/LT1/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3/LT4/LT5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3/LT4/LT5/LT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3/LT4/LT5/LT6/LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT3/LT4/LT5/LT6/LT7/LT8/LT9" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT2/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT1/LT2/LT7/LT7" : {
+                "type" : "string"
+              },
+              "BD/LT1/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT3/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT3/LT4/LT5/LT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT1/LT4/LT5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT2/4" : {
+                "type" : "string"
+              },
+              "BD/LT2/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT2/LT3/LT4" : {
+                "type" : "string"
+              },
+              "BD/LT2/LT3/LT4/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT2/LT3/LT4/LT5/LT6" : {
+                "type" : "string"
+              },
+              "BD/LT2/LT4" : {
+                "type" : "string"
+              },
+              "BD/LT2/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT3/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT3/LT4/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT3/LT4/LT5/LT6" : {
+                "type" : "string"
+              },
+              "BD/LT3/LT4/LT5/LT6/LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT3/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT3/LT6" : {
+                "type" : "string"
+              },
+              "BD/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT4/LT5" : {
+                "type" : "string"
+              },
+              "BD/LT4/LT5/LT6" : {
+                "type" : "string"
+              },
+              "BD/LT4/LT5/LT6/LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT4/LT6" : {
+                "type" : "string"
+              },
+              "BD/LT5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT5/LT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT5/LT6/LT7" : {
+                "type" : "string"
+              },
+              "BD/LT5/LT6/LT7/LT8" : {
+                "type" : "string"
+              },
+              "BD/LT5/LT6/LT7/LT8/LT9" : {
+                "type" : "string"
+              },
+              "BD/LT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT6/LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT6/LT7/LT8/LT9" : {
+                "type" : "string"
+              },
+              "BD/LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT7/LT8" : {
+                "type" : "string"
+              },
+              "BD/LT8" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LT9" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LTG" : {
+                "type" : "string"
+              },
+              "BD/LTT2" : {
+                "type" : "string"
+              },
+              "BD/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW1/LW2/LW3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/LW8" : {
+                "type" : "string"
+              },
+              "BD/LW9" : {
+                "type" : "string"
+              },
+              "BD/NL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/VL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD/VRWO" : {
+                "type" : "string"
+              },
+              "BD1/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD1/KT2" : {
+                "type" : "string"
+              },
+              "BD1/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD1/LT2" : {
+                "type" : "string"
+              },
+              "BD2/KT1" : {
+                "type" : "string"
+              },
+              "BD2/KT2" : {
+                "type" : "string"
+              },
+              "BD2/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BD2/LT1/LT2" : {
+                "type" : "string"
+              },
+              "BD2/LT2" : {
+                "type" : "string"
+              },
+              "BD2/LT4" : {
+                "type" : "string"
+              },
+              "BD3/KT1" : {
+                "type" : "string"
+              },
+              "BD3/LT1" : {
+                "type" : "string"
+              },
+              "BD3/LT2" : {
+                "type" : "string"
+              },
+              "BD4/LT1" : {
+                "type" : "string"
+              },
+              "BD5/LT1" : {
+                "type" : "string"
+              },
+              "BDG" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BDKT1" : {
+                "type" : "string"
+              },
+              "BDT/LT1" : {
+                "type" : "string"
+              },
+              "BIDLDAT/KT1" : {
+                "type" : "string"
+              },
+              "BILDDAT" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "BILDDAT/KT1" : {
+                "type" : "string"
+              },
+              "DBO" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/BD2" : {
+                "type" : "string"
+              },
+              "DV/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/KT1/KT2" : {
+                "type" : "string"
+              },
+              "DV/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/KT4" : {
+                "type" : "string"
+              },
+              "DV/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/LT1/LT2" : {
+                "type" : "string"
+              },
+              "DV/LT2" : {
+                "type" : "string"
+              },
+              "DV/LT3/LT4" : {
+                "type" : "string"
+              },
+              "DV/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV/LW2" : {
+                "type" : "string"
+              },
+              "DV/LW5" : {
+                "type" : "string"
+              },
+              "DV1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV1/KT1" : {
+                "type" : "string"
+              },
+              "DV1/KT3" : {
+                "type" : "string"
+              },
+              "DV1/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV1/LT1/LT3" : {
+                "type" : "string"
+              },
+              "DV1/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV1/LT3" : {
+                "type" : "string"
+              },
+              "DV1/LT4" : {
+                "type" : "string"
+              },
+              "DV1/LT5" : {
+                "type" : "string"
+              },
+              "DV1/LT7" : {
+                "type" : "string"
+              },
+              "DV1/LW" : {
+                "type" : "string"
+              },
+              "DV1/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "DV1/LW2" : {
+                "type" : "string"
+              },
+              "DV1/LW3" : {
+                "type" : "string"
+              },
+              "DV2" : {
+                "type" : "string"
+              },
+              "DV2/KT1" : {
+                "type" : "string"
+              },
+              "DV2/KT3" : {
+                "type" : "string"
+              },
+              "DV2/LT3" : {
+                "type" : "string"
+              },
+              "DV2/LT4" : {
+                "type" : "string"
+              },
+              "DV3" : {
+                "type" : "string"
+              },
+              "DV3/KT1" : {
+                "type" : "string"
+              },
+              "DV4" : {
+                "type" : "string"
+              },
+              "DVO" : {
+                "type" : "string"
+              },
+              "EBD/KT1" : {
+                "type" : "string"
+              },
+              "EBD/KT2" : {
+                "type" : "string"
+              },
+              "ET" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ET/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ET/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ET/LT2" : {
+                "type" : "string"
+              },
+              "ET/LT3" : {
+                "type" : "string"
+              },
+              "ET/LW1" : {
+                "type" : "string"
+              },
+              "ETB" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETB/KT" : {
+                "type" : "string"
+              },
+              "ETB/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETB/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETB/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETB/LT1" : {
+                "type" : "string"
+              },
+              "ETB/LT2" : {
+                "type" : "string"
+              },
+              "ETB/LT4" : {
+                "type" : "string"
+              },
+              "ETB/LW" : {
+                "type" : "string"
+              },
+              "ETB/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETB/LW2" : {
+                "type" : "string"
+              },
+              "ETB/LW3" : {
+                "type" : "string"
+              },
+              "ETO" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/DV1" : {
+                "type" : "string"
+              },
+              "ETO/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/KT1/KT2/KT3" : {
+                "type" : "string"
+              },
+              "ETO/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT1/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT2/3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT2/LT3" : {
+                "type" : "string"
+              },
+              "ETO/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT3/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LT4" : {
+                "type" : "string"
+              },
+              "ETO/LT5" : {
+                "type" : "string"
+              },
+              "ETO/LT5/LT6" : {
+                "type" : "string"
+              },
+              "ETO/LT6" : {
+                "type" : "string"
+              },
+              "ETO/LT7/LT8" : {
+                "type" : "string"
+              },
+              "ETO/LT9" : {
+                "type" : "string"
+              },
+              "ETO/LW" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LW1/LW2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LW1/LW3" : {
+                "type" : "string"
+              },
+              "ETO/LW2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LW3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO/LW4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ETO2" : {
+                "type" : "string"
+              },
+              "ETO3" : {
+                "type" : "string"
+              },
+              "ETO4" : {
+                "type" : "string"
+              },
+              "ETO5" : {
+                "type" : "string"
+              },
+              "ETO6" : {
+                "type" : "string"
+              },
+              "ETW" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "J" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT" : {
+                "type" : "string"
+              },
+              "KT/BD1" : {
+                "type" : "string"
+              },
+              "KT/LT1" : {
+                "type" : "string"
+              },
+              "KT/LT2" : {
+                "type" : "string"
+              },
+              "KT/LW1" : {
+                "type" : "string"
+              },
+              "KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT1/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT1/NR" : {
+                "type" : "string"
+              },
+              "KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT32" : {
+                "type" : "string"
+              },
+              "KT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "KT8" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LIT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LIT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LIT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT" : {
+                "type" : "string"
+              },
+              "LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT10" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT11" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT8" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LT9" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW5" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW6" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW7" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "LW8" : {
+                "type" : "string"
+              },
+              "NB" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NB/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NB/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NB/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NB/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NK" : {
+                "type" : "string"
+              },
+              "NL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NL/1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NL/2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/K1" : {
+                "type" : "string"
+              },
+              "NR/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/KT4" : {
+                "type" : "string"
+              },
+              "NR/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "NR/LT3" : {
+                "type" : "string"
+              },
+              "NR/LT4" : {
+                "type" : "string"
+              },
+              "NR/LT5" : {
+                "type" : "string"
+              },
+              "NR/LT6" : {
+                "type" : "string"
+              },
+              "Q/Z" : {
+                "type" : "string"
+              },
+              "QBD/KT1" : {
+                "type" : "string"
+              },
+              "QDB" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "QU" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "QU/1" : {
+                "type" : "string"
+              },
+              "QU/2" : {
+                "type" : "string"
+              },
+              "QZ" : {
+                "type" : "string"
+              },
+              "SNA" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "SNI" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "SYN" : {
+                "type" : "string"
+              },
+              "VBD/KT1" : {
+                "type" : "string"
+              },
+              "VL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRBO" : {
+                "type" : "string"
+              },
+              "VROW/KT2" : {
+                "type" : "string"
+              },
+              "VRW/KT1" : {
+                "type" : "string"
+              },
+              "VRWB" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWB/DV/KT1" : {
+                "type" : "string"
+              },
+              "VRWB/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWB/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWB/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWB/LT1" : {
+                "type" : "string"
+              },
+              "VRWB/LT2" : {
+                "type" : "string"
+              },
+              "VRWB/LT3" : {
+                "type" : "string"
+              },
+              "VRWB/LT4" : {
+                "type" : "string"
+              },
+              "VRWB/LT5" : {
+                "type" : "string"
+              },
+              "VRWB/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWB/LW1/LW2" : {
+                "type" : "string"
+              },
+              "VRWB/LW2" : {
+                "type" : "string"
+              },
+              "VRWL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO//KT1" : {
+                "type" : "string"
+              },
+              "VRWO/BD/LT2" : {
+                "type" : "string"
+              },
+              "VRWO/BD2" : {
+                "type" : "string"
+              },
+              "VRWO/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT1/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT1/LT2/LT3" : {
+                "type" : "string"
+              },
+              "VRWO/LT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT3/LT4" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LT4" : {
+                "type" : "string"
+              },
+              "VRWO/LT4/LT5/LT6" : {
+                "type" : "string"
+              },
+              "VRWO/LT5" : {
+                "type" : "string"
+              },
+              "VRWO/LT6" : {
+                "type" : "string"
+              },
+              "VRWO/LT7" : {
+                "type" : "string"
+              },
+              "VRWO/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "VRWO/LW2" : {
+                "type" : "string"
+              },
+              "VTWO/KT1" : {
+                "type" : "string"
+              },
+              "VWB" : {
+                "type" : "string"
+              },
+              "WBD" : {
+                "type" : "string"
+              },
+              "WBD/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "WBD/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "WBD/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "WBD/LT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "WBD/LT2" : {
+                "type" : "string"
+              },
+              "WBD/LT3" : {
+                "type" : "string"
+              },
+              "WBD/LW1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "WBD2/KT1" : {
+                "type" : "string"
+              },
+              "ZL" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ZL/DV1" : {
+                "type" : "string"
+              },
+              "ZL/KT1" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ZL/KT2" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ZL/KT3" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "ZL/KT4" : {
+                "type" : "string"
+              },
+              "ZL/LT1" : {
+                "type" : "string"
+              },
+              "ZL/LT2" : {
+                "type" : "string"
+              },
+              "ZL/LT3" : {
+                "type" : "string"
+              },
+              "ZL/LT4" : {
+                "type" : "string"
+              },
+              "ZW" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "fileName" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "orig" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              },
+              "recordNumber" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              }
+            }
+          },
+          "wordType" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+                "fielddata" : false
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
