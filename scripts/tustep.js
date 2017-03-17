@@ -199,38 +199,8 @@ if(fs.statSync(process.argv[2]).isFile()) {
         bulk_request.push({index: {_index: 'tustep', _type: 'tustep-type'}});
         bulk_request.push(body);
 
-        // addToES(body);
-
-        // client.index({
-        //     index: 'tustep',
-        //     type: 'type-tustep',
-        //     body: {"bla": "blablablabla"}
-        // }, function (err, response) {
-        //     if (err) {
-        //         console.error(err.stack);
-        //     } else {
-        //         console.log('Successfully indexed object');
-        //     }
-        // });
     }
-
-// _.forEach(bulk_request, function(body, idx) {
-//     client.index({
-//         index: 'tustep',
-//         type: 'tustep-type',
-//         body: body
-//     }, function(err, response) {
-//         if (err) {
-//             console.error(err.stack);
-//         } else {
-//             console.log('Successfully indexed object with number ' + idx);
-//             if (idx == length)
-//                 process.exit(0);
-//         }
-//     });
-// });
-
-
+    
     console.log('Finished. ' + empty + ' empty lemmas and ' + oneChar + ' of length 1. \n' +
         'Total discarded: ' + (empty + oneChar) + ' out of ' + counter);
 // A little voodoo to simulate synchronous insert
