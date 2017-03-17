@@ -345,30 +345,5 @@ if(fs.statSync(process.argv[2]).isFile()) {
             console.log('It\'s saved!');
             process.exit(0);
     });
-    // fs.writeFile('results.json', JSON.stringify(lemmas),  function(err) {
-    //     if (err) throw err;
-    //     console.log('It\'s saved!');
-    //     process.exit(0);
-    // });
 }
-
-
-
-
-// lemmas.forEach(function (lemma) {
-//     client.index({
-//         index: 'tustep',
-//         type: 'tweet',
-//         body: {"name" : lemma,
-//             "files" : lemmas[lemma]}
-//     }, function (err, resp) {
-//         // console.log(resp);
-//         if (err) throw err;
-//     });
-// });
-
-
-
-
-
 
