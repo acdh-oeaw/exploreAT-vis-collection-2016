@@ -11,7 +11,6 @@ body {
 	border-bottom: 1px solid gainsboro;
 	text-align: center;
 	padding: 10px 0;
-
 }
 
 h1 {
@@ -155,5 +154,3 @@ span.yellow {
 .hidden {
 	display: none;
 }
-
-

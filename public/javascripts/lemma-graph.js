@@ -1,35 +1,35 @@
 (function () {
     var force = null,
-        color = null,
-        labelSize = null,
-        svg = null,
-        comMenu = null,
-        nodeMenu = null,
-        width,
-        height,
-        domElement,
-        _currentNode = null,
-        _needsFiltering = false,
-        filterLevel = 0,
-        originalNodes,
-        originalLinks,
-        originalNest,
-        nest,
-        communities,
-        linkWeightScale;
+    color = null,
+    labelSize = null,
+    svg = null,
+    comMenu = null,
+    nodeMenu = null,
+    width,
+    height,
+    domElement,
+    _currentNode = null,
+    _needsFiltering = false,
+    filterLevel = 0,
+    originalNodes,
+    originalLinks,
+    originalNest,
+    nest,
+    communities,
+    linkWeightScale;
 
     var lemmaGraph = function (theDomElement) {
         domElement = theDomElement;
         var min_zoom = 0.1;
         var max_zoom = 7;
         var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom])
-            .on("zoom", function () {
-                svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                svg.selectAll("path")
-                    .style("stroke-width", function (d) {
-                        return 40 * zoom.scale();
-                    });
+        .on("zoom", function () {
+            svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            svg.selectAll("path")
+            .style("stroke-width", function (d) {
+                return 40 * zoom.scale();
             });
+        });
 
         var selection = d3.select(domElement);
         var bbox = selection.node().getBoundingClientRect();
@@ -42,15 +42,15 @@
                     console.log('Item #1 clicked!');
                     console.log('Will search for community ' + d.key);
                     var mainLemmas = [],
-                        leftLemmas = [],
-                        mainLemmasSearchString,
-                        leftLemmasSearchString;
+                    leftLemmas = [],
+                    mainLemmasSearchString,
+                    leftLemmasSearchString;
                     _.forEach(d.values, function (value) {
                         console.log(value.name + ' is main: ' + value.mainLemma);
                         if (value.mainLemma)
-                            mainLemmas.push(value.name);
+                        mainLemmas.push(value.name);
                         else
-                            leftLemmas.push(value.name);
+                        leftLemmas.push(value.name);
                     });
                     var sepString = ' | ';
                     if (mainLemmas.length > 1) mainLemmasSearchString = mainLemmas.join(sepString);
@@ -69,8 +69,6 @@
             {
                 title: 'Search in map',
                 action: function(elm, d, i) {
-                    // console.log('Item #3 clicked!');
-                    // console.log('The data for this item is: ' + JSON.stringify(d));
                     if (d.mainLemma) {
                         mainExports.plotInMap(null, 'and', d.name);
                     } else {
@@ -83,8 +81,6 @@
             {
                 title: 'Plot relations',
                 action: function(elm, d, i) {
-                    // console.log('Item #4 clicked!');
-                    // console.log('The data for this item is: ' + JSON.stringify(d));
                     mainExports.generateTreeGraphForLemma(d.name, 'bucket');
                 }
             }
@@ -94,32 +90,32 @@
         color = d3.scale.category20();
 
         force  = d3.layout.force()
-            .gravity(.1)
-            .charge(function (d) { return -100 * d.weight})
-            .linkDistance(80)
-            .size([bbox.width, bbox.height]);
+        .gravity(.1)
+        .charge(function (d) { return -100 * d.weight})
+        .linkDistance(80)
+        .size([bbox.width, bbox.height]);
 
         d3.select(domElement).append("select")
-            .attr("id", "population-select");
+        .attr("id", "population-select");
 
         svg = d3.select(domElement).append("svg")
-            .attr("width", '100%')
-            .attr("height", '100%')
-            .call(zoom)
-            .append("g")
-            .style("pointer-events", "all");
+        .attr("width", '100%')
+        .attr("height", '100%')
+        .call(zoom)
+        .append("g")
+        .style("pointer-events", "all");
 
         d3.select(domElement).select("svg")
-            .append('marker')
-            .attr("id", "Triangle")
-            .attr("refX", 6)
-            .attr("refY", 3)
-            .attr("markerUnits", 'userSpaceOnUse')
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 9)
-            .attr("orient", 'auto')
-            .append('path')
-            .attr("d", 'M 0 0 6 3 0 6 1.5 3');
+        .append('marker')
+        .attr("id", "Triangle")
+        .attr("refX", 6)
+        .attr("refY", 3)
+        .attr("markerUnits", 'userSpaceOnUse')
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 9)
+        .attr("orient", 'auto')
+        .append('path')
+        .attr("d", 'M 0 0 6 3 0 6 1.5 3');
 
 
         _currentNode   = null;
@@ -127,58 +123,58 @@
 
         force.on("tick", function() {
             svg.selectAll(".link").attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
 
             svg.selectAll("g.node")
-                .attr("transform", function (d) {
-                    return "translate("+d.x+","+d.y+")";
-                });
+            .attr("transform", function (d) {
+                return "translate("+d.x+","+d.y+")";
+            });
 
             var pathSelection = svg.selectAll("path").data(nest, function (d) {return d.key});
 
             pathSelection.enter().insert("path", "g")
-                .style("stroke-width", function (d) {
-                    return 40 * zoom.scale();
-                })
-                .style("stroke-linejoin", "round")
-                .style("opacity", .2)
-                .attr("d", groupPath)
-                .on('contextmenu', d3.contextMenu(comMenu)); // attach menu to element
+            .style("stroke-width", function (d) {
+                return 40 * zoom.scale();
+            })
+            .style("stroke-linejoin", "round")
+            .style("opacity", .2)
+            .attr("d", groupPath)
+            .on('contextmenu', d3.contextMenu(comMenu)); // attach menu to element
 
             pathSelection
-                .attr("d", groupPath)
-                .style("stroke-width", function (d) {
-                    return 40 * zoom.scale();
-                })
-                .style("fill", groupFill)
-                .style("stroke", groupFill);
+            .attr("d", groupPath)
+            .style("stroke-width", function (d) {
+                return 40 * zoom.scale();
+            })
+            .style("fill", groupFill)
+            .style("stroke", groupFill);
 
 
             svg.selectAll("path")
-                .data(nest)
-                .exit()
-                .remove();
+            .data(nest)
+            .exit()
+            .remove();
 
 
         });
 
         var groupFill = function (d) {
-          return color(d.values[0].community)
+            return color(d.values[0].community)
         };
 
         var groupPath = function(d) {
             var points = [];
             var mapFn = function(i) { return [i.x, i.y]; };
             if (d.values.length <= 2)
-                points = d.values.map(mapFn);
+            points = d.values.map(mapFn);
             else
-                points = d3.geom.hull(d.values.map(mapFn));
+            points = d3.geom.hull(d.values.map(mapFn));
             return "M" +
-                    points
-                    .join("L")
-                + "Z";
+            points
+            .join("L")
+            + "Z";
         };
 
 
@@ -187,7 +183,7 @@
 
             //when the clustering is disable return all the proteins
             if (!_shouldCluster)
-                return original_nodes;
+            return original_nodes;
 
             //get the current quadtree
             q = d3.geom.quadtree(original_nodes);
@@ -236,7 +232,7 @@
             //To use in quadtree.visit, to find the cluster that a protein belongs to.
             var addCurrentNodeToCluster = function(node, x1, y1, x2, y2){
                 if (_currentNode==null)
-                    return true;
+                return true;
                 if (x1<=_currentNode.x && _currentNode.x<=x2 && y1<=_currentNode.y && _currentNode.y<=y2){
                     if (node.cluster != null){
                         node.cluster.nodes.push(_currentNode);
@@ -284,7 +280,7 @@
         var pruneLinks= function(original_links){
             var links =[];
             if (!_shouldCluster)
-                return original_links;
+            return original_links;
             original_links.forEach(function(o, i) {
                 if (o.source.toshow){
                     if (o.target.toshow){
@@ -303,10 +299,10 @@
                         });
                     }else{
                         if (o.source.cluster.id != o.target.cluster.id)
-                            links.push({
-                                source: o.source.cluster,
-                                target: o.target.cluster
-                            });
+                        links.push({
+                            source: o.source.cluster,
+                            target: o.target.cluster
+                        });
                     }
                 }
             });
@@ -320,12 +316,12 @@
 
             var relevantNodes = _.filter(theNodes, function (node) {
                 return _.findWhere(communities, {id: node.community})
-                        .population >= filterLevel;
+                .population >= filterLevel;
             });
 
             var relevantLinks = _.filter(theLinks, function (link) {
                 return _.indexOf(relevantNodes, link.source) > -1 &&
-                        _.indexOf(relevantNodes, link.target) > -1;
+                _.indexOf(relevantNodes, link.target) > -1;
             });
 
             var relevantNest = _.filter(originalNest, function (n) {
@@ -343,10 +339,9 @@
         lemmaGraph.nodes = function (someNodes) {
             if (!arguments.length) return originalNodes;
             originalNodes = someNodes;
-            // console.log('Will represent ' + someNodes.length + ' nodes');
             originalNest = d3.nest()
-                .key(function(d) { return d.community; })
-                .entries(originalNodes);
+            .key(function(d) { return d.community; })
+            .entries(originalNodes);
             return lemmaGraph;
         };
 
@@ -362,23 +357,16 @@
             });
 
             linkWeightScale = d3.scale.linear()
-                .domain(d3.extent(originalLinks, function (d) { return d.weight}))
-                .range([1,4]);
+            .domain(d3.extent(originalLinks, function (d) { return d.weight}))
+            .range([1,4]);
             return lemmaGraph;
         };
 
         lemmaGraph.communities = function (someCommunities) {
             if (!arguments.length) return communities;
             communities = someCommunities;
-            _.forEach(communities, function (com) {
-                // console.log('Community ' + com.id + ' has ' + com.population + ' members');
-            });
 
             var popMinMax = d3.extent(someCommunities, function (d) { return d.population});
-
-            // console.log('Max and min community populations: ' + popMinMax[1] + ' ' + popMinMax[0]);
-
-            // filterLevel = Math.round((popMinMax[1] + popMinMax[0]) / 2);
 
             var list = _.chain(communities).map(function(d){ return d.population}).uniq().value().sort(function (a,b){return a-b;});
 
@@ -405,9 +393,8 @@
 
             _.forEach(list, function (el, idx) {
                 var opt = select.append('option')
-                            .attr('value', el);
+                .attr('value', el);
                 if (el == filterLevel) {
-                    // console.log('filterLevel is ' + filterLevel);
                     opt.attr('selected', true);
                 }
                 opt.html(el + ' members');
@@ -432,8 +419,8 @@
             }
 
             var data_nodes,
-                data_links,
-                currentNest;
+            data_links,
+            currentNest;
 
             if (_needsFiltering) {
                 var result = filterNetwork();
@@ -448,46 +435,45 @@
             }
 
             var linkSelection = svg.selectAll("line.link")
-                .data(data_links, function (d) {return d.source.name + "-" + d.target.name});
+            .data(data_links, function (d) {return d.source.name + "-" + d.target.name});
             linkSelection
-                .enter()
-                .append("line")
-                .attr("class", "link")
-                .style("stroke-width", function(d) {
-                    return linkWeightScale(d.weight);
-                })
-                .style("stroke", function(d) {
-                    return d3.scale.linear().range([color(d.source.community), color(d.target.community)])
-                        .interpolate(d3.interpolateHcl)(d.source.weight / (d.source.weight + d.target.weight));
-                });
+            .enter()
+            .append("line")
+            .attr("class", "link")
+            .style("stroke-width", function(d) {
+                return linkWeightScale(d.weight);
+            })
+            .style("stroke", function(d) {
+                return d3.scale.linear().range([color(d.source.community), color(d.target.community)])
+                .interpolate(d3.interpolateHcl)(d.source.weight / (d.source.weight + d.target.weight));
+            });
 
             linkSelection.attr("marker-end", "url(#Triangle)");
 
             linkSelection
-                .exit()
-                .remove();
+            .exit()
+            .remove();
 
             var nodeSelection = svg.selectAll("g.node").data(data_nodes, function (d) {return d.name});
 
 
             var nodeEnter = nodeSelection.enter()
-                .append("g")
-                .attr("class", "node")
-                .call(force.drag());
+            .append("g")
+            .attr("class", "node")
+            .call(force.drag());
 
 
             nodeEnter.append("text")
-                .style("text-anchor", "middle")
-                .style("stroke", function(d) { return d3.rgb(color(d.community)).darker(1); })
-                .style("stroke-width", "0.5px")
-                .style("font-size", function (d) { return labelSize(d.weight)+'px';})
-                // .attr("y", 15)
-                .text(function(d) {return d.name;})
-                .on('contextmenu', d3.contextMenu(nodeMenu));
+            .style("text-anchor", "middle")
+            .style("stroke", function(d) { return d3.rgb(color(d.community)).darker(1); })
+            .style("stroke-width", "0.5px")
+            .style("font-size", function (d) { return labelSize(d.weight)+'px';})
+            .text(function(d) {return d.name;})
+            .on('contextmenu', d3.contextMenu(nodeMenu));
 
 
             nodeEnter.append("title")
-                .text(function(d) { return d.community });
+            .text(function(d) { return d.community });
 
 
             nodeEnter.on("mouseover", function(d) {
@@ -515,14 +501,14 @@
             });
 
             nodeSelection
-                .exit()
-                .remove();
+            .exit()
+            .remove();
 
 
             force
-                .nodes(data_nodes)
-                .links(data_links)
-                .start();
+            .nodes(data_nodes)
+            .links(data_links)
+            .start();
 
             force.tick();
 

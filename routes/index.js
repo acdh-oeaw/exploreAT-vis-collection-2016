@@ -43,14 +43,6 @@ router.get('/ex_words_sources', isLoggedIn, function(req,res) {
     res.render('ex_words_sources');
 });
 
-// router.get('/ex_word_bubbles', function(req,res) {
-//     res.render('ex_word_bubbles');
-// });
-
-// router.get('/ex_word_circles', function(req,res) {
-//     res.render('ex_word_circles');
-// });
-
 router.get('/ex_word_treemap', isLoggedIn, function(req,res) {
     res.render('ex_word_treemap');
 });
@@ -94,16 +86,6 @@ router.get('/ex_bedeutung', isLoggedIn, function(req,res) {
 router.get('/ex_questionnaire_explorer', isLoggedIn, function(req,res) {
     res.render('ex_questionnaire_explorer');
 });
-
-// router.get('/token', isLoggedIn, function (req, res) {
-//     res.send(req.session.token)
- // });
-
-// router.get('/ex_colors', function(req,res) {
-//     res.render('ex_colors');
-// });
-
-
 
 
 router.get('/tokenTest', passport.authenticate('jwt', { session: false }),

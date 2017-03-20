@@ -14,16 +14,6 @@ body {
 
 }
 
-/*h1 {*/
-	/*font-size: 1.1em;*/
-/*}*/
-
-/*h2 {*/
-	/*font-size: .8em;*/
-	/*font-weight: 300;*/
-	/*color: darkgrey;*/
-/*}*/
-
 #content {
 	padding: 20px;
 	padding-top: 12px;
@@ -155,5 +145,3 @@ span.yellow {
 .hidden {
 	display: none;
 }
-
-

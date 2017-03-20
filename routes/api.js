@@ -40,12 +40,6 @@ dbClient.connect(function(err) {
     console.log('connected as id ' + dbClient.threadId);
 });
 
-// var serverIP = 'http:\/\/'+'exploreat.usal.es';
-// var elasticsearch = require('elasticsearch');
-// var elasticsearchClient = new elasticsearch.Client({
-//   hosts: serverIP+":9200"
-// });
-
 router.get('/flickr/:queryText', function(req, res, next) {
 
     flickrClient.photos.search({
@@ -89,7 +83,7 @@ router.post('/eurorecord', function(req, res, next){
             res.send(data)
         }
     }
-    
+
     var recordId = req.body.recordId;
     europeana ('record' + recordId, euroCallback);
 });
@@ -222,33 +216,5 @@ router.get('/words/:table', function(req, res, next) {
         router.get('/elasticEndpoint', function (req, res, next) {
             res.send(elasticEndpoint);
         });
-
-        // router.get('/es/bedeutung/:inputString', function(req, res, next) {
-        //   elasticsearchClient.search({
-        //     index: 'dboe-beleg_bedeutung_lemma_v10',
-        //     body: {
-        //         query : {
-        //           bool: {
-        //             must: [
-        //               { wildcard: { "dbo" : req.params.inputString }},
-        //               { not: { match: { "bedeutung.raw" : "--"  }}}
-        //             ]
-        //           }
-        //         },
-        //         // Get all the BEDEUTUNGs first
-        //         aggs: {
-        //             aggregation: {
-        //                 terms: {
-        //                   field: "bedeutung.raw", "size": 10
-        //                 }
-        //             }
-        //         }
-        //     }
-        //   }).then(function (resp) {
-        //         res(resp);
-        //     });
-        // });
-
-
 
         module.exports = router;
