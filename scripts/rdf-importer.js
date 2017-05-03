@@ -10,19 +10,12 @@
 var fs = require('fs'),
     xml2js = require('xml2js');
     _ = require('underscore')._;
-    xml2json = require('xml2json');
-    $ = require("jquery");
-
-    var ESToken = getCookie("token");
-
-    var esClient = new $.es.Client({
-        host: getESHost()
-    });
 
 var elasticsearch = require('elasticsearch');
+
 var client = new elasticsearch.Client({
     log: 'trace',
-    hosts: ['https://exploreat.usal.es/elasticsearch/']
+    hosts: [getESHost()]
     //hosts: ['localhost:9200']
 });
 
