@@ -1,0 +1,361 @@
+textarea, input { outline: none; }
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+
+.background {
+    fill: #fcfcfc;
+    stroke: #ccc;
+}
+
+h1 {
+	font-size: .9em;
+}
+
+h2 {
+	font-size: .8em;
+	font-weight: 300;
+	color: darkgrey;
+	margin-bottom: 20px;
+}
+
+.tooltip {
+    background-color: rgba(200, 200, 200, 0.5);
+    ;
+    margin: 10px;
+    height: 90px;
+    width: 150px;
+    padding-left: 10px;
+    padding-top: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+/* D3 Tooltips*/
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+/* Creates a small triangle extender for the tooltip */
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}
+/* Style northward tooltips differently */
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
+/*MAP*/
+
+#map > svg {
+    background: white;
+}
+
+.subunit {
+    fill: #fff;
+    stroke: #333;
+    stroke-opacity: 0.1;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    transition: all .2s linear;
+}
+
+.subunit:hover {
+    fill: #fdfdfd;
+}
+
+.subunit.AUT {
+    fill: #fcfcfc;
+    stroke: #ffaaaa;
+    stroke-opacity: 0.5;
+    stroke-width: 3px;
+}
+
+.subunit.AUT:hover {
+    fill: #fafafa;
+}
+
+.subunit.CHE {}
+
+.subunit.DEU {}
+
+.subunit.CZE {}
+
+.subunit.HUN {}
+
+.subunit.ITX {}
+
+.subunit.SVN {}
+
+.subunit.SVK {}
+
+.ITD,
+.ITY,
+.ITP,
+.ITI {
+    display: none;
+}
+
+.OUT {
+    display: none;
+}
+
+.subunit-boundary {
+    fill: none;
+    stroke: #333;
+    stroke-opacity: 0.15;
+    stroke-dasharray: 2, 2;
+    stroke-linejoin: round;
+    display: none
+}
+
+.subunit-label {
+    fill: #777;
+    fill-opacity: .5;
+    font-size: 1em;
+    font-weight: 300;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.place-label {
+    pointer-events: none;
+}
+
+.place.OUT,
+.place-label.OUT {
+    fill: #444;
+}
+
+.place.AT,
+.place-label.AT {
+    fill: #6c6c6c;
+    display: none;
+}
+
+.place.TARGET {
+    fill: #ffffff;
+    fill-opacity: 0.5;
+    stroke: #333;
+    stroke-opacity: .2;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    transition: all .2s linear;
+}
+
+.place.TARGET.REGION:hover {
+    fill: black;
+}
+
+.place-label.TARGET {
+    fill: #44F;
+}
+
+.place-label.TARGET.REGION {
+    font-size: 8px;
+    fill: #efae00;
+}
+
+text {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    /* pointer-events: none;*/
+}
+
+.wordPoint {
+  opacity: .35;
+}
+.wordPoint:hover {
+  stroke: black;
+  fill: black;
+  cursor: pointer;
+}
+
+.quelleLine {
+  opacity: .25;
+}
+.quelleLine {
+  stroke: red;
+  fill: red;
+}
+
+#info-tooltip {
+  position: fixed;
+  background-color: white;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: .8em;
+  border: 1px solid #848484;
+  width: 200px;
+}
+
+.filter-box {
+  padding: 10px 4px;
+  margin: 1%;
+  display: inline-block;
+  font-size: .9em;
+  width: 30%;
+  text-align: center;
+  vertical-align: top;
+}
+
+.speechBubble {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  margin-right: 4px;
+  cursor: pointer;
+  display: inline-block;
+  border: 2px solid white;
+}
+
+.speechBubble.Unbekannt {background-color: #a6cee3;}
+.speechBubble.Pronom {background-color: #1f78b4;}
+.speechBubble.Adjektiv {background-color: #b2df8a;}
+.speechBubble.Verb {background-color: #33a02c;}
+.speechBubble.Numerale {background-color: #fb9a99;}
+.speechBubble.Substantiv {background-color: #e31a1c;}
+.speechBubble.Adverb {background-color: #fdbf6f;}
+.speechBubble.Praposition {background-color: #ff7f00;}
+.speechBubble.Konjunktion {background-color: #cab2d6;}
+.speechBubble.Interjektion {background-color: #6a3d9a;}
+.speechBubble.Prafix {background-color: #ffff99;}
+.speechBubble.Clear {
+  background-color: none;
+  border: 2px solid #c0c0c0;
+  width: 8px;
+  height: 8px;
+  margin-left: 1px;
+  margin-right: 6px;
+}
+
+.speechBubble.selected {
+	border: 2px solid black;
+}
+
+#header {
+	background-color: white;
+	margin: 0;
+	padding: 30px 0 10px 0;
+	color: black;
+	border-bottom: 1px solid #ddd;
+	vertical-align: bottom;
+	text-align: center;
+}
+
+#header > div.title {
+	color: #989898;
+	font-size: .8em;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+#loader-wrapper {
+	text-align: center;
+}
+
+.load-block {
+	cursor: pointer;
+	border: 1px solid #bbbbbb;
+	border-radius: 3px;
+	margin: 0px 10px;
+	padding: 4px 8px;
+	display: inline-block;
+	font-size: .7em;
+	font-weight: 300;
+	text-align: center;
+
+	-webkit-transition: all .2s linear;
+	-moz-transition: all .2s linear;
+	-o-transition: all .2s linear;
+	-ms-transition: all .2s linear;
+	transition: all .2s linear;
+}
+
+.load-block:hover {
+	background-color: #fcfcfc;
+	border: 1px solid #aaaaaa;
+}
+
+#spinner {
+	color: #b0b0b0;
+}
+
+#spinner > span {
+	font-size: .8em;
+	margin-bottom: 6px;
+	padding-bottom: 6px;
+}
+
+.speechOptionBar {
+	margin-bottom: 3px;
+	cursor: pointer;
+	font-size: .9em;
+}
+
+#checkYearWrapper {
+	font-size: .9em;
+	margin-top: 35px;
+}
+
+#sliderWrapper {
+	width: 70%;
+	margin: auto;
+}
+
+#sliderYears {
+	margin-bottom: 6px;
+	height: 12px;
+}
+
+.noUi-handle {
+	width: 18px!important;
+	height: 18px!important;
+	left: -10px!important;
+	top: -4px!important;
+}
+.noUi-handle:before, .noUi-handle:after {
+	content: ""!important;
+	display: none!important;
+}
+
+.noUi-connect {
+	background-color: #d10b0b !important;
+}
+
+.yearLabel {
+	font-size: .8em;
+}
+#minYearLabel {
+	float: left;
+}
+#maxYearLabel {
+	float: right;
+}
+
+.hidden {
+	display: none;
+}

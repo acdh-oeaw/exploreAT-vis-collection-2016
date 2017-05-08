@@ -1,0 +1,40 @@
+<div id="map"></div>
+<div id="legend-holder" class="holder overmap">
+    Lemmas Per Bucket
+    <div id="legend-graph"></div>
+</div>
+<div id="bucket-holder" class="holder overmap">
+    <div class="bucket-resolution-label">Bucket Resolution Level</div>
+    <select name="bucket-resolution-selector" id="bucket-resolution-selector">
+        <option value="7" selected>1st Level</option>
+        <option value="8">2nd Level</option>
+        <option value="9">3rd Level</option>
+        <option value="10">4th Level</option>
+        <option value="11">5th Level</option>
+    </select>
+    <div id="reset-map-button">Reset View</div>
+</div>
+<div id="nontemporal-check-holder" class="holder overmap">
+    <strong>Non-Temporal Data</strong><br>
+    <input id="nontemporal-checkbox" type="checkbox" name="nontemporal-checkbox" value="nontemporal-checkbox">Include Non-Temporal Records in Results<br>
+</div>
+<div id="tooltip-check-holder" class="holder overmap">
+    <strong>Bucket Tooltip</strong><br>
+    <input id="tooltip-checkbox" type="checkbox" name="tooltip-checkbox" value="tooltip-checkbox" checked>Show on hover<br>
+</div>
+<div id="too-many-hits" class="holder overmap collapsed">
+    <div id="lemma-list-notice">Selected bucket contains too many records (+4000). Won't generate community graph.</div>
+</div>
+
+
+<div id="lemma-list-holder" class="holder overmap collapsed">
+    <div id="lemma-list-handle" class="holder">&laquo;</div>
+    <div class="lemma-list-label">Bucket's Top Main Lemmas <span id="lemma-list-detail"></span></div>
+    <div id="lemma-list-table">
+    </div>
+    <div id="lemma-list-notice">* The list may include lemmas without registered year</div>
+</div>
+
+
+
+<div id="closeLeft" class="closer"></div>

@@ -35,9 +35,7 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '/public')));
-app.use('/bower_components',express.static(path.join(__dirname, '/bower_components')));
-//app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({ secret: 'shhsecret',
                     resave: false,
@@ -46,9 +44,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use('/', index);
+
+// var auth
+
+var authRoutes = require('./routes/auth.js');
+app.use('/static', express.static(path.join(__dirname, 'public', 'static')));
+app.use('/auth', authRoutes);
 app.use('/users', users);
-app.use('/api', api);
+app.use('/exploreat-v3/api', api);
+
+app.use('/', [authRoutes.isLoggedIn, express.static(path.join(__dirname, 'public'))]);
 
 require('./config/passport')(passport, jwtConfig);
 
@@ -74,7 +79,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.render('error.ejs', {
       message: err.message,
       error: err
     });
@@ -85,7 +90,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
+  res.render('error.ejs', {
     message: err.message,
     error: {}
   });

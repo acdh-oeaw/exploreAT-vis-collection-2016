@@ -1,0 +1,206 @@
+textarea, input { outline: none; }
+
+body, html {
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+
+.background {
+    fill: #fcfcfc;
+    stroke: #ccc;
+}
+
+h1 {
+	font-size: 1.1em;
+}
+
+h2 {
+	font-size: .8em;
+	font-weight: 300;
+	color: darkgrey;
+	margin-bottom: 20px;
+}
+
+h3 {
+	font-size: .5em;
+	font-weight: 300;
+	color: darkgrey;
+	margin-bottom: 20px;
+}
+
+#webhead {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 1.5em;
+}
+
+#content {
+  position: relative;
+  width: 100%;
+}
+
+#scientific-zone-up, #common-zone-down {
+    float: left;
+}
+
+#common-zone-up, #scientific-zone-down {
+    float: right;
+}
+
+.zone {
+    text-align: center;
+    width: 45%;
+    height: 300px;
+    overflow: scroll;
+    padding: 20px;
+    margin: 20px auto;
+    border-top: 1px solid #ddd;
+}
+
+.ul-common-up, .ul-common-down {
+    text-align: center;
+    font-size: .9em;
+    list-style-position: inside;
+    list-style-type: none;
+    height: 240px;
+    overflow: scroll;
+}
+
+.li-common-up, .li-common-down {
+    margin: 0px;
+    font-size: .9em;
+}
+
+.li-common-up.selected, .li-common-down.selected {
+    padding: 6px;
+    border: 1px dotted #bbb;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.scientific-image {
+    max-height: 175px;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 20px auto;
+    margin-bottom: 0;
+}
+
+#scientific-plant-name {
+    margin: 0px;
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.img-mag {
+    max-height: 14px;
+    vertical-align: bottom;
+    margin-left: 6px;
+    opacity: .3;
+}
+.img-mag:hover{
+    cursor: pointer;
+    opacity: .7;
+}
+
+#europeana-zone {
+    font-size: 1.5em;
+    text-align: center;
+    width: 85%;
+    height: 500px;
+    overflow: scroll;
+    padding: 20px;
+    margin: 20px auto;
+    border-top: 1px solid #ddd;
+}
+
+#europeana-content {
+    /*height: 300px;*/
+    overflow: scroll;
+    padding: 20px;
+    margin: 20px auto;
+}
+
+#europeana-header {
+    font-size: .7em;
+}
+
+.europeana-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px;
+    color: #666;
+    font-size: .5em;
+    text-decoration: none;
+    max-width: 200px;
+    display: inline-block;
+    vertical-align: top;
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.europeana-card:hover {
+    background-color: #f9f9f9;
+}
+
+.europeana-card-image {
+    opacity: .3;
+    vertical-align: top;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    width: 25px;
+}
+
+.europeana-image {
+    max-width: 180px;
+    display: inline-block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 10px 10px;
+}
+
+#europeana-tooltip {
+    background-color: rgba(0, 0, 0, 0.8);
+    max-width: 130px;
+    padding: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    z-index: 999;
+    position: absolute;
+    color: white;
+    font-size: .6em;
+    font-style: italic;
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+rect.background {
+    fill: white;
+}
+
+.country {
+    fill: rgb(247,247,247);
+    stroke: lightgray;
+    stroke-width: 1px;
+}
+
+.pin {
+    opacity: .5;
+    fill: #31698A;
+}
+.pin:hover {
+    cursor: pointer;
+}

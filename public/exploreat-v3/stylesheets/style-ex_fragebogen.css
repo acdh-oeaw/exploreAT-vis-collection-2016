@@ -1,0 +1,156 @@
+textarea, input { outline: none; }
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+
+#header {
+	color: #595959;
+	border-bottom: 1px solid gainsboro;
+	text-align: center;
+	padding: 10px 0;
+}
+
+h1 {
+	font-size: 1.1em;
+}
+
+h2 {
+	font-size: .8em;
+	font-weight: 300;
+	color: darkgrey;
+}
+
+#content {
+	padding: 20px;
+	padding-top: 12px;
+	font-size: .8em;
+	color: #aaa;
+}
+
+#spinner {
+	text-align: center;
+}
+
+#header > div.title {
+    color: #989898;
+    font-size: .8em;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+#filter-bar > .filter-row {
+	font-size: .8em;
+	margin: 4px 0;
+}
+
+#filter-bar > .filter-row > .filter-row-label{
+	width: 180px;
+	display: inline-block;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#filter-bar > .filter-row > input{
+	width: 180px;
+}
+
+.load-block {
+    cursor: pointer;
+    border: 1px solid #bbbbbb;
+    border-radius: 3px;
+    margin: 0px 10px;
+    margin-top: 10px;
+    padding: 4px 8px;
+    display: inline-block;
+    font-size: .7em;
+    font-weight: 300;
+    text-align: center;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    transition: all .2s linear;
+}
+
+.load-block:hover {
+	background-color: #fcfcfc;
+	border: 1px solid #aaaaaa;
+}
+
+.frageholder {
+	border: 1px solid black;
+	margin: 10px 5px;
+}
+
+.fragebogen.top {
+	padding: 8px;
+	background-color: #454545;
+	color: white;
+}
+
+.fragebogen.bottom {
+	padding: 6px;
+	background-color: #45a830;
+	color: white;
+}
+
+.frage {
+	padding: 6px;
+	background-color: #ddd;
+	color: black;
+	border: 1px solid black;
+	margin: 3px 2px;
+}
+
+.lemma {
+	padding: 4px;
+	background-color: white;
+	color: black;
+	border: 1px solid gray;
+	margin: -1px;
+}
+
+.box-title{
+	margin: 4px 0px;
+}
+
+span.yellow {
+	background-color: #f8ed71;
+	font-style: italic;
+}
+
+
+////////
+
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+.hidden {
+	display: none;
+}

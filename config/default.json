@@ -3,7 +3,7 @@
       "host": "localhost",
       "user": "root",
       "db": "dboe_1",
-      "password": "***REMOVED***"
+      "password": "exploreat16"
   },
   "mongodb": {
       "url": "mongodb://localhost/expressauth"

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>ExploreAT! | Word-Source Relations</title>
+
+    <link href="bower_components/noUiSlider-ms/jquery.nouislider.css" rel="stylesheet">
+    <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="stylesheets/style-ex_persons.css" rel="stylesheet">
+
+
+    <script src="bower_components/d3/d3.min.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>-->
+    <script src="bower_components/d3-queue/d3-queue.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+    <script src="bower_components/wellknown/wellknown.js"></script>
+    <script src="bower_components/Wicket/wicket.js"></script>
+    <script src="bower_components/noUiSlider-ms/jquery.nouislider.js"></script>
+</head>
+
+<body>
+
+  <div id="map">
+    <div id="header">
+      <div class="title">ExploreAT!</div>
+      <div id="loader-wrapper">
+        <div id="loadFromLemma" class="load-block">Load <b>Lemma</b> Data</div>
+        <div id="loadFromBeleg" class="load-block">Load <b>Beleg</b> Data</div>
+        <div id="spinner" class="hidden">
+          <span>Loading data from the database...<br>This may take some time.</span>
+          <br><br>
+          <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+        </div>
+      </div>
+      <div id="fieldFilter" class="filter-box hidden">
+        <h1>Word Filter</h1>
+        <h2>Find words containing what you type</h2>
+        <input type="text" id="searchField" placeholder="Word...">
+        <!-- <button type="button" id="searchFieldButton">Search</button> -->
+        <button type="button" id="clearFieldButton">Clear</button>
+      </div>
+      <div id="speechFilter" class="filter-box hidden">
+        <h1>Part Of Speech Filter</h1>
+        <h2>Click to highlight any particular kind of word</h2>
+      </div>
+      <div id="yearFilter" class="filter-box hidden">
+        <h1>Year Filter</h1>
+        <h2>Show only words sourced between the selected years</h2>
+        <div id="sliderWrapper">
+          <div id="sliderYears"></div>
+          <span id="minYearLabel" class="yearLabel"></span>
+          <span id="maxYearLabel" class="yearLabel"></span>
+        </div>
+        <div id="checkYearWrapper">
+          <input id="checkYear" type="checkbox" name="checkYear" value="checkYear" checked> Show words without a registered date
+        </div>
+      </div>
+      <br>
+
+    </div>
+  </div>
+
+  <div id="info-tooltip">
+    Tooltip
+  </div>
+
+  <script src="javascripts/words_sources.js"></script>
+
+</body>
+
+</html>

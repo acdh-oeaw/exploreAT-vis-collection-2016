@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>ExploreAT! | RDF Plants </title>
+
+    <link href="bower_components/noUiSlider-ms/jquery.nouislider.css" rel="stylesheet">
+    <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="bower_components/d3-carto-map/d3map.css" rel="stylesheet">
+    <link href="bower_components/dcjs/dc.css" rel="stylesheet">
+    <link href="bower_components/colorbrewer/colorbrewer.css" rel="stylesheet">
+    <link href="bower_components/w2ui/w2ui-1.4.3.css" rel="stylesheet">
+    <link href="bower_components/d3-context-menu/css/d3-context-menu.css" rel="stylesheet">
+    <link href="stylesheets/ex_rdf_plants.css" rel="stylesheet">
+
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/d3-plugins/geo/tile/tile.js"></script>
+    <script src="bower_components/topojson/topojson.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/w2ui/w2ui-1.4.3.js"></script>
+    <script src="bower_components/d3-queue/d3-queue.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+    <script src="bower_components/wellknown/wellknown.js"></script>
+    <script src="bower_components/Wicket/wicket.js"></script>
+    <script src="bower_components/noUiSlider-ms/jquery.nouislider.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/latlon-geohash-bobbr/latlon-geohash.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/d3-carto-map/d3.carto.map.js"></script>
+    <script src="bower_components/crossfilter/crossfilter.js"></script>
+    <script src="bower_components/dcjs/dc.js"></script>
+    <script src="bower_components/reductio/reductio.js"></script>
+    <script src="bower_components/colorbrewer/colorbrewer.js"></script>
+    <script src="bower_components/d3-context-menu/js/d3-context-menu.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div id="webhead">
+        <h1>Plants RDF Explorer</h1>
+    </div>
+    <div id="content">
+        <div id="scientific-zone-up" class="zone">
+                <h2>Select a Scientific name to show its related Common names</h2>
+                <select name="query" id="select-scientific">
+                    <option value="">Select from the list</option>
+                    <option value="Achillea clavenae">Achillea clavenae</option>
+                    <option value="Achillea millefolium">Achillea millefolium</option>
+                    <option value="Bellis perennis">Bellis perennis</option>
+                    <option value="Convallaria majalis">Convallaria majalis</option>
+                    <option value="Lotus corniculatus">Lotus corniculatus</option>
+                    <option value="Taraxacum officinale">Taraxacum officinale</option>
+                    <option value="Veratrum album">Veratrum album</option>
+                </select>
+        </div>
+        <div id="common-zone-up" class="zone">
+            <center><h2>Common names for the selected Scientific plant name</h2></center>
+            <div id="common-list-up"></div>
+        </div>
+        <div style="clear:both;"></div>
+        <div id="common-zone-down" class="zone">
+            <center><h2>Type any word to look for Common plant names</h2></center>
+            <input type="text" id="textField-common-name">
+            <button type="button" id="button-common-name">Search</button>
+            <div id="common-list-down"></div>
+        </div>
+        <div id="scientific-zone-down" class="zone">
+                <h2>Scientific name related to the selected Common plant name</h2>
+                <span id="scientific-plant-name"></span>
+        </div>
+        <div style="clear:both;"></div>
+        <div id="europeana-zone">
+            <h1>Europeana Data</h1>
+            <div id="europeana-header">
+                <h2 id="europeana-commonName"></h2>
+            </div>
+            <div id="europeana-content">
+                <div id="europeana-text">
+                    <h2>Texts</h2>
+                </div>
+                <div id="europeana-audio">
+                    <h2>Audios</h2>
+                </div>
+                <div id="europeana-video">
+                    <h2>Videos</h2>
+                </div>
+                <div id="europeana-picture">
+                    <h2>Pictures</h2>
+                </div>
+                <div id="europeana-map">
+                    <h2>Map</h2>
+                    <div id="map-header"></div>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="europeana-tooltip">
+        <span></span>
+    </div>
+
+</body>
+
+<script src="javascripts/lemma-graph.js"></script>
+<script src="javascripts/jLouvain.js"></script>
+<script src="javascripts/d3-legend.min.js"></script>
+
+<script src="javascripts/eshelper.js"></script>
+<script src="javascripts/rdf_plants_script_full_elastic.js"></script>
+
+</html>
