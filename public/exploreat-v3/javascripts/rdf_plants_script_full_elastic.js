@@ -649,7 +649,7 @@ var mainExports = {};
 
                                                 $.ajax({
                                                     type: "POST",
-                                                    url: "api/europeana",
+                                                    url: "/api/europeana",
                                                     data: JSON.stringify(params),
                                                     contentType: 'application/json',
                                                     async: true,
@@ -685,7 +685,7 @@ var mainExports = {};
 
                                                 $.ajax({
                                                     type: "POST",
-                                                    url: "api/europeana",
+                                                    url: "/api/europeana",
                                                     data: JSON.stringify(params),
                                                     contentType: 'application/json',
                                                     async: true,
@@ -721,7 +721,7 @@ var mainExports = {};
 
                                                 $.ajax({
                                                     type: "POST",
-                                                    url: "api/europeana",
+                                                    url: "/api/europeana",
                                                     data: JSON.stringify(params),
                                                     contentType: 'application/json',
                                                     async: true,
@@ -757,7 +757,7 @@ var mainExports = {};
 
                                                 $.ajax({
                                                     type: "POST",
-                                                    url: "api/europeana",
+                                                    url: "/api/europeana",
                                                     data: JSON.stringify(params),
                                                     contentType: 'application/json',
                                                     async: true,
@@ -819,7 +819,7 @@ var mainExports = {};
 
                                                         $.ajax({
                                                             type: "POST",
-                                                            url: "api/europeana",
+                                                            url: "/api/europeana",
                                                             data: JSON.stringify(params),
                                                             contentType: 'application/json',
                                                             async: true,

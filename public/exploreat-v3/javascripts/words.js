@@ -196,7 +196,7 @@ function createWords(table) {
 
     $.ajax({
         type: "GET",
-        url: "api/words/"+table,
+        url: "/api/words/"+table,
         dataType: "json",
         timeout: 120000,
         async: true,

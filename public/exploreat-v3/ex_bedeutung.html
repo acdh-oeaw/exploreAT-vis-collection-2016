@@ -24,6 +24,7 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
+    <script src="javascripts/eshelper.js"></script>
 </head>
 
 <body>
@@ -31,9 +32,12 @@
 <svg width="1200" height="600"></svg>
 
 <script>
+    var ESToken = getCookie("token");
+
     var esClient = new $.es.Client({
-        hosts: 'localhost:9200'
+        host: getESHost()
     });
+
     var svg = d3.select("svg"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
@@ -90,6 +94,8 @@
 
         esClient.search({
             index: 'tustepgeo3',
+            headers: {
+                'Authorization' : "Bearer " + ESToken},
             body: body
         }).then(function(resp) {
                     if (resp.aggregations.length !== 0) {
