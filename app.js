@@ -48,12 +48,13 @@ app.use(flash());
 // var auth
 
 var authRoutes = require('./routes/auth.js');
-app.use('/static', express.static(path.join(__dirname, 'public', 'static')));
-app.use('/auth', authRoutes);
+app.use('/', express.static(path.join(__dirname, 'public', 'static')));
+app.use(express.static('./client/dist/'));
+// app.use('/auth', authRoutes);
 app.use('/users', users);
 app.use('/exploreat-v3/api', api);
 
-app.use('/', [authRoutes.isLoggedIn, express.static(path.join(__dirname, 'public'))]);
+// app.use('/', [authRoutes.isLoggedIn, express.static(path.join(__dirname, 'public'))]);
 
 require('./config/passport')(passport, jwtConfig);
 
