@@ -177,7 +177,7 @@ function createWords(inputString) {
 
                     $.ajax({
                         type: "GET",
-                        url: "/api/flickr/"+name,
+                        url: "api/flickr/"+name,
                         dataType: "json",
                         async: true,
                         success: function (response) {
