@@ -31,7 +31,7 @@
       ref  : "origin/develop",
       repo : "***REMOVED***",
       path : "/usr/src/app/staging",
-      "post-deploy" : "npm install ; bower install; pm2 startOrRestart ecosystem.json --env staging",
+      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; pm2 startOrRestart ecosystem-prod.json --env production",
       env  : {
         NODE_ENV: "staging"
       }
