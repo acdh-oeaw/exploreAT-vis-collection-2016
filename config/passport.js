@@ -1,9 +1,9 @@
-var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/user');
-var passportJWT = require("passport-jwt");
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
-var ObjectId = require('mongoose').Types.ObjectId;
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('../server/models/user');
+const passportJWT = require("passport-jwt");
+const ExtractJwt = passportJWT.ExtractJwt;
+const JwtStrategy = passportJWT.Strategy;
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
 module.exports = function(passport, jwtConfig) {
@@ -29,7 +29,7 @@ module.exports = function(passport, jwtConfig) {
                     if (user) {
                         return done(null, false, req.flash('signupMessage', 'That username is already in use.'));
                     } else {
-                        var newUser = new User();
+                        const newUser = new User();
                         newUser.local.username = username;
                         newUser.local.password = newUser.generateHash(password);
                         newUser.save(function(err) {
@@ -59,7 +59,7 @@ module.exports = function(passport, jwtConfig) {
             });
     }));
 
-    var jwtOptions = {};
+    const jwtOptions = {};
     jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader();
     jwtOptions.secretOrKey = jwtConfig.secretOrKey;
 

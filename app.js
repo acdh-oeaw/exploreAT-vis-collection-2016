@@ -1,74 +1,66 @@
-var express = require('express'),
+const express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
     logger = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
+    bodyparser = require('body-parser'),
     config = require('config'),
-    jwtConfig = config.get('jwt_config'),
-    index = require('./routes/index'),
-    users = require('./routes/users'),
-    api = require('./routes/api'),
+
+
+    api = require('./server/routes/api'),
     passport = require('passport'),
     mongoose = require('mongoose'),
-    flash = require('connect-flash'),
+
+
     session = require('express-session');
 
-var app = express();
 
-app.jwtConfig = jwtConfig;
+require('./server/models').connect(config.get('mongodb').url);
 
-var mongoURL = config.get('mongodb').url;
-mongoose.connect(mongoURL);
-console.log(mongoURL);
+const app = express();
 
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-//app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(bodyparser.urlencoded({ extended: false }));
+
+app.use(passport.initialize());
+
+
 // app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({ secret: 'shhsecret',
-                    resave: false,
-                    saveUninitialized: false}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+const localsignupstrategy = require('./server/passport/local-signup');
+const localloginstrategy = require('./server/passport/local-login');
+passport.use('local-signup', localsignupstrategy);
+passport.use('local-login', localloginstrategy);
+
+const authCheckMiddleware = require('./server/middleware/auth-check');
+app.use('/api', authCheckMiddleware);
 
 
-// var auth
 
-var authRoutes = require('./routes/auth.js');
 app.use('/', express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
-// app.use('/auth', authRoutes);
-app.use('/users', users);
-app.use('/exploreat-v3/api', api);
+const authRoutes = require('./server/routes/auth');
+app.use('/auth', authRoutes);
 
-// app.use('/', [authRoutes.isLoggedIn, express.static(path.join(__dirname, 'public'))]);
+// app.use('/exploreat-v3/api', api);
 
-require('./config/passport')(passport, jwtConfig);
+// app.use('/', [authroutes.isloggedin, express.static(path.join(__dirname, 'public'))]);
+
+// require('./config/passport')(passport, jwtconfig);
 
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("access-control-allow-origin", "*");
+  res.header("access-control-allow-headers", "origin, x-requested-with, content-type, accept");
   next();
 });
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  const err = new error('not found');
   err.status = 404;
   next(err);
 });
