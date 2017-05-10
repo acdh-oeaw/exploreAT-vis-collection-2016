@@ -18,15 +18,6 @@ const SignUpForm = ({
 
             {errors.summary && <p className="error-message">{errors.summary}</p>}
 
-            <div className="field-line">
-                <TextField
-                    floatingLabelText="Name"
-                    name="name"
-                    errorText={errors.name}
-                    onChange={onChange}
-                    value={user.name}
-                />
-            </div>
 
             <div className="field-line">
                 <TextField
