@@ -3,7 +3,6 @@ const passport = require('passport');
 const validator = require('validator');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const _ = require('underscore');
 const router = express.Router();
 
 const app = express();
@@ -31,11 +30,6 @@ function validateSignupForm(payload) {
     if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
         isFormValid = false;
         errors.password = 'Password must have at least 8 characters.';
-    }
-
-    if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
-        isFormValid = false;
-        errors.name = 'Please provide your name.';
     }
 
     if (!isFormValid) {
