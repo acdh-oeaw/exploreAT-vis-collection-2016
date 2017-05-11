@@ -1,4 +1,5 @@
 import React from 'react';
+import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 
 
@@ -59,6 +60,9 @@ class LoginPage extends React.Component {
                 this.setState({
                     errors: {}
                 });
+
+                // save the token
+                Auth.authenticateUser(xhr.response.token);
 
                 this.props.history.push('/');
 

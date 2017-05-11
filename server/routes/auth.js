@@ -78,7 +78,7 @@ function validateLoginForm(payload) {
 
 
 
-console.log('Node env ' + app.settings.env);
+
 
 // router.get('/interface.jpg', function(req, res, next) {
 //     res.sendFile(path.resolve(path.join(__dirname, 'public/exploreat-v3/img/home') + '/interface.jpg'));

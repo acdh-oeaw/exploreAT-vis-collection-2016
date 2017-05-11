@@ -43,6 +43,7 @@ app.use('/', express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
 const authRoutes = require('./server/routes/auth');
 app.use('/auth', authRoutes);
+app.use('/api', api);
 
 // app.use('/exploreat-v3/api', api);
 
