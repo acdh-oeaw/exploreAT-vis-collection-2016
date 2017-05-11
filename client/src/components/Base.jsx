@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const Base = props => (
     <div>
         <div className="top-bar">
             <div className="top-bar-left">
-                <NavLink exact to="/">React App</NavLink>
+                <Link to="/">ExploreAT!</Link>
             </div>
 
             <div className="top-bar-right">

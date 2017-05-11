@@ -1,6 +1,5 @@
 import React from 'react';
 import LoginForm from '../components/LoginForm.jsx';
-import Base from '../components/Base.jsx'
 
 
 class LoginPage extends React.Component {
@@ -99,18 +98,15 @@ class LoginPage extends React.Component {
      */
     render() {
         return (
-            <Base>
-                <LoginForm
-                    onSubmit={this.processForm}
-                    onChange={this.changeUser}
-                    errors={this.state.errors}
-                    successMessage={this.state.successMessage}
-                    user={this.state.user}
-                />
-            </Base>
+            <LoginForm
+                onSubmit={this.processForm}
+                onChange={this.changeUser}
+                errors={this.state.errors}
+                successMessage={this.state.successMessage}
+                user={this.state.user}
+            />
         );
     }
-
 }
 
 export default LoginPage;
