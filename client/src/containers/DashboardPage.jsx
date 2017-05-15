@@ -1,5 +1,6 @@
 import React from 'react';
 import Auth from '../modules/Auth';
+import Base from '../components/Base.jsx';
 import Dashboard from '../components/Dashboard.jsx';
 
 
@@ -12,7 +13,8 @@ class DashboardPage extends React.Component {
         super(props);
 
         this.state = {
-            secretData: ''
+            secretData: '',
+            errorMessage: ''
         };
     }
 
@@ -27,9 +29,15 @@ class DashboardPage extends React.Component {
         xhr.setRequestHeader('Authorization', `JWT ${Auth.getToken()}`);
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {
+            console.log(xhr);
             if (xhr.status === 200) {
                 this.setState({
                     secretData: xhr.response.message
+                });
+            } else if (xhr.status === 401) {
+                Auth.deauthenticateUser();
+                this.setState({
+                    errorMessage: xhr.response.message
                 });
             }
         });
@@ -40,7 +48,7 @@ class DashboardPage extends React.Component {
      * Render the component.
      */
     render() {
-        return (<Dashboard secretData={this.state.secretData} />);
+        return (<Base><Dashboard secretData={this.state.secretData} /></Base>);
     }
 
 }

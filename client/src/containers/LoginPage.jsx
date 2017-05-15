@@ -1,5 +1,6 @@
 import React from 'react';
 import Auth from '../modules/Auth';
+import Base from '../components/Base.jsx';
 import LoginForm from '../components/LoginForm.jsx';
 
 
@@ -64,9 +65,8 @@ class LoginPage extends React.Component {
                 // save the token
                 Auth.authenticateUser(xhr.response.token);
 
-                this.props.history.push('/');
+                this.props.history.push('/dashboard');
 
-                // this.context.router.replace('/');
             } else {
                 // failure
 
@@ -102,13 +102,15 @@ class LoginPage extends React.Component {
      */
     render() {
         return (
-            <LoginForm
-                onSubmit={this.processForm}
-                onChange={this.changeUser}
-                errors={this.state.errors}
-                successMessage={this.state.successMessage}
-                user={this.state.user}
-            />
+            <Base>
+                <LoginForm
+                    onSubmit={this.processForm}
+                    onChange={this.changeUser}
+                    errors={this.state.errors}
+                    successMessage={this.state.successMessage}
+                    user={this.state.user}
+                />
+            </Base>
         );
     }
 }

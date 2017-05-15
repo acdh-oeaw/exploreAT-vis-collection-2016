@@ -214,19 +214,6 @@ router.post('/login', (req, res, next) => {
 });
 
 
-// function isLoggedIn(req, res, next) {
-//     // if (req.isAuthenticated() || app.settings.env == 'development')
-//     if (req.isAuthenticated())
-//         return next();
-//     else {
-//         console.log(req.path.replace('/',''));
-//         req.session.redirectTo = req.path.replace('/','');
-//         res.redirect('/auth/login');
-//     }
-// }
-
-
-
 module.exports = router;
 
 // module.exports.isLoggedIn = isLoggedIn;

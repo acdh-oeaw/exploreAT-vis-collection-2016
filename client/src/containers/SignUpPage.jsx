@@ -1,4 +1,5 @@
 import React from 'react';
+import Base from '../components/Base.jsx';
 import SignUpForm from '../components/SignUpForm.jsx';
 
 
@@ -90,15 +91,16 @@ class SignUpPage extends React.Component {
      */
     render() {
         return (
-            <SignUpForm
-                onSubmit={this.processForm}
-                onChange={this.changeUser}
-                errors={this.state.errors}
-                user={this.state.user}
-            />
+            <Base>
+                <SignUpForm
+                    onSubmit={this.processForm}
+                    onChange={this.changeUser}
+                    errors={this.state.errors}
+                    user={this.state.user}
+                />
+            </Base>
         );
     }
-
 }
 
 export default SignUpPage;

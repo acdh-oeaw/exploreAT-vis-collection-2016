@@ -13,12 +13,12 @@ const express = require('express'),
 
 let flickrClient;
 
-    Flickr.authenticate(flickrOptions, function(error, flickr) {
-        if (error) {
-            console.err('Cannot authenticate, ' + error);
-        }
-        flickrClient = flickr;
-    });
+Flickr.authenticate(flickrOptions, function(error, flickr) {
+    if (error) {
+        console.err('Cannot authenticate, ' + error);
+    }
+    flickrClient = flickr;
+});
 
 const mysqlConfig = config.get('mysql'),
     MySQL = require('mysql'),

@@ -4,9 +4,10 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
-    BrowserRouter as Router,
+    BrowserRouter,
     Switch,
     Route,
+    Redirect,
     withRouter
 } from 'react-router-dom';
 
@@ -19,8 +20,6 @@ import SignUpPage from './containers/SignUpPage.jsx';
 
 import Auth from './modules/Auth';
 
-import createBrowserHistory from 'history/createBrowserHistory';
-// const history = createBrowserHistory();
 
 // remove tap delay, essential for MaterialUI to work properly
 injectTapEventPlugin();
@@ -28,17 +27,31 @@ injectTapEventPlugin();
 
 const RouterLogoutComponent = withRouter(DummyLogoutComponent);
 
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        Auth.isUserAuthenticated() ? (
+            <Component {...props}/>
+        ) : (
+            <Redirect to={{
+                pathname: '/login',
+                state: { from: props.location }
+            }}/>
+        )
+    )}/>
+);
+
 
 ReactDom.render((
     <MuiThemeProvider muiTheme={getMuiTheme()}>
-        <Router>
+        <BrowserRouter>
             <Switch>
                 <Route exact path='/'
-                       render={() => Auth.isUserAuthenticated() ? <Base><DashboardPage/></Base> : <Base><HomePage/></Base>}/>
-                <Route path='/login'    render={({history}) => <Base><LoginPage history={history}/></Base>}/>
-                <Route path='/signup'   render={({history}) => <Base><SignUpPage history={history}/></Base>}/>
+                       render={() => <HomePage/>}/>
+                <Route path='/login'    render={({history}) => <LoginPage history={history}/>}/>
+                <Route path='/signup'   render={({history}) => <SignUpPage history={history}/>}/>
                 <Route path='/logout'   component={RouterLogoutComponent}/>
+                <PrivateRoute path="/dashboard" component={DashboardPage}/>
             </Switch>
-        </Router>
+        </BrowserRouter>
     </MuiThemeProvider>), document.getElementById('react-app'));
 

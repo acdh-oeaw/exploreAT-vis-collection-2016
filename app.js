@@ -37,18 +37,18 @@ passport.use('local-signup', localSignupStrategy);
 passport.use('local-login', localLoginStrategy);
 passport.use('jwt', jwtStrategy);
 
-// const authCheckMiddleware = require('./server/middleware/auth-check');
+const authCheckMiddleware = require('./server/middleware/auth-check');
 
 
 app.use('/', express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
 const authRoutes = require('./server/routes/auth');
 app.use('/auth', authRoutes);
-app.use('/api', [passport.authenticate('jwt', {session: false}), api]);
+app.use('/api', [authCheckMiddleware, api]);
 
 // app.use('/exploreat-v3/api', api);
 
-// app.use('/', [authroutes.isloggedin, express.static(path.join(__dirname, 'public'))]);
+app.use('/', [authCheckMiddleware, express.static(path.join(__dirname, 'public'))]);
 
 // require('./config/passport')(passport, jwtconfig);
 
@@ -60,12 +60,10 @@ app.use(function(req, res, next) {
 });
 
 
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   const err = new error('not found');
-//   err.status = 404;
-//   next(err);
-// });
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  res.status(404).send("Sorry can't find that!");
+});
 
 // error handlers
 
