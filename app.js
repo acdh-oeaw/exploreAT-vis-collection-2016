@@ -29,21 +29,22 @@ app.use(passport.initialize());
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
-const localsignupstrategy = require('./server/passport/local-signup');
-const localloginstrategy = require('./server/passport/local-login');
-passport.use('local-signup', localsignupstrategy);
-passport.use('local-login', localloginstrategy);
+const localSignupStrategy = require('./server/passport/local-signup');
+const localLoginStrategy = require('./server/passport/local-login');
+const jwtStrategy = require('./server/passport/jwt');
 
-const authCheckMiddleware = require('./server/middleware/auth-check');
-app.use('/api', authCheckMiddleware);
+passport.use('local-signup', localSignupStrategy);
+passport.use('local-login', localLoginStrategy);
+passport.use('jwt', jwtStrategy);
 
+// const authCheckMiddleware = require('./server/middleware/auth-check');
 
 
 app.use('/', express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
 const authRoutes = require('./server/routes/auth');
 app.use('/auth', authRoutes);
-app.use('/api', api);
+app.use('/api', [passport.authenticate('jwt', {session: false}), api]);
 
 // app.use('/exploreat-v3/api', api);
 
@@ -59,36 +60,36 @@ app.use(function(req, res, next) {
 });
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  const err = new error('not found');
-  err.status = 404;
-  next(err);
-});
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   const err = new error('not found');
+//   err.status = 404;
+//   next(err);
+// });
 
 // error handlers
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error.ejs', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error.ejs', {
-    message: err.message,
-    error: {}
-  });
-});
+// // development error handler
+// // will print stacktrace
+// if (app.get('env') === 'development') {
+//   app.use(function(err, req, res, next) {
+//     res.status(err.status || 500);
+//     res.render('error.ejs', {
+//       message: err.message,
+//       error: err
+//     });
+//   });
+// }
+//
+// // production error handler
+// // no stacktraces leaked to user
+// app.use(function(err, req, res, next) {
+//   res.status(err.status || 500);
+//   res.render('error.ejs', {
+//     message: err.message,
+//     error: {}
+//   });
+// });
 
 
 module.exports = app;

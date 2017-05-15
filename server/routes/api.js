@@ -204,8 +204,4 @@ router.get('/colorLemma/:name', function(req, res, next) {
 });
 
 
-router.get('/elasticEndpoint', function (req, res, next) {
-    res.send(elasticEndpoint);
-});
-
 module.exports = router;

@@ -97,16 +97,16 @@ function validateLoginForm(payload) {
 //     res.render('profile.ejs', { user: req.user });
 // });
 
-router.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-});
+// router.get('/logout', function(req, res) {
+//     req.logout();
+//     res.redirect('/');
+// });
 
-router.get('/tokenTest', passport.authenticate('jwt', { session: false }),
-    function(req, res) {
-        res.send(req.user);
-    }
-);
+// router.get('/tokenTest', passport.authenticate('jwt', { session: false }),
+//     function(req, res) {
+//         res.send(req.user);
+//     }
+// );
 
 // router.post('/signup', passport.authenticate('local-signup', {
 //     successRedirect: './',
@@ -224,8 +224,6 @@ router.post('/login', (req, res, next) => {
 //         res.redirect('/auth/login');
 //     }
 // }
-
-
 
 
 

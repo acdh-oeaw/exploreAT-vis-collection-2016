@@ -17,9 +17,9 @@ import DashboardPage from './containers/DashboardPage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 
-import createBrowserHistory from 'history/createBrowserHistory';
 import Auth from './modules/Auth';
 
+import createBrowserHistory from 'history/createBrowserHistory';
 // const history = createBrowserHistory();
 
 // remove tap delay, essential for MaterialUI to work properly
