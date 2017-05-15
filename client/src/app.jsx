@@ -11,9 +11,8 @@ import {
     withRouter
 } from 'react-router-dom';
 
-import Base from './components/Base.jsx'
+
 import HomePage from './components/HomePage.jsx';
-import DummyLogoutComponent from './components/DummyLogoutComponent.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
@@ -24,8 +23,6 @@ import Auth from './modules/Auth';
 // remove tap delay, essential for MaterialUI to work properly
 injectTapEventPlugin();
 
-
-const RouterLogoutComponent = withRouter(DummyLogoutComponent);
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => (
@@ -45,11 +42,9 @@ ReactDom.render((
     <MuiThemeProvider muiTheme={getMuiTheme()}>
         <BrowserRouter>
             <Switch>
-                <Route exact path='/'
-                       render={() => <HomePage/>}/>
-                <Route path='/login'    render={({history}) => <LoginPage history={history}/>}/>
-                <Route path='/signup'   render={({history}) => <SignUpPage history={history}/>}/>
-                <Route path='/logout'   component={RouterLogoutComponent}/>
+                <Route exact path='/' component={HomePage}/>
+                <Route path='/login'  component={LoginPage}/>
+                <Route path='/signup' component={SignUpPage}/>
                 <PrivateRoute path="/dashboard" component={DashboardPage}/>
             </Switch>
         </BrowserRouter>
