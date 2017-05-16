@@ -13,21 +13,19 @@ const styleSheet = createStyleSheet('Dashboard', () => ({
 }));
 
 const Dashboard = (props) => (
-    <Grid item xs={6}>
-        <Card className={props.classes.card}>
-            <CardContent>
-                <Typography type="headline">
-                    Dashboard
-                </Typography>
-                <Typography type="subheading">
-                    You should get access to this page only after authentication.
-                </Typography>
-                <Typography type="body1">
-                    {props.secretData}
-                </Typography>
-            </CardContent>
-        </Card>
-    </Grid>
+    <Card className={props.classes.card}>
+        <CardContent>
+            <Typography type="headline">
+                Dashboard
+            </Typography>
+            <Typography type="subheading">
+                You should get access to this page only after authentication.
+            </Typography>
+            <Typography type="body1">
+                {props.secretData}
+            </Typography>
+        </CardContent>
+    </Card>
 );
 
 Dashboard.propTypes = {

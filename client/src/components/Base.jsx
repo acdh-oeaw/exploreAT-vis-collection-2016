@@ -21,8 +21,8 @@ import { withStyles, createStyleSheet } from 'material-ui/styles';
 
 const Login = (props) => (
     <div>
-        <Link to="/login"><Button {...props} key={1}>Login</Button></Link>
-        <Link to="/signup"><Button {...props} key={2}>Sign up</Button></Link>
+        <Link to="/login"><Button {...props} contrast key={1}>Login</Button></Link>
+        <Link to="/signup"><Button {...props} contrast key={2}>Sign up</Button></Link>
     </div>
 );
 
@@ -45,7 +45,7 @@ const Logged = withRouter((props) => {
     //             {/*{<LogoutMenuItem/>}*/}
     //         </Menu>);
 
-    return <Button onTouchTap={() => {
+    return <Button contrast onTouchTap={() => {
         const { history } = props;
         Auth.deauthenticateUser();
         history.push('/');
@@ -84,13 +84,10 @@ class Base extends React.Component {
                 <AppBar className={this.classes.appBar}>
                     <Toolbar>
                         <Typography type="title" colorInherit className={this.classes.flex}>Explore.AT!</Typography>
-                        {Auth.isUserAuthenticated() ? <Logged/> : <Login/>}
+                            {Auth.isUserAuthenticated() ? <Logged/> : <Login/>}
                     </Toolbar>
                 </AppBar>
-                <Grid container className={this.classes.root} align={"center"} justify={"center"} gutter={8}>
-                    {this.props.children}
-                </Grid>
-
+                {this.props.children}
             </div>
         );
     }

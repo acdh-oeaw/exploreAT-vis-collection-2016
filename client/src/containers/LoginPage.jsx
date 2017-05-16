@@ -2,7 +2,19 @@ import React from 'react';
 import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
 import LoginForm from '../components/LoginForm.jsx';
-import Grid from 'material-ui/Grid';
+import BaseGrid from '../components/BaseGrid.jsx'
+import { withStyles, createStyleSheet } from 'material-ui/styles';
+
+const styleSheet = createStyleSheet('LoginPage', () => ({
+  card: {
+    padding: 12,
+    textAlign: 'center'
+  },
+  grid: {
+    paddingTop: 10
+  }
+}));
+
 
 class LoginPage extends React.Component {
 
@@ -103,7 +115,7 @@ class LoginPage extends React.Component {
     render() {
         return (
             <Base>
-                <Grid item xs={6}>
+                <BaseGrid>
                     <LoginForm
                         onSubmit={this.processForm}
                         onChange={this.changeUser}
@@ -111,10 +123,10 @@ class LoginPage extends React.Component {
                         successMessage={this.state.successMessage}
                         user={this.state.user}
                     />
-                </Grid>
+                </BaseGrid>
             </Base>
         );
     }
 }
 
-export default LoginPage;
+export default withStyles(styleSheet)(LoginPage);

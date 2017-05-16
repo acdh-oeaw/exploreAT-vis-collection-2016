@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
 import Dashboard from '../components/Dashboard.jsx';
+import BaseGrid from '../components/BaseGrid.jsx'
+import { withStyles, createStyleSheet } from 'material-ui/styles';
 
 
 class DashboardPage extends React.Component {
@@ -50,13 +52,16 @@ class DashboardPage extends React.Component {
      */
     render() {
         return Auth.isUserAuthenticated() ?
-            (<Base><Dashboard secretData={this.state.secretData} /></Base>) :
+            (<Base>
+                <BaseGrid>
+                    <Dashboard secretData={this.state.secretData} />
+                </BaseGrid>
+            </Base>) :
             (<Redirect to={{
                 pathname: '/login',
                 state: { from: this.props.location }
             }}/>);
     }
-
 }
 
 export default DashboardPage;

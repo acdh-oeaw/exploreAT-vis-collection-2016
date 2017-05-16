@@ -1,7 +1,19 @@
 import React from 'react';
+import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
 import SignUpForm from '../components/SignUpForm.jsx';
-import Grid from 'material-ui/Grid';
+import BaseGrid from '../components/BaseGrid.jsx'
+import { withStyles, createStyleSheet } from 'material-ui/styles';
+
+const styleSheet = createStyleSheet('SignUpPage', () => ({
+    card: {
+        padding: 12,
+        textAlign: 'center'
+    },
+    grid: {
+        paddingTop: 10
+    }
+}));
 
 
 class SignUpPage extends React.Component {
@@ -17,27 +29,13 @@ class SignUpPage extends React.Component {
             errors: {},
             user: {
                 email: '',
-                password: ''
+                password: '',
+                about: ''
             }
         };
 
         this.processForm = this.processForm.bind(this);
         this.changeUser = this.changeUser.bind(this);
-    }
-
-    /**
-     * Change the user object.
-     *
-     * @param {object} event - the JavaScript event object
-     */
-    changeUser(event) {
-        const field = event.target.name;
-        const user = this.state.user;
-        user[field] = event.target.value;
-
-        this.setState({
-            user
-        });
     }
 
     /**
@@ -52,7 +50,8 @@ class SignUpPage extends React.Component {
         // create a string for an HTTP body message
         const email = encodeURIComponent(this.state.user.email);
         const password = encodeURIComponent(this.state.user.password);
-        const formData = `email=${email}&password=${password}`;
+        const about = encodeURIComponent(this.state.user.about);
+        const formData = `email=${email}&password=${password}&about=${about}`;
 
         // create an AJAX request
         const xhr = new XMLHttpRequest();
@@ -88,22 +87,38 @@ class SignUpPage extends React.Component {
     }
 
     /**
+     * Change the user object.
+     *
+     * @param {object} event - the JavaScript event object
+     */
+    changeUser(event) {
+        const field = event.target.id;
+        const user = this.state.user;
+        user[field] = event.target.value;
+
+        this.setState({
+            user
+        });
+    }
+
+
+    /**
      * Render the component.
      */
     render() {
         return (
             <Base>
-                <Grid item xs={6}>
+                <BaseGrid>
                     <SignUpForm
                         onSubmit={this.processForm}
                         onChange={this.changeUser}
                         errors={this.state.errors}
                         user={this.state.user}
                     />
-                </Grid>
+                </BaseGrid>
             </Base>
         );
     }
 }
 
-export default SignUpPage;
+export default withStyles(styleSheet)(SignUpPage);

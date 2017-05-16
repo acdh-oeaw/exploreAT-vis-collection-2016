@@ -32,6 +32,11 @@ function validateSignupForm(payload) {
         errors.password = 'Password must have at least 8 characters.';
     }
 
+    if (!payload || typeof payload.about !== 'string' || payload.about.trim().length > 120) {
+        isFormValid = false;
+        errors.password = 'About field cannot be longer than 120 characters';
+    }
+
     if (!isFormValid) {
         message = 'Check the form for errors.';
     }

@@ -1,33 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Card, { CardContent } from 'material-ui/Card';
+import Card, { CardContent, CardActions } from 'material-ui/Card';
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 
+
 const styleSheet = createStyleSheet('SignupForm', () => ({
     card: {
         padding: 12,
-        textAlign: 'center'
+        textAlign: 'center',
+        minHeight: 275
     },
     container: {
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column'
+        // display: 'flex',
+        // justifyContent: 'center',
+        // flexDirection: 'column'
+    },
+    actions: {
+        justifyContent: 'center'
     },
     typography: {
-        paddingTop: 16,
-        order: 2
+        // paddingTop: 8,
+        // order: 2
     },
     input: {
-        margin: 'auto',
-        padding: 16,
-        width: '70%'
+        // margin: 'auto',
+        // // padding: 16,
+        // width: '80%'
     },
     form: {
-        order: 1,
+        // order: 1,
     }
 }));
 
@@ -48,7 +53,7 @@ const SignUpForm = ({
             </Typography>
 
             <div className={classes.container}>
-                <form action="/" onSubmit={onSubmit} className={classes.form}>
+                <form id="signupForm" action="/" onSubmit={onSubmit} className={classes.form}>
                     <TextField
                         className={classes.input}
                         required
@@ -70,12 +75,32 @@ const SignUpForm = ({
                         value={user.password}
                     />
 
-                    <Button type="submit" raised={true} primary>Create account</Button>
+                    {/*const formData = `email=${email}&password=${password}&about=${about}`;*/}
+
+                    <TextField
+                        className={classes.input}
+                        placeholder="Tell us about yourself: Affiliation, current field of study, how you got to know the project, etc."
+                        // label={"About yourself " + (120 - user.about) + ""}
+                        label={`About yourself (${user.about.length}/120)`}
+                        id="about"
+                        multiline
+                        inputProps={{"maxLength": 120}}
+                        rows = "4"
+                        rowsMax = "4"
+                        onChange={onChange}
+                        // errorText={errors.password}
+                        value={user.about}
+                    />
                 </form>
-                <Typography type="body1" className={classes.typography}>
-                    Already have an account? <Link to={'/login'}>Log in</Link>.
-                </Typography>
             </div>
+        </CardContent>
+        <CardActions className={classes.actions}>
+            <Button form="signupForm" type="submit" raised={true} primary>Sign up</Button>
+        </CardActions>
+        <CardContent>
+            <Typography type="body1" className={classes.typography}>
+                Already have an account? <Link to={'/login'}>Log in</Link>.
+            </Typography>
         </CardContent>
     </Card>
 );
