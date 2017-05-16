@@ -16,6 +16,12 @@ const express = require('express'),
 
 require('./server/models').connect(config.get('mongodb').url);
 
+// dev server only
+const webpackDevMiddleware = require('webpack-dev-middleware'),
+    webpackHotMiddleware = require('webpack-hot-middleware'),
+    webpack = require('webpack'),
+    webpackDevConfig = require('./webpack.config');
+
 const app = express();
 
 // uncomment after placing your favicon in /public
@@ -23,6 +29,20 @@ const app = express();
 
 if (app.get('env') === 'development') {
     app.use(logger('dev'));
+    const compiler = webpack(webpackDevConfig);
+
+    app.use(webpackDevMiddleware(compiler, {
+        // this tells the middleware where to send assets in memory, so
+        // if you're seeing 404's for assets it's probably because this isn't
+        // set correctly in this middleware
+        publicPath: webpackDevConfig.output.publicPath,
+        hot: true
+    }));
+
+    app.use(webpackHotMiddleware(compiler, {
+        reload: true // reload page when webpack gets stuck
+    }));
+
 } else app.use(logger('combined'));
 
 app.use(bodyparser.urlencoded({ extended: false }));
@@ -43,7 +63,7 @@ passport.use('jwt', jwtStrategy);
 const authCheckMiddleware = require('./server/middleware/auth-check');
 
 
-app.use('/', express.static(path.join(__dirname, 'public', 'static')));
+app.use(express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
 const authRoutes = require('./server/routes/auth');
 app.use('/auth', authRoutes);
@@ -52,6 +72,13 @@ app.use('/api', [authCheckMiddleware, api]);
 // app.use('/exploreat-v3/api', api);
 
 app.use('/', [authCheckMiddleware, express.static(path.join(__dirname, 'public'))]);
+
+
+// Always return the main index.html, so react-router render the route in the client
+app.get('*', (req, res) => {
+    console.log('Sending index.html');
+   res.sendFile(path.resolve(__dirname, 'public', 'static', 'index.html'));
+});
 
 // require('./config/passport')(passport, jwtconfig);
 

@@ -1,30 +1,54 @@
-const path = require('path');
+const { resolve } = require('path');
+const webpack = require('webpack');
 
+const hmr = [
+    'react-hot-loader/patch',
+    'webpack-hot-middleware/client?noInfo=false'
+];
 
 module.exports = {
-    // the entry file for the bundle
-    entry: path.join(__dirname, '/client/src/app.jsx'),
+    target: 'web',
+    entry: {
+        main: hmr.concat(['./client/src/app.jsx']),
+        vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom'
+        ]
+    },
 
     // the bundle file we will get in the result
     output: {
-        path: path.join(__dirname, '/client/dist/js'),
-        filename: 'app.js'
+        filename: '[name].js',
+        path: resolve(__dirname, 'client/dist/js'),
+        pathinfo: true,
+        publicPath: '/'
+    },
+
+    devtool: 'inline-source-map',
+    performance: {
+        hints: false
     },
 
     module: {
 
-        // apply loaders to files that meet given conditions
-        loaders: [{
-            test: /\.jsx?$/,
-            include: path.join(__dirname, '/client/src'),
-            loader: 'babel-loader',
-            query: {
-                presets: ['es2015', 'react', 'stage-2']
-            }
+        rules: [{
+            test: /\.jsx$/,
+            use: [{
+                loader: 'babel-loader'
+            }],
+            exclude: /node_modules/
         }]
     },
 
-    // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
-    watch: true
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
+        // new AssetsPlugin(),
+        // XXX manifest?
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: ['vendor']
+        // })
+    ]
 };
-
