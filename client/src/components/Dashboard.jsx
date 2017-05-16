@@ -1,21 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
+import { withStyles, createStyleSheet } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
 
+const styleSheet = createStyleSheet('Dashboard', () => ({
+    card: {
+        padding: 12,
+        textAlign: 'center'
+    },
+}));
 
-const Dashboard = ({ secretData }) => (
-    <Card className="container">
-        <CardTitle
-            title="Dashboard"
-            subtitle="You should get access to this page only after authentication."
-        />
-
-        {secretData && <CardText style={{ fontSize: '16px', color: 'green' }}>{secretData}</CardText>}
-    </Card>
+const Dashboard = (props) => (
+    <Grid item xs={6}>
+        <Card className={props.classes.card}>
+            <CardContent>
+                <Typography type="headline">
+                    Dashboard
+                </Typography>
+                <Typography type="subheading">
+                    You should get access to this page only after authentication.
+                </Typography>
+                <Typography type="body1">
+                    {props.secretData}
+                </Typography>
+            </CardContent>
+        </Card>
+    </Grid>
 );
 
 Dashboard.propTypes = {
     secretData: PropTypes.string.isRequired
 };
 
-export default Dashboard;
+export default withStyles(styleSheet)(Dashboard);

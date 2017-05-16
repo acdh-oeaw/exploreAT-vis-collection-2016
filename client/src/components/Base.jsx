@@ -1,54 +1,72 @@
+// @flow weak
+
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
 import PropTypes from 'prop-types';
+import Typography from 'material-ui/Typography';
+
 import { Link, withRouter } from 'react-router-dom';
 import Auth from '../modules/Auth';
-import FlatButton from 'material-ui/FlatButton';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Button from 'material-ui/Button';
+import Menu, { MenuItem } from 'material-ui/Menu';
+
+import Grid from 'material-ui/Grid';
+
+import MoreVert from 'material-ui-icons/MoreVert';
+
+import { withStyles, createStyleSheet } from 'material-ui/styles';
 
 
 
 const Login = (props) => (
     <div>
-        <Link to="/login"><FlatButton {...props} key={1} label="Login"/></Link>
-        <Link to="/signup"><FlatButton {...props} key={2} label="Signup"/></Link>
+        <Link to="/login"><Button {...props} key={1}>Login</Button></Link>
+        <Link to="/signup"><Button {...props} key={2}>Sign up</Button></Link>
     </div>
 );
 
-Login.muiName = 'FlatButton';
+Login.muiName = 'Button';
 
 
-const Logged = (props) => {
-    const LogoutMenuItem = withRouter((props) => (
-        <MenuItem primaryText="Sign out"
-                  onTouchTap={() => {
-                      const { history } = props;
-                      Auth.deauthenticateUser();
-                      history.push('/');
-                  }}
-        />
-    ));
-    return (<IconMenu
-        {...props}
-        iconButtonElement={
-            <IconButton><MoreVertIcon /></IconButton>
-        }
-        targetOrigin={{horizontal: 'right', vertical: 'top'}}
-        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-    >
-        {/*<MenuItem primaryText="Refresh" />*/}
-        {/*<MenuItem primaryText="Help" />*/}
-        {<LogoutMenuItem/>}
+const Logged = withRouter((props) => {
+    // const LogoutMenuItem = withRouter((props) => (
+    //     <MenuItem
+    //               onTouchTap={() => {
+    //                   const { history } = props;
+    //                   Auth.deauthenticateUser();
+    //                   history.push('/');
+    //               }}
+    //     > Log Out </MenuItem>
+    // ));
+    // return ( <Menu>
+    //             <MenuItem>Mama</MenuItem>
+    //             <MenuItem>Papa</MenuItem>
+    //             {/*{<LogoutMenuItem/>}*/}
+    //         </Menu>);
 
-    </IconMenu>);
-};
+    return <Button onTouchTap={() => {
+        const { history } = props;
+        Auth.deauthenticateUser();
+        history.push('/');
+    }}>Sign out</Button>
+});
+
+// Logged.muiName = 'IconMenu';
 
 
-
-Logged.muiName = 'IconMenu';
+const styleSheet = createStyleSheet('Base', () => ({
+    root: {
+        position: 'relative',
+        width: '100%',
+    },
+    appBar: {
+        position: 'relative',
+    },
+    flex: {
+        flex: 1,
+    },
+}));
 
 
 class Base extends React.Component {
@@ -57,18 +75,22 @@ class Base extends React.Component {
      */
     constructor(props) {
         super(props);
-
+        this.classes = props.classes;
     }
 
     render() {
         return (
-            <div>
-                <AppBar
-                    title="Explore.AT!"
-                    showMenuIconButton = {false}
-                    iconElementRight={Auth.isUserAuthenticated() ? <Logged/> : <Login/>}
-                />
-                {this.props.children}
+            <div className={this.classes.root}>
+                <AppBar className={this.classes.appBar}>
+                    <Toolbar>
+                        <Typography type="title" colorInherit className={this.classes.flex}>Explore.AT!</Typography>
+                        {Auth.isUserAuthenticated() ? <Logged/> : <Login/>}
+                    </Toolbar>
+                </AppBar>
+                <Grid container className={this.classes.root} align={"center"} justify={"center"} gutter={8}>
+                    {this.props.children}
+                </Grid>
+
             </div>
         );
     }
@@ -78,4 +100,4 @@ Base.propTypes = {
     children: PropTypes.object.isRequired
 };
 
-export default Base;
+export default withStyles(styleSheet)(Base);

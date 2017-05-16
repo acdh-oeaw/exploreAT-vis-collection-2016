@@ -1,6 +1,7 @@
 import React from 'react';
 import Base from '../components/Base.jsx';
 import SignUpForm from '../components/SignUpForm.jsx';
+import Grid from 'material-ui/Grid';
 
 
 class SignUpPage extends React.Component {
@@ -92,12 +93,14 @@ class SignUpPage extends React.Component {
     render() {
         return (
             <Base>
-                <SignUpForm
-                    onSubmit={this.processForm}
-                    onChange={this.changeUser}
-                    errors={this.state.errors}
-                    user={this.state.user}
-                />
+                <Grid item xs={6}>
+                    <SignUpForm
+                        onSubmit={this.processForm}
+                        onChange={this.changeUser}
+                        errors={this.state.errors}
+                        user={this.state.user}
+                    />
+                </Grid>
             </Base>
         );
     }

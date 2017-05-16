@@ -1,14 +1,29 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import createMuiTheme from 'material-ui/styles/theme'
+
+import {grey, lightBlue, red} from 'material-ui/styles/colors'
+
+import createPalette from 'material-ui/styles/palette'
+
+const muiTheme = createMuiTheme({
+    palette: createPalette({
+        primary: lightBlue,
+        accent: grey,
+        error: red,
+    })
+});
+
+
 import {
-    BrowserRouter,
+    BrowserRouter as Router,
     Switch,
     Route,
-    Redirect,
-    withRouter
+    Redirect
 } from 'react-router-dom';
 
 
@@ -39,14 +54,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 
 ReactDom.render((
-    <MuiThemeProvider muiTheme={getMuiTheme()}>
-        <BrowserRouter>
+    <MuiThemeProvider>
+        <Router>
             <Switch>
                 <Route exact path='/' component={HomePage}/>
                 <Route path='/login'  component={LoginPage}/>
                 <Route path='/signup' component={SignUpPage}/>
                 <PrivateRoute path="/dashboard" component={DashboardPage}/>
             </Switch>
-        </BrowserRouter>
+        </Router>
     </MuiThemeProvider>), document.getElementById('react-app'));
 

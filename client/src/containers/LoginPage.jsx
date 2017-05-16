@@ -2,7 +2,7 @@ import React from 'react';
 import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
 import LoginForm from '../components/LoginForm.jsx';
-
+import Grid from 'material-ui/Grid';
 
 class LoginPage extends React.Component {
 
@@ -88,7 +88,7 @@ class LoginPage extends React.Component {
      * @param {object} event - the JavaScript event object
      */
     changeUser(event) {
-        const field = event.target.name;
+        const field = event.target.id;
         const user = this.state.user;
         user[field] = event.target.value;
 
@@ -103,13 +103,15 @@ class LoginPage extends React.Component {
     render() {
         return (
             <Base>
-                <LoginForm
-                    onSubmit={this.processForm}
-                    onChange={this.changeUser}
-                    errors={this.state.errors}
-                    successMessage={this.state.successMessage}
-                    user={this.state.user}
-                />
+                <Grid item xs={6}>
+                    <LoginForm
+                        onSubmit={this.processForm}
+                        onChange={this.changeUser}
+                        errors={this.state.errors}
+                        successMessage={this.state.successMessage}
+                        user={this.state.user}
+                    />
+                </Grid>
             </Base>
         );
     }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
 import Dashboard from '../components/Dashboard.jsx';
@@ -48,7 +49,12 @@ class DashboardPage extends React.Component {
      * Render the component.
      */
     render() {
-        return (<Base><Dashboard secretData={this.state.secretData} /></Base>);
+        return Auth.isUserAuthenticated() ?
+            (<Base><Dashboard secretData={this.state.secretData} /></Base>) :
+            (<Redirect to={{
+                pathname: '/login',
+                state: { from: this.props.location }
+            }}/>);
     }
 
 }
