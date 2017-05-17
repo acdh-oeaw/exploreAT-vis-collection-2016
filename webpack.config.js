@@ -1,5 +1,7 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 const hmr = [
     'react-hot-loader/patch',
@@ -22,14 +24,11 @@ module.exports = {
         filename: '[name].js',
         path: resolve(__dirname, 'client/dist/js'),
         pathinfo: true,
-        publicPath: '/'
+        publicPath: '/js/'
     },
-
-    devtool: 'inline-source-map',
     performance: {
         hints: false
     },
-
     module: {
 
         rules: [{
@@ -40,15 +39,20 @@ module.exports = {
             exclude: /node_modules/
         }]
     },
-
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
         // new AssetsPlugin(),
         // XXX manifest?
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: ['vendor']
-        // })
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            filename: "vendor.js",
+
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            filename: "[file].map",
+            exclude: ["vendor.js"]
+        })
     ]
 };

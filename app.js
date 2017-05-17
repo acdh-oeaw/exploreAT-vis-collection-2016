@@ -73,6 +73,16 @@ app.use('/api', [authCheckMiddleware, api]);
 
 app.use('/', [authCheckMiddleware, express.static(path.join(__dirname, 'public'))]);
 
+// catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//     res.status(404).send("Sorry can't find that!");
+// });
+
+app.use(function(req, res, next) {
+    res.header("access-control-allow-origin", "*");
+    res.header("access-control-allow-headers", "origin, x-requested-with, content-type, accept");
+    next();
+});
 
 // Always return the main index.html, so react-router render the route in the client
 app.get('*', (req, res) => {
@@ -80,20 +90,11 @@ app.get('*', (req, res) => {
    res.sendFile(path.resolve(__dirname, 'public', 'static', 'index.html'));
 });
 
-// require('./config/passport')(passport, jwtconfig);
 
 
-app.use(function(req, res, next) {
-  res.header("access-control-allow-origin", "*");
-  res.header("access-control-allow-headers", "origin, x-requested-with, content-type, accept");
-  next();
-});
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  res.status(404).send("Sorry can't find that!");
-});
+
 
 // error handlers
 
