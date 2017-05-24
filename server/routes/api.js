@@ -1,4 +1,5 @@
 const express = require('express'),
+    path = require('path'),
     router = express.Router(),
     config = require('config'),
     flickrConfig = config.get('flickr'),
@@ -39,9 +40,13 @@ dbClient.connect(function(err) {
     }
 });
 
-router.get('/dashboard', (req, res) => {
-    res.status(200).json({
-        message: "You're authorized to see this secret message."
+router.get('/dashboard/:version?', (req, res) => {
+    if (req.params.version === 'v3') {
+        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-v3.json'));
+    } else if (req.params.version === 'v4') {
+        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-v4.json'));
+    } else res.status(404).json({
+        message: "That page doesn't exist"
     });
 });
 

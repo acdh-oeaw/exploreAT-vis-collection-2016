@@ -32,7 +32,7 @@ class BaseGrid extends Component {
         direction: 'row',
         justify: 'center',
         align: 'center',
-        gutter: '8',
+        gutter: '24',
     };
 
 

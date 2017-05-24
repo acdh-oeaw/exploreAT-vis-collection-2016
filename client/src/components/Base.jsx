@@ -9,11 +9,7 @@ import Typography from 'material-ui/Typography';
 import { Link, withRouter } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import Button from 'material-ui/Button';
-import Menu, { MenuItem } from 'material-ui/Menu';
 
-import Grid from 'material-ui/Grid';
-
-import MoreVert from 'material-ui-icons/MoreVert';
 
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 
