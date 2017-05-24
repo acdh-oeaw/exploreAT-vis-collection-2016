@@ -30,7 +30,6 @@ module.exports = {
         hints: false
     },
     module: {
-
         rules: [{
             test: /\.jsx$/,
             use: [{

@@ -1,25 +1,23 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
-const AssetsPlugin = require('assets-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     target: 'web',
     entry: {
-        main: './src/client/index.js',
+        main: './client/src/app.jsx',
         // TODO consider externals here
         vendor: [
             'react',
             'react-dom',
-            'redux',
-            'react-redux',
-            'react-router',
-            'react-router-redux'
+            'react-router-dom',
+            'material-ui'
         ]
     },
     output: {
         filename: '[chunkhash].[name].js',
-        path: resolve(__dirname, '../public'),
-        publicPath: '/pub/'
+        path: resolve(__dirname, 'client/dist/js'),
+        publicPath: '/js/'
     },
     stats: 'verbose',
     performance: {
@@ -27,15 +25,20 @@ module.exports = {
     },
     module: {
         rules: [{
-            test: /\.js$/,
-            use: [ 'babel-loader' ],
+            test: /\.jsx$/,
+            use: [{
+                loader: 'babel-loader'
+            }],
             exclude: /node_modules/
         }]
     },
     plugins: [
-        new AssetsPlugin(),
+        // new AssetsPlugin(),
+        new webpack.DefinePlugin({ 'process.env': { 'NODE_ENV': JSON.stringify('production') } }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['vendor']
-        })
+            name: 'vendor',
+            filename: "vendor.js",
+        }),
+        new BundleAnalyzerPlugin()
     ]
 };
