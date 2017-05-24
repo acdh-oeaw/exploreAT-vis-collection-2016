@@ -1,0 +1,136 @@
+{
+  "exp-rdf-plants-raw" : {
+    "mappings" : {
+      "exp-rdf-plants-raw-type" : {
+        "properties" : {
+          "URI" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "URItype" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "comment" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "commonName" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "commonNameType" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "evokedByEntryWithURI" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "geography" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "language" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "lexicalFormURI" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "region" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "relatedURI" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "scientificName" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "source" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          },
+          "type" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            } 
+          }
+        }
+      }
+    }
+  }
+}

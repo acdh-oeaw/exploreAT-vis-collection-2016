@@ -1,0 +1,76 @@
+{
+  "dboe-beleg-frage-fragebogen-lemma" : {
+    "mappings" : {
+      "beleg-frage-fragebogen-lemma" : {
+        "properties" : {
+          "fragebogen_nummer" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "fragebogen_titel" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed",
+              }
+            }
+          },
+          "frages" : {
+            "type" : "nested",
+            "include_in_parent" : true,
+            "properties" : {
+              "frage_id" : {
+                "type" : "long"
+              },
+              "lemmas" : {
+                "type" : "nested",
+                "include_in_parent" : true,
+                "properties" : {
+                  "belegs" : {
+                    "type" : "nested",
+                    "include_in_parent" : true,
+                    "properties" : {
+                      "beleg" : {
+                        "type" : "string",
+                        "fields" : {
+                          "raw" : {
+                            "type" : "string",
+                            "index" : "not_analyzed"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "dbo" : {
+                    "type" : "string",
+                    "fields" : {
+                      "raw" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                      }
+                    }
+                  }
+                }
+              },
+              "originalFrage" : {
+                "type" : "string",
+                "fields" : {
+                  "raw" : {
+                    "type" : "string",
+                    "index" : "not_analyzed"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "dboe-beleg_bedeutung_lemma_v10" : {
+    "mappings" : {
+      "beleg_bedeutung_lemma" : {
+        "properties" : {
+          "bedeutung" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "beleg" : {
+            "type" : "string"
+          },
+          "belegjahr" : {
+            "type" : "string"
+          },
+          "dbo" : {
+            "type" : "string",
+            "fields" : {
+              "raw" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              }
+            }
+          },
+          "grammatik" : {
+            "type" : "string"
+          },
+          "katalog" : {
+            "type" : "string"
+          },
+          "lade" : {
+            "type" : "string"
+          },
+          "lokation" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
