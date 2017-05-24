@@ -15,6 +15,15 @@ const styleSheet = createStyleSheet('SimpleMediaCard', {
     },
 });
 
+function SpecialLink(props) {
+    return (
+        props.open_tab ?
+            <Link to={props.link} target="_blank"> {props.children} </Link>
+            :
+            <Link to={props.link}> {props.children} </Link>
+    );
+}
+
 function SimpleMediaCard(props) {
     const classes = props.classes;
     const cardInfo = props.cardInfo;
@@ -24,7 +33,7 @@ function SimpleMediaCard(props) {
                 {cardInfo.title}
             </Typography>
             <CardMedia>
-                <Link to={cardInfo.href}> <img src={cardInfo.image_src}/> </Link>
+                <SpecialLink {...cardInfo.href}> <img src={cardInfo.image_src}/> </SpecialLink>
             </CardMedia>
             <Divider light/>
             <Typography type="body1" component="p" secondary={true}>

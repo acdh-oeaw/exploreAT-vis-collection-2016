@@ -41,10 +41,10 @@ dbClient.connect(function(err) {
 });
 
 router.get('/dashboard/:version?', (req, res) => {
-    if (req.params.version === 'v3') {
-        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-v3.json'));
-    } else if (req.params.version === 'v4') {
-        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-v4.json'));
+    if (parseInt(req.params.version) === 3) {
+        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-3.json'));
+    } else if (parseInt(req.params.version) === 4) {
+        res.sendFile(path.resolve(__dirname, '..', 'data', 'dashboard-4.json'));
     } else res.status(404).json({
         message: "That page doesn't exist"
     });

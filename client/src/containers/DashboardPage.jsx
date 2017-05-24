@@ -24,8 +24,6 @@ class DashboardPage extends React.Component {
 
         if (props.match.params.version === undefined) {
             this.setDefaultCards(false);
-        } else {
-            this.state.version = props.match.params.version;
         }
     }
 
@@ -35,8 +33,8 @@ class DashboardPage extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.match.params.version === prevProps.match.params.version &&
             this.state.cardsInfo.length !== 0) return;
-        if (this.props.match.params.version === 'v3' ||
-            this.props.match.params.version === 'v4') {
+        if (this.props.match.params.version === '3' ||
+            this.props.match.params.version === '4') {
             const xhr = new XMLHttpRequest();
             xhr.open('get', `/api/dashboard/${this.props.match.params.version}`);
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -85,12 +83,18 @@ class DashboardPage extends React.Component {
         state.cardsInfo = [
             {"id": 1,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
-                "href": `${this.props.match.url}/v3`,
+                "href": {
+                    "link": `${this.props.match.url}/3`,
+                    "open_tab": false
+                },
                 "title": "2016 Prototypes",
                 "text": "Access to the visual prototypes made during the first year of ExploreAT!"},
             {"id": 2,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
-                "href": `${this.props.match.url}/v4`,
+                "href": {
+                    "link": `${this.props.match.url}/4`,
+                    "open_tab": false
+                },
                 "title": "2017 Prototypes",
                 "text": "Access to the visual prototypes made during the second year of ExploreAT!"}
         ];

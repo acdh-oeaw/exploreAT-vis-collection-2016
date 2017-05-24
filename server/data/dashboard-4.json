@@ -1,54 +1,85 @@
 {
-  "dashboard_version": "v3",
+  "dashboard_version": "4",
   "cardsInfo": [
     {"id": 1,
     "image_src": "/exploreat-v3/img/home/ex_words.png",
-    "href": "/exploreat-v3/ex_words.html",
-    "title": "Geographical Lemmas",
-    "text": "Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map."},
+    "href" : {
+      "link" : "/exploreat-v3/ex_words.html",
+      "open_tab": true
+    },  
+    "title" : "Geographical Lemmas",
+    "text" : "Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map."},
     {"id": 2,
       "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
-      "href": "/exploreat-v3/ex_words_sources.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_words_sources.html",
+        "open_tab": true
+      },
       "title": "Word-Source Relations",
       "text": "Geographical exploration of Lemmas, including filtering and relations between words based on the source they appear in when clicking on any of them."},
     {"id": 3,
       "image_src": "/exploreat-v3/img/home/ex_word_treemap.png",
-      "href": "/exploreat-v3/ex_word_treemap.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_word_treemap.html",
+        "open_tab": true
+      },
+      "open_tab": true,
       "title": "Lemma Context Navigation",
       "text": "Geographical exploration of Lemmas, with filtering options (text, part of speech and year) enabled to highlight only certain words in the map."},
     {"id": 4,
       "image_src": "/exploreat-v3/img/home/ex_fragebogen_data_div.png",
-      "href": "/exploreat-v3/ex_fragebogen_data_div.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_fragebogen_data_div.html",
+        "open_tab": true
+      },
       "title": "Raw Questionnaire Exploration",
       "text": "Generate dynamic HTML based hierarchies with Questionnaires that hold Questions that reference Lemmas."},
     {"id": 5,
       "image_src": "/exploreat-v3/img/home/ex_fragebogen_data_tree.png",
-      "href": "/exploreat-v3/ex_fragebogen_data_tree.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_fragebogen_data_tree.html",
+        "open_tab": true
+      },
       "title": "Hierarchical Questionnaire Tree",
       "text": "Dynamic tree generation of Questionnaire hierarchies based on the content matching searches."},
     {"id": 6,
       "image_src": "/exploreat-v3/img/home/ex_fragebogen_data_circles.png",
-      "href": "/exploreat-v3/ex_fragebogen_data_circles.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_fragebogen_data_circles.html",
+        "open_tab": true
+      },
       "title": "Circle Packed Questionnaires",
       "text": "Questionnaire exploration through a hierarchy of packed circles which highlight relations between questions and lemmas."},
     {"id": 7,
       "image_src": "/exploreat-v3/img/home/ex_bedeutung.png",
-      "href": "/exploreat-v3/ex_bedeutung.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_bedeutung.html",
+        "open_tab": true
+      },
       "title": "Bedeutung Prototype.",
       "text": "This is a prototype to explore the BD field"},
     {"id": 8,
       "image_src": "/exploreat-v3/img/home/ex_tustep_map.png",
-      "href": "/exploreat-v3/ex_tustep_map.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_tustep_map.html",
+        "open_tab": true
+      },
       "title": "TUSTEP Map",
       "text": "TUSTEP Spatio-Temporal Analysis Tool."},
     {"id": 9,
       "image_src": "/exploreat-v3/img/home/ex_questionnaire_explorer.png",
-      "href": "/exploreat-v3/ex_questionnaire_explorer.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_questionnaire_explorer.html",
+        "open_tab": true
+      },
       "title": "Questionnaire Explorer",
       "text": "Multi-view Questioner Explorer."},
     {"id": 10,
       "image_src": "/exploreat-v3/img/home/ex_rdf_plants.png",
-      "href": "/exploreat-v3/ex_rdf_plants.html",
+      "href" : {
+        "link" : "/exploreat-v3/ex_rdf_plants.html",
+        "open_tab": true
+      },
       "title": "RDF Plants Explorer",
       "text": "Scientific and Common Plant name explorer based on RDF data and connected to Europeana."}
   ]
