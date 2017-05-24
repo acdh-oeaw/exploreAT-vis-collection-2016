@@ -97,7 +97,7 @@ class DashboardPage extends React.Component {
                     "open_tab": false
                 },
                 "title": "2017 Prototypes",
-                "text": "Access to the visual prototypes made during the second year of ExploreAT!"}
+                "text": "Access to the visual prototypes we're currently working on"}
         ];
         if (setState)
             this.setState(state);

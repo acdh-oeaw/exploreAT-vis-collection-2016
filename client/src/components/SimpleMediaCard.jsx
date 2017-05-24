@@ -13,6 +13,15 @@ const styleSheet = createStyleSheet('SimpleMediaCard', {
         textAlign: 'center',
         padding: 5
     },
+    cover: {
+        width: 300
+    },
+    typoDiv: {
+        display: 'flex',
+        'justify-content': 'center',
+        'align-items': 'center',
+        minHeight: 80
+    }
 });
 
 function SpecialLink(props) {
@@ -29,16 +38,19 @@ function SimpleMediaCard(props) {
     const cardInfo = props.cardInfo;
     return (
         <Card className={classes.card}>
-            <Typography type="headline" component="h2">
+            <Typography type="title" component="h2">
                 {cardInfo.title}
             </Typography>
             <CardMedia>
-                <SpecialLink {...cardInfo.href}> <img src={cardInfo.image_src}/> </SpecialLink>
+                <SpecialLink {...cardInfo.href}> <img className={classes.cover} src={cardInfo.image_src}/></SpecialLink>
+                {/*<img className={classes.cover} src={cardInfo.image_src}/>*/}
             </CardMedia>
             <Divider light/>
-            <Typography type="body1" component="p" secondary={true}>
-                {cardInfo.text}
-            </Typography>
+            <div className={classes.typoDiv}>
+                <Typography type="body1" component="p" secondary={true}>
+                    {cardInfo.text}
+                </Typography>
+            </div>
         </Card>
     );
 }
