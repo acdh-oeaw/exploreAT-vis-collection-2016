@@ -80,11 +80,12 @@ class DashboardPage extends React.Component {
 
     setDefaultCards (setState) {
         let state = this.state;
+        const { match } = this.props;
         state.cardsInfo = [
             {"id": 1,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
                 "href": {
-                    "link": `${this.props.match.url}/3`,
+                    "link": `${match.url.split('/').slice(0, -1).join('/')}/3`,
                     "open_tab": false
                 },
                 "title": "2016 Prototypes",
@@ -92,7 +93,7 @@ class DashboardPage extends React.Component {
             {"id": 2,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
                 "href": {
-                    "link": `${this.props.match.url}/4`,
+                    "link": `${match.url.split('/').slice(0, -1).join('/')}/4`,
                     "open_tab": false
                 },
                 "title": "2017 Prototypes",
