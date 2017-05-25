@@ -144,17 +144,39 @@ module.exports = (nev) => {
                     });
                 }
 
+                if (err.name === 'ExistingPersistenUserError') {
+                    return res.status(400).json({
+                        success: false,
+                        message: err.message,
+                        errors: {
+                            email: 'This email is already taken.'
+                        }
+                    })
+                }
+
+                if (err.name === 'ExistingTempUserError') {
+                    return res.status(400).json({
+                        success: false,
+                        message: err.message,
+                        errors: {
+                            email: 'This email is already taken.'
+                        }
+                    })
+                }
+
                 return res.status(400).json({
                     success: false,
                     message: 'Could not process the form.'
                 });
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    message: 'You have successfully signed up. ' +
+                    'We will review your account details and will get back to you shortly'
+                });
             }
 
-            return res.status(200).json({
-                success: true,
-                message: 'You have successfully signed up. ' +
-                'We will review your account details and will get back to you shortly'
-            });
+
         })(req, res, next);
     });
 

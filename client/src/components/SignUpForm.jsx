@@ -12,19 +12,18 @@ const styleSheet = createStyleSheet('SignupForm', () => ({
     card: {
         padding: 12,
         textAlign: 'center',
-        minHeight: 275
+        minHeight: 470,
+        width: 300
     },
     container: {
-        // display: 'flex',
-        // justifyContent: 'center',
-        // flexDirection: 'column'
+        paddingTop: 10
+    },
+    errorMessage: {
+        color: "red",
+        paddingTop: 5
     },
     actions: {
         justifyContent: 'center'
-    },
-    typography: {
-        // paddingTop: 8,
-        // order: 2
     },
     input: {
         // margin: 'auto',
@@ -48,10 +47,6 @@ const SignUpForm = ({
             <Typography type="headline">
                 Signup
             </Typography>
-            <Typography type="subheading">
-                {errors.summary && <p className="error-message">{errors.summary}</p>}
-            </Typography>
-
             <div className={classes.container}>
                 <form id="signupForm" action="/" onSubmit={onSubmit} className={classes.form}>
                     <TextField
@@ -75,6 +70,17 @@ const SignUpForm = ({
                         value={user.password}
                     />
 
+                    <TextField
+                        className={classes.input}
+                        required
+                        label="Repeat password"
+                        id="passwordRepeat"
+                        type="password"
+                        onChange={onChange}
+                        // errorText={errors.password}
+                        value={user.passwordRepeat}
+                    />
+
                     {/*const formData = `email=${email}&password=${password}&about=${about}`;*/}
 
                     <TextField
@@ -95,13 +101,21 @@ const SignUpForm = ({
             </div>
         </CardContent>
         <CardActions className={classes.actions}>
-            <Button form="signupForm" type="submit" raised={true} primary>Sign up</Button>
+            {user.canSubmit && <Button form="signupForm" type="submit" raised={true} primary>Sign up</Button>}
+            {!user.canSubmit && <Button form="signupForm" type="submit" disabled={true} raised={true} primary>Sign up</Button>}
         </CardActions>
         <CardContent>
-            <Typography type="body1" className={classes.typography}>
-                Already have an account? <Link to={'/login'}>Log in</Link>.
+            <div>
+            <Typography type="body1">
+                Already have an account? <Link to={'/login'}>Log in</Link>
             </Typography>
+            <Typography type="body1" className={classes.errorMessage}>
+                {(!user.passwordsMatch && "Passwords don't match") || (errors.summary && errors.summary)}
+            </Typography>
+            </div>
+
         </CardContent>
+
     </Card>
 );
 

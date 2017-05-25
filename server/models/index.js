@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
     nev = require('email-verification')(mongoose),
     bcrypt = require('bcrypt');
 
-module.exports.connect = (uri, emailPassword) => {
+module.exports.connect = (uri, emailConfig) => {
     mongoose.connect(uri);
     // plug in the promise library:
     mongoose.Promise = global.Promise;
@@ -21,8 +21,8 @@ module.exports.connect = (uri, emailPassword) => {
         transportOptions: {
             service: 'Gmail',
             auth: {
-                user: 'grial@usal.es',
-                pass: emailPassword
+                user: emailConfig.address,
+                pass: emailConfig.password
             }
         },
         verifyMailOptions: {

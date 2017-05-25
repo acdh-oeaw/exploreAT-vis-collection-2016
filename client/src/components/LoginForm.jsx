@@ -11,12 +11,14 @@ const styleSheet = createStyleSheet('LoginForm', () => ({
     card: {
         padding: 12,
         textAlign: 'center',
-        minHeight: 275
+        minHeight: 350,
+        width: 300
     },
     container: {
-        // display: 'flex',
-        // justifyContent: 'center',
-        // flexDirection: 'column'
+        paddingTop: 10
+    },
+    errorMessage: {
+        color: "red"
     },
     actions: {
         justifyContent: 'center'
@@ -48,11 +50,6 @@ const LoginForm = ({
                 <Typography type="headline">
                     Login
                 </Typography>
-                <Typography type="subheading">
-                    {/*{successMessage && <p className="success-message">{successMessage}</p>}*/}
-                    {/*{errors.summary && <p className="error-message">{errors.summary}</p>}*/}
-                </Typography>
-
                 <div className={classes.container}>
                     <form id="loginForm" action="/" onSubmit={onSubmit} className={classes.form}>
                         <TextField
@@ -84,6 +81,9 @@ const LoginForm = ({
             <CardContent>
                 <Typography type="body1" className={classes.typography}>
                     Don't have an account? <Link to={'/signup'}>Create one</Link>.
+                </Typography>
+                <Typography>
+                    {errors.summary && <p className={classes.errorMessage}>{errors.summary}</p>}
                 </Typography>
             </CardContent>
         </Card>

@@ -23,7 +23,7 @@ module.exports = new PassportLocalStrategy({
         if (err) { return done(err); }
 
         if (!user) {
-            const error = new Error('The email does not exist');
+            const error = new Error("The account does not exist or it has not been approved yet");
             error.name = 'IncorrectCredentialsError';
 
             return done(error);

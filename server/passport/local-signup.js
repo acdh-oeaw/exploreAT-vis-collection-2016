@@ -18,10 +18,17 @@ module.exports = (nev) => {
 
         const newUser = new User(userData);
         nev.createTempUser(newUser, (err, existingPersistentUser, newTempUser) => {
-            if (err)
-                console.log(err);
-            if (existingPersistentUser)
-                console.log('user already exists');
+            if (err) {
+                console.error(err);
+                return done(err);
+            }
+
+            if (existingPersistentUser) {
+                err.name = "ExistingPersistentUserError";
+                err.message = "This account is already registered.";
+                console.warn(err);
+                return done(err);
+            }
 
             if (newTempUser) {
                 const URL = newTempUser[nev.options.URLFieldName];
@@ -34,8 +41,13 @@ module.exports = (nev) => {
                         console.log(err);
                     console.log('Email successfully sent!');
                 });
+                return done(null);
             } else {
-                console.log("Couldn't create new user");
+                err = {}
+                err.name = "ExistingTempUserError";
+                err.message = "This account is already registered but hasn't been approved yet.";
+                console.error(err);
+                return done(err);
             }
         });
     });

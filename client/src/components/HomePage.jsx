@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Base from '../components/Base.jsx';
 import BaseGrid from '../components/BaseGrid.jsx'
-import Card, { CardContent } from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 
@@ -13,7 +13,8 @@ const styleSheet = createStyleSheet('HomePage', () => ({
     card: {
         padding: 12,
         textAlign: 'center',
-        minWidth: 275
+        minWidth: 275,
+        maxWidth: 320
     },
     // grid: {
     //     paddingTop: 10
@@ -21,25 +22,32 @@ const styleSheet = createStyleSheet('HomePage', () => ({
 }));
 
 
-const HomePage = (props) => (
-    <Base>
-        <BaseGrid>
-                <Card className={props.classes.card}>
-                    <CardContent>
+const HomePage = (props) => {
+    let headline = "ExploreAT! Prototypes",
+        message = "This is the home page of the ExploreAT project visual prototypes";
+    if (props.location.state !== undefined) {
+        headline = props.location.state.headline;
+        message = props.location.state.message;
+    }
+    return (
+            <Base>
+                <BaseGrid>
+                    <Paper className={props.classes.card}>
                         <Typography type="headline">
-                            ExploreAT! Prototypes
+                            {headline}
                         </Typography>
                         <Typography type="subheading">
-                            This is the home page of the ExploreAT project visual prototypes.
+                            {message}
                         </Typography>
-                    </CardContent>
-                </Card>
-        </BaseGrid>
-    </Base>
-);
+                    </Paper>
+                </BaseGrid>
+            </Base>
+        );
+}
 
 // HomePage.propTypes = {
-//     classes: PropTypes.object.isRequired,
+//     headline: PropTypes.string.isRequired,
+//     message: PropTypes.string.isRequired
 // };
 
 export default withStyles(styleSheet)(HomePage);

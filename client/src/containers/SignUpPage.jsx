@@ -1,5 +1,5 @@
 import React from 'react';
-import Auth from '../modules/Auth';
+import Redirect from 'react-router-dom/Redirect';
 import Base from '../components/Base.jsx';
 import SignUpForm from '../components/SignUpForm.jsx';
 import BaseGrid from '../components/BaseGrid.jsx'
@@ -30,8 +30,13 @@ class SignUpPage extends React.Component {
             user: {
                 email: '',
                 password: '',
-                about: ''
-            }
+                passwordRepeat: '',
+                about: '',
+                passwordsMatch: true,
+                canSubmit: false
+            },
+            successMessage: '',
+            didSignup: false
         };
 
         this.processForm = this.processForm.bind(this);
@@ -64,14 +69,10 @@ class SignUpPage extends React.Component {
 
                 // change the component-container state
                 this.setState({
-                    errors: {}
+                    errors: {},
+                    didSignup: true,
+                    successMessage: xhr.response.message
                 });
-
-                // set a message
-                localStorage.setItem('successMessage', xhr.response.message);
-
-                // make a redirect
-                this.props.history.push('/login');
             } else {
                 // failure
 
@@ -96,6 +97,13 @@ class SignUpPage extends React.Component {
         const user = this.state.user;
         user[field] = event.target.value;
 
+        if (field == 'password' || field == 'passwordRepeat') {
+            user.passwordsMatch = user.password === user.passwordRepeat;
+        }
+
+        user.canSubmit = ["email","password","passwordRepeat"].reduce((acc, val) => acc && user[val].length > 0, true)
+            && user.passwordsMatch;
+
         this.setState({
             user
         });
@@ -106,18 +114,26 @@ class SignUpPage extends React.Component {
      * Render the component.
      */
     render() {
-        return (
-            <Base>
-                <BaseGrid>
-                    <SignUpForm
-                        onSubmit={this.processForm}
-                        onChange={this.changeUser}
-                        errors={this.state.errors}
-                        user={this.state.user}
-                    />
-                </BaseGrid>
-            </Base>
-        );
+        return this.state.didSignup ?
+            (<Redirect to={{
+                pathname: '/',
+                state: {
+                    headline : "Thank you!",
+                    message: this.state.successMessage
+                }
+            }} />)
+            :(
+                <Base>
+                    <BaseGrid>
+                        <SignUpForm
+                            onSubmit={this.processForm}
+                            onChange={this.changeUser}
+                            errors={this.state.errors}
+                            user={this.state.user}
+                        />
+                    </BaseGrid>
+                </Base>
+            );
     }
 }
 

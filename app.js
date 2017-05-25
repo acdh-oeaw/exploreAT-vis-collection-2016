@@ -12,7 +12,7 @@ const express = require('express'),
 
 
 const models = require('./server/models');
-models.connect(config.get('mongodb').url, config.get('emailPassword'));
+models.connect(config.get('mongodb').url, config.get('email'));
 
 const nev = models.nev;
 
