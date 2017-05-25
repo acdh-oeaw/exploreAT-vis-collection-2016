@@ -8,13 +8,13 @@ const express = require('express'),
 
     api = require('./server/routes/api'),
     passport = require('passport'),
-    mongoose = require('mongoose'),
-
-
     session = require('express-session');
 
 
-require('./server/models').connect(config.get('mongodb').url);
+const models = require('./server/models');
+models.connect(config.get('mongodb').url, config.get('emailPassword'));
+
+const nev = models.nev;
 
 // dev server only
 const webpackDevMiddleware = require('webpack-dev-middleware'),
@@ -52,7 +52,7 @@ app.use(passport.initialize());
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
-const localSignupStrategy = require('./server/passport/local-signup');
+const localSignupStrategy = require('./server/passport/local-signup')(nev).strategy;
 const localLoginStrategy = require('./server/passport/local-login');
 const jwtStrategy = require('./server/passport/jwt');
 
@@ -65,8 +65,8 @@ const authCheckMiddleware = require('./server/middleware/auth-check');
 
 app.use(express.static(path.join(__dirname, 'public', 'static')));
 app.use(express.static('./client/dist/'));
-const authRoutes = require('./server/routes/auth');
-app.use('/auth', authRoutes);
+const authRoutes = require('./server/routes/auth')(nev);
+app.use('/auth', authRoutes.router);
 app.use('/api', [authCheckMiddleware, api]);
 
 // app.use('/exploreat-v3/api', api);
@@ -89,12 +89,6 @@ app.get('*', (req, res) => {
     console.log('Sending index.html');
    res.sendFile(path.resolve(__dirname, 'public', 'static', 'index.html'));
 });
-
-
-
-
-
-
 
 // error handlers
 

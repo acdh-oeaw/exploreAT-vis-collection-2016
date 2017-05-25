@@ -76,3 +76,4 @@ scripts/discarded-lemmas.json
 scripts/noresults.json
 scripts/unmatched.json
 client/dist
+config
