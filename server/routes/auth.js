@@ -246,15 +246,25 @@ module.exports = (nev) => {
     router.get('/approve/:url', (req, res, next) => {
         const url = req.params.url;
         nev.confirmTempUser(url, (err, user) => {
-            if (err)
-                console.log('Error confirming user');
+            if (err) {
+                console.error(err);
+                return res.redirect({
+                    pathname: '/',
+                    query: {
+                        email: user.email,
+                        message: `User account ${user.email} could not be validated at this time. Check server logs.`
+                    }
+                })
+            }
+
             if (user) {
                 nev.sendConfirmationEmail(user.email, (err, info) => {
                     if (err)
-                        console.log('Error sending confirmation email');
+                        console.log('Error sending confirmation email ' + err);
                     else
                         console.log('Confirmation email sent!');
                 });
+                return res.redirect(`/confirm/?email=${user.email}`);
             }
         });
     });

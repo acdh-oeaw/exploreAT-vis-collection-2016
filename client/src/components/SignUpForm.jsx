@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import Link  from 'react-router-dom/Link';
 import Card, { CardContent, CardActions } from 'material-ui/Card';
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField';

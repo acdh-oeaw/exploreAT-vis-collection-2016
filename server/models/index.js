@@ -14,7 +14,7 @@ module.exports.connect = (uri, emailConfig) => {
     });
 
     nev.configure({
-        verificationURL: 'http://localhost:3000/auth/approve/${URL}',
+        verificationURL: emailConfig.baseURL + '/auth/approve/${URL}',
         persistentUserModel: User,
         tempUserCollection: 'exploreat_tempusers',
 
@@ -41,7 +41,7 @@ module.exports.connect = (uri, emailConfig) => {
         },
         confirmMailOptions: {
             from: 'Do Not Reply <grial_do_not_reply@usal.es>',
-            subject: 'Your account is ready to use!',
+            subject: 'Your ExploreAT! prototypes account is ready to be used!',
             html: '<p>Your account has been approved!</p>',
             text: 'Your account has been approved!'
         },

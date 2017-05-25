@@ -24,6 +24,7 @@ const MainApp = () => (
                 <Route exact path='/' component={HomePage}/>
                 <Route path='/login'  component={LoginPage}/>
                 <Route path='/signup' component={SignUpPage}/>
+                <Route path='/confirm' component={HomePage}/>
                 <PrivateRoute path='/dashboard/:version?'component={DashboardPage}/>
             </Switch>
         </Router>

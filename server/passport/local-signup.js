@@ -43,7 +43,7 @@ module.exports = (nev) => {
                 });
                 return done(null);
             } else {
-                err = {}
+                err = {};
                 err.name = "ExistingTempUserError";
                 err.message = "This account is already registered but hasn't been approved yet.";
                 console.error(err);
