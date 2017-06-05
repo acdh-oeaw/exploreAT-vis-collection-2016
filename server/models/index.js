@@ -60,8 +60,6 @@ module.exports.connect = (uri, emailConfig) => {
             nev.generateTempUserModel(User, (err, tempUserModel) => {
                 if (err)
                     console.log('error generating temp user model');
-                else
-                    console.log('temp user model generated');
             });
     });
 };
