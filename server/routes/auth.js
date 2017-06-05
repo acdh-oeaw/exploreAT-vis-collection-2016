@@ -7,7 +7,12 @@ const router = express.Router();
 
 const app = express();
 
-const jwtConfig = require('config').get('jwt_config');
+const config = require('config');
+const jwtConfig = config.get('jwt_config');
+const esConfig = config.get('elasticsearch');
+
+const exec = require('child_process').exec;
+
 
 /**
  * Validate the sign up form
@@ -18,6 +23,7 @@ const jwtConfig = require('config').get('jwt_config');
  */
 
 module.exports = (nev) => {
+
     function validateSignupForm(payload) {
         const errors = {};
         let isFormValid = true;
@@ -263,6 +269,12 @@ module.exports = (nev) => {
                         console.log('Error sending confirmation email ' + err);
                     else
                         console.log('Confirmation email sent!');
+                });
+
+                exec(`scripts/users/add_es_user.sh '${user.email}' '${user.password}' '${esConfig.truststore_pass}' '${esConfig.keystore_pass}'`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.log(stderr);
+                    } else console.log(`ElasticSearch user created for ${user.email}`);
                 });
                 return res.redirect(`/confirm/?email=${user.email}`);
             }
