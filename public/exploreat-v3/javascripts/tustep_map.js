@@ -2201,6 +2201,7 @@ var mainExports = {};
                                     "aggs": {
                                         "ortMain": {
                                             "geohash_grid": {
+                                                "buckets_path": "years",
                                                 "field": "gisOrt",
                                                 "precision": bucketResolution - 4
                                             },
@@ -2225,6 +2226,7 @@ var mainExports = {};
                                             "aggs": {
                                                 "ort": {
                                                     "geohash_grid": {
+                                                        "buckets_path": "years",
                                                         "field": "gisOrt",
                                                         "precision": bucketResolution - 4
                                                     }
@@ -2238,6 +2240,7 @@ var mainExports = {};
                                     "aggs": {
                                         "ortMain": {
                                             "geohash_grid": {
+                                                "buckets_path": "years",
                                                 "field": "gisOrt",
                                                 "precision": bucketResolution - 4
                                             },
