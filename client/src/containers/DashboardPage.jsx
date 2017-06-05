@@ -30,7 +30,6 @@ class DashboardPage extends React.Component {
      * This method will be executed after initial rendering.
      */
     componentDidUpdate(prevProps, prevState) {
-        console.log("Component update");
         if (this.props.match.params.version === prevProps.match.params.version &&
             this.state.cardsInfo.length !== 0) return;
         if (this.props.match.params.version === '3' ||
@@ -43,7 +42,6 @@ class DashboardPage extends React.Component {
             xhr.responseType = 'json';
             xhr.addEventListener('load', () => {
                 if (xhr.status === 200) {
-                    console.log(xhr);
                     this.setState({
                         cardsInfo: xhr.response.cardsInfo
                     });
@@ -79,13 +77,12 @@ class DashboardPage extends React.Component {
     }
 
     setDefaultCards (setState) {
-        console.log("set default cards: " + setState);
         let state = this.state;
         const { match } = this.props;
         const link = match.url.charAt(match.url.length - 1) === '/' ?
             match.url.split('/').slice(0, -1).join('/') :
             match.url;
-        console.log(link);
+
         state.cardsInfo = [
             {"id": 1,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",

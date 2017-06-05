@@ -55,14 +55,11 @@ class HomePage extends React.Component {
         super(props);
 
         this.state = setStateWithProps(props);
-        console.log(this.state);
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('will receive props');
         let state = setStateWithProps(nextProps);
         if (state.headline !== this.state.headline || state.message !== this.state.headline) {
-            console.log('set state receive props');
             this.setState(state);
         }
     }
