@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import Base from '../components/Base.jsx';
-// import Dashboard from '../components/Dashboard.jsx';
 import BaseGrid from '../components/BaseGrid.jsx'
 import SimpleMediaCard from '../components/SimpleMediaCard.jsx';
 
@@ -31,6 +30,7 @@ class DashboardPage extends React.Component {
      * This method will be executed after initial rendering.
      */
     componentDidUpdate(prevProps, prevState) {
+        console.log("Component update");
         if (this.props.match.params.version === prevProps.match.params.version &&
             this.state.cardsInfo.length !== 0) return;
         if (this.props.match.params.version === '3' ||
@@ -79,13 +79,18 @@ class DashboardPage extends React.Component {
     }
 
     setDefaultCards (setState) {
+        console.log("set default cards: " + setState);
         let state = this.state;
         const { match } = this.props;
+        const link = match.url.charAt(match.url.length - 1) === '/' ?
+            match.url.split('/').slice(0, -1).join('/') :
+            match.url;
+        console.log(link);
         state.cardsInfo = [
             {"id": 1,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
                 "href": {
-                    "link": `${match.url.split('/').slice(0, -1).join('/')}/3`,
+                    "link": `${link}/3`,
                     "open_tab": false
                 },
                 "title": "2016 Prototypes",
@@ -93,7 +98,7 @@ class DashboardPage extends React.Component {
             {"id": 2,
                 "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
                 "href": {
-                    "link": `${match.url.split('/').slice(0, -1).join('/')}/4`,
+                    "link": `${link}/4`,
                     "open_tab": false
                 },
                 "title": "2017 Prototypes",
