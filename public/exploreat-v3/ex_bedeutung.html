@@ -32,7 +32,7 @@
 <svg width="1200" height="600"></svg>
 
 <script>
-    var ESToken = getCookie("token");
+    var ESToken = getToken();
 
     var esClient = new $.es.Client({
         host: getESHost()

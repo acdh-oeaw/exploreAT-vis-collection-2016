@@ -8,7 +8,7 @@ var processing = false;
 
 var boxString = "";
 
-var ESToken = getCookie("token");
+var ESToken = getToken();
 
 var esClient = new $.es.Client({
     host: getESHost(),

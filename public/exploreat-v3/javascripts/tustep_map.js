@@ -2,7 +2,7 @@ var mainExports = {};
 (function() {
 
     // ELASTIC
-    var ESToken = getCookie("token");
+    var ESToken = getToken();
 
     var esClient = new $.es.Client({
         host: getESHost(),

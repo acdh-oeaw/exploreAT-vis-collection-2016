@@ -7,7 +7,7 @@ var response;
 var processing = false;
 
 
-var ESToken = getCookie("token");
+var ESToken = getToken();
 
 var esClient = new $.es.Client({
     host: getESHost(),

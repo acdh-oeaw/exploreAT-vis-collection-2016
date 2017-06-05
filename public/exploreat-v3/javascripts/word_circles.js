@@ -27,7 +27,7 @@ var originalRoot = root;
 
 var circle;
 
-var ESToken = getCookie("token");
+var ESToken = getToken();
 
 var client = new $.es.Client({
     host: getESHost()

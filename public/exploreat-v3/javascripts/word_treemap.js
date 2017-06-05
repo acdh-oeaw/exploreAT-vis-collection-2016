@@ -10,7 +10,7 @@ var boxString = "";
 
 var indexV = "11";
 
-var ESToken = getCookie("token");
+var ESToken = getToken();
 
 var esClient = new $.es.Client({
     host: getESHost()
