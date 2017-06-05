@@ -28,8 +28,8 @@ const SimplePaper= (props) => {
             <Typography type="subheading">
                 {props.message}
             </Typography>
-                {props.link && <div className={props.classes.button}><Link  to={{pathname: '/', state: {}}}>
-                                    <Button raised primary key={1}>Home</Button>
+                {props.link && <div className={props.classes.button}><Link  to={{pathname: props.link.pathname, state: {}}}>
+                                    <Button raised primary key={1}>{props.link.label}</Button>
                                 </Link></div>}
         </Paper>
     );

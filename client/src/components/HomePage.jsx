@@ -2,24 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Base from '../components/Base.jsx';
 import BaseGrid from '../components/BaseGrid.jsx'
-import Link  from 'react-router-dom/Link';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import SimplePaper from '../components/SimplePaper.jsx';
-import Button from 'material-ui/Button'
+import Auth from '../modules/Auth';
 
 const styleSheet = createStyleSheet('HomePage', () => ({
 
 }));
 
 function getUrlParams(search) {
-    let hashes = search.slice(search.indexOf('?') + 1).split('&')
-    let params = {}
+    let hashes = search.slice(search.indexOf('?') + 1).split('&');
+    let params = {};
     hashes.map(hash => {
-        let [key, val] = hash.split('=')
-        params[key] = decodeURIComponent(val)
-    })
+        let [key, val] = hash.split('=');
+        params[key] = decodeURIComponent(val);
+    });
 
-    return params
+    return params;
 }
 
 function setStateWithProps(props) {
@@ -29,7 +28,7 @@ function setStateWithProps(props) {
         return {
             headline : props.location.state.headline,
             message : props.location.state.message
-        }
+        };
     } else if (props.location.search && props.location.search.length > 0) {
         const urlParams = getUrlParams(props.location.search);
         if (urlParams.hasOwnProperty('email')) {
@@ -69,9 +68,21 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const component = this.props.location.pathname === "/confirm" ?
-            <SimplePaper headline={this.state.headline} message={this.state.message} link="/" /> :
-            <SimplePaper headline={this.state.headline} message={this.state.message} />;
+        let component;
+
+        if (this.props.location.pathname === "/confirm") {
+            component = <SimplePaper headline={this.state.headline} message={this.state.message} link={{
+                pathname: '/',
+                label: 'Home'
+            }} />;
+        } else if (Auth.isUserAuthenticated()) {
+            component = <SimplePaper headline={this.state.headline} message={this.state.message} link={{
+                pathname: '/dashboard',
+                label: 'Dashboard'
+            }} />;
+        } else {
+            component = <SimplePaper headline={this.state.headline} message={this.state.message} />;
+        }
 
         return (
             <Base>
