@@ -40,16 +40,13 @@ module.exports = new PassportLocalStrategy({
                 return done(error);
             }
 
-            const payload = {
-                sub: user._id
-            };
-
             // create a token string
-
             const jwtUser = {};
-            const token = jwt.sign(payload, jwtConfig.secretOrKey, {expiresIn: 60*60*24});
+            jwtUser.username = user.email;
+            jwtUser.id = user._id.toString();
+            const token = jwt.sign(jwtUser, jwtConfig.secretOrKey, {expiresIn: 60*60*24});
             const data = {
-                name: user.name
+                name: user.email
             };
 
             return done(null, token, data);
