@@ -42,7 +42,7 @@ module.exports = new PassportLocalStrategy({
 
             // create a token string
             const jwtUser = {};
-            jwtUser.username = user.email.replace('.','_');
+            jwtUser.username = user.email.replace(/\./g,'_');
             jwtUser.id = user._id.toString();
             const token = jwt.sign(jwtUser, jwtConfig.secretOrKey, {expiresIn: 60*60*24});
             const data = {
