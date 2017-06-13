@@ -8,8 +8,9 @@
     {
       name      : "ExploreaAT-production",
       script    : "bin/www",
+      log_date_format : "YYYY-MM-DD HH:mm Z",
       env: {
-        PORT: "3000"
+        PORT: "3002"
       },
       env_production : {
         NODE_ENV: "production",
