@@ -24,8 +24,10 @@ module.exports = (nev) => {
             }
 
             if (existingPersistentUser) {
-                err.name = "ExistingPersistentUserError";
-                err.message = "This account is already registered.";
+                const err = {
+                    name : "ExistingPersistentUserError";
+                    message : "This account is already registered.";
+                }
                 console.warn(err);
                 return done(err);
             }
@@ -43,9 +45,10 @@ module.exports = (nev) => {
                 });
                 return done(null);
             } else {
-                err = {};
-                err.name = "ExistingTempUserError";
-                err.message = "This account is already registered but hasn't been approved yet.";
+                const err = {
+                    name : "ExistingTempUserError";
+                    message : "This account is already registered but hasn't been approved yet.";
+                }
                 console.error(err);
                 return done(err);
             }
