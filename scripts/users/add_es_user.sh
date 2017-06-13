@@ -24,7 +24,7 @@ echo $MAIL
 echo $STRIPPED_EMAIL
 
 
-echo "  - \"$STRIPPED_EMAIL\" " >> $SGCONFIG_DIR/$SG_ROLES_MAPPING
+echo "  - \"$MAIL\" " >> $SGCONFIG_DIR/$SG_ROLES_MAPPING
 echo -e "$STRIPPED_EMAIL:\n  hash: $PASSWORD\n  username: $MAIL" >> $SGCONFIG_DIR/$SG_INTERNAL_USERS
 
 /usr/share/elasticsearch/plugins/search-guard-2/tools/sgadmin.sh -ts /etc/letsencrypt/truststore.jks -tspass $3 -ks /etc/letsencrypt/admin-keystore.jks -kspass $4 -cd $SGCONFIG_DIR -h exploreat.usal.es -nhnv -cn exploreat
