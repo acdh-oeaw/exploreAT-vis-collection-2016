@@ -273,6 +273,8 @@ module.exports = (nev) => {
 
                 exec(`scripts/users/add_es_user.sh '${user.email}' '${user.password}' '${esConfig.truststore_pass}' '${esConfig.keystore_pass}'`, (error, stdout, stderr) => {
                     if (error) {
+                        console.log(error);
+                        console.log(stdout);
                         console.log(stderr);
                     } else console.log(`ElasticSearch user created for ${user.email}`);
                 });
