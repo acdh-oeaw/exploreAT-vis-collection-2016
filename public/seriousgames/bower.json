@@ -1,0 +1,49 @@
+{
+  "name": "exploreat",
+  "description": "",
+  "main": "public/index.html",
+  "authors": [
+    "abenito@usal.es"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "http://exploreat.usal.es",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^3.5.14",
+    "jquery": "^2.2.0",
+    "wellknown": "^0.4.1",
+    "Wicket": "*",
+    "d3-queue": "^2.0.2",
+    "topojson": "^1.6.22",
+    "d3-tip": "^0.6.7",
+    "jquery-ui": "*",
+    "fontawesome": "*",
+    "noUiSlider-ms": "~6.0.0",
+    "underscore": "~1.8.3",
+    "elasticsearch": "~12.x",
+    "leaflet": "^0.7.7",
+    "latlon-geohash-bobbr": "^1.0.1",
+    "d3-plugins": "*",
+    "d3-carto-map": "https://github.com/ale0xB/d3-carto-map.git",
+    "dcjs": "2.0.0-beta.29",
+    "colorbrewer": "^1.0.0",
+    "w2ui": "^1.4.3",
+    "d3-context-menu": "*",
+    "bootstrap": "^3.3.7"
+  },
+  "resolutions": {
+    "d3": "^3.5.14",
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "reductio": "^0.5.4"
+  }
+}

@@ -1,0 +1,106 @@
+    textarea, input { outline: none; }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    #header {
+        color: #595959;
+        border-bottom: 1px solid gainsboro;
+        text-align: center;
+        padding: 20px 150px;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 1.1em;
+    }
+
+    h2 {
+        font-size: .8em;
+        font-weight: 300;
+        color: darkgrey;
+    }
+
+    h3 {
+        font-size: .8em;
+        font-weight: 300;
+        color: darkgrey;
+    }
+
+    #content {
+        padding: 0 40px;
+        text-align: center;
+    }
+
+
+    #content a {
+        text-decoration: none;
+        color: black;
+        display: inline-block;
+        margin: 10px;
+        vertical-align: top;
+        min-height: 252px;
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -o-transition: all .2s linear;
+        -ms-transition: all .2s linear;
+        transition: all .2s linear;
+    }
+
+    a:hover {
+        -webkit-box-shadow: 0 5px 4px -4px rgba(0,0,0,.3);
+             -moz-box-shadow: 0 5px 4px -4px rgba(0,0,0,.3);
+                  box-shadow: 0 5px 4px -4px rgba(0,0,0,.3);
+    }
+
+    .card {
+        position: relative;
+        width: 250px;
+        border: 1px solid #cfcfcf;
+        border-radius: 4px;
+        overflow: hidden;
+        min-height: 252px;
+
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -o-transition: all .2s linear;
+        -ms-transition: all .2s linear;
+        transition: all .2s linear;
+    }
+
+    a:hover .card {
+        border: 1px solid #a3a3a3;
+    }
+
+    .card-top {
+        position: relative;
+        width: 100%;
+        border-bottom: 1px solid #cfcfcf;
+    }
+
+    .card-top > img {
+        width: 100%;
+    }
+
+    .card-bottom {
+        font-size: .9em;
+        text-decoration: none!important;
+        text-align: center;
+    }
+
+    .card-bottom > .name {
+        font-weight: 600;
+        border-bottom: 1px dotted #ddd;
+        padding: 10px 14px;
+    }
+
+    .card-bottom > .description {
+        padding: 10px 20px;
+        font-weight: 300;
+        color: gray;
+        font-size: .8em;
+    }
+

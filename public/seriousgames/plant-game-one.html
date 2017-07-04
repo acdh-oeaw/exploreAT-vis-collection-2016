@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Plant Game One</title>
+    <link href="stylesheets/plant-game-one.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        <!-- <h1>Name The Plant!</h1> -->
+        <div id="game-wrapper">
+            <div id="question-title">Which is this plant's Scientific Name?</div>
+            <div id="time-div"></div>
+            <div id="plant-image-wrapper"><img id="plant-image" src=""/></div>
+            <div id="plant-commonName-wrapper">Common Name</div>
+            <div id="plant-scientificName-wrapper">
+                <input id="plant-scientificName-input" type="text" placeholder="Insert the Scientific Name here!">
+                <div id="submit-div" class="green">Submit</div><div id="tip-div" class="red">Tip</div><div id="newgame-div" class="blue disabled">New Game</div>
+            </div>
+        </div>
+        <a id="backhome" href="../">Home</a>
+    </div>
+
+  <script src="javascripts/eshelper.js"></script>
+  <script src="javascripts/plant-game-one.js"></script>
+
+</body>
+
+</html>

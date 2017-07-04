@@ -1,5 +1,65 @@
 {
   "dashboard_version": "4",
   "cardsInfo": [
+	{
+		"id": 1,
+		"image_src": "/seriousgames/img/home/plant-game-one.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-one.html",
+			"open_tab": true
+		},  
+		"title" : "Plant Game One",
+		"text" : "Guess the Scientific name of a random plant given its Common name by typing it!"
+	},
+    {
+		"id": 2,
+		"image_src": "/seriousgames/img/home/plant-game-two.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-two.html",
+			"open_tab": true
+		},  
+		"title" : "Plant Game Two",
+		"text" : "Mobile-friendly version of the Plant Game, just tapping the correct Scientific name"
+	},
+	{
+		"id": 3,
+		"image_src": "/seriousgames/img/home/plant-game-three.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-three.html",
+			"open_tab": true
+		},  
+		"title" : "Plant Game Three",
+		"text" : "Tap the image that fits the provided Common plant name, or ask for its Scientific name!"
+	},
+	{
+		"id": 4,
+		"image_src": "/seriousgames/img/home/plant-game-full.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-full.html",
+			"open_tab": true
+		},  
+		"title" : "Plant-a-Game",
+		"text" : "Full RDF-Plants game, including different types of questions, timeouts, feedback,..."
+	},
+	{
+		"id": 5,
+		"image_src": "/seriousgames/img/home/plant-game-drag.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-drag.html",
+			"open_tab": true
+		},  
+		"title" : "Drag the Plant",
+		"text" : "Drag and drop each plant in its correct Scientific slot"
+	},
+	{
+		"id": 6,
+		"image_src": "/seriousgames/img/home/plant-game-wordsearch.png",
+		"href" : {
+			"link" : "/seriousgames/plant-game-wordsearch.html",
+			"open_tab": true
+		},  
+		"title" : "Plant Wordsearch",
+		"text" : "Find plant names through a letter soup"
+	}
   ]
 }

@@ -1,0 +1,231 @@
+textarea, input { outline: none; }
+
+body {
+  font-family: "Avenir Next", Helvetica, Arial, sans-serif;
+}
+
+.background {
+    fill: #fcfcfc;
+    stroke: #ccc;
+}
+
+.tooltip {
+    background-color: rgba(200, 200, 200, 0.5);
+    ;
+    margin: 10px;
+    height: 90px;
+    width: 150px;
+    padding-left: 10px;
+    padding-top: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+/* D3 Tooltips*/
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+/* Creates a small triangle extender for the tooltip */
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}
+/* Style northward tooltips differently */
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
+/*MAP*/
+
+#map > svg {
+    background: white;
+}
+
+.subunit {
+    fill: #fdfdfd;
+    stroke: #333;
+    stroke-opacity: 0.1;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    transition: all .2s linear;
+}
+
+.subunit:hover {
+    fill: #f2fcf3;
+}
+
+.subunit.AUT {
+    //fill: #fff1f1;
+    stroke: #ffaaaa;
+    stroke-opacity: 0.5;
+    stroke-width: 3px;
+}
+
+.subunit.AUT:hover {
+    fill: #fafafa;
+}
+
+.subunit.CHE {}
+
+.subunit.DEU {}
+
+.subunit.CZE {}
+
+.subunit.HUN {}
+
+.subunit.ITX {}
+
+.subunit.SVN {}
+
+.subunit.SVK {}
+
+.ITD,
+.ITY,
+.ITP,
+.ITI {
+    display: none;
+}
+
+.OUT {
+    display: none;
+}
+
+.subunit-boundary {
+    fill: none;
+    stroke: #333;
+    stroke-opacity: 0.15;
+    stroke-dasharray: 2, 2;
+    stroke-linejoin: round;
+    display: none
+}
+
+.subunit-label {
+    fill: #777;
+    fill-opacity: .5;
+    font-size: 1em;
+    font-weight: 300;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.place-label {
+    pointer-events: none;
+}
+
+.place.OUT,
+.place-label.OUT {
+    fill: #444;
+}
+
+.place.AT,
+.place-label.AT {
+    fill: #6c6c6c;
+    display: none;
+}
+
+.place.TARGET {
+    fill: #ffffff;
+    fill-opacity: 0.5;
+    stroke: #333;
+    stroke-opacity: .2;
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    -ms-transition: all .2s linear;
+    transition: all .2s linear;
+}
+
+.place.TARGET.REGION:hover {
+    fill: black;
+}
+
+.place-label.TARGET {
+    fill: #44F;
+}
+
+.place-label.TARGET.REGION {
+    font-size: 8px;
+    fill: #efae00;
+}
+
+text {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    /* pointer-events: none;*/
+}
+
+.personPoint {
+  opacity: .5;
+}
+
+.wordPoint {
+  opacity: .5;
+}
+
+#info-tooltip {
+  position: fixed;
+  background-color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: .8em;
+}
+
+.filter-box {
+  padding: 10px 4px;
+  margin: 4px;
+  border: 1px dotted #dddddd;
+  display: block;
+  font-size: .9em;
+}
+
+.speechBubble {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  margin-right: 4px;
+  cursor: pointer;
+  display: inline-block;
+  border: 2px solid white;
+}
+
+.speechBubble.Unbekannt {background-color: #a6cee3;}
+.speechBubble.Pronom {background-color: #1f78b4;}
+.speechBubble.Adjektiv {background-color: #b2df8a;}
+.speechBubble.Verb {background-color: #33a02c;}
+.speechBubble.Numerale {background-color: #fb9a99;}
+.speechBubble.Substantiv {background-color: #e31a1c;}
+.speechBubble.Adverb {background-color: #fdbf6f;}
+.speechBubble.Praposition {background-color: #ff7f00;}
+.speechBubble.Konjunktion {background-color: #cab2d6;}
+.speechBubble.Interjektion {background-color: #6a3d9a;}
+.speechBubble.Prafix {background-color: #ffff99;}
+.speechBubble.Clear {
+  background-color: none;
+  border: 2px solid red;
+  width: 8px;
+  height: 8px;
+  margin-left: 1px;
+  margin-right: 6px;
+}
+
+.speechBubble.selected {
+	border: 2px solid black;
+}
