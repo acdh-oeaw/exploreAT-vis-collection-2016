@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Plant Game Three</title>
+    <link href="stylesheets/plant-game-three.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        <!-- <h1>Name The Plant!</h1> -->
+        <div id="game-wrapper">
+            <div id="question-title">Tap the Plant!</div>
+            <div id="time-div"></div>
+            <div id="plant-names-wrapper">
+                <div id="commonName"></div>
+                <div id="scientificName"></div>
+            </div>
+            <div id="plant-image-wrapper">
+                <div id="submit-0" class="gray option"><img id="plant-image-0" src=""/></div>
+                <div id="submit-1" class="gray option"><img id="plant-image-1" src=""/></div>
+                <br>
+                <div id="submit-2" class="gray option"><img id="plant-image-2" src=""/></div>
+                <div id="submit-3" class="gray option"><img id="plant-image-3" src=""/></div>
+                <br>
+                <div id="tip-div" class="red">Tip</div><div id="newgame-div" class="blue disabled">New Game</div>
+            </div>
+        </div>
+        <a id="backhome" href="../">Home</a>
+    </div>
+
+  <script src="javascripts/eshelper.js"></script>
+  <script src="javascripts/plant-game-three.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+textarea, input { outline: none; }
+::selection { background: transparent; } ::-moz-selection { background: transparent; }
+input::selection { background: #eee; } input::-moz-selection { background: #eee; }
+
+body {
+  font-family: "Avenir Next", Helvetica, Arial, sans-serif;
+  margin: 10px auto;
+}
+
+#content {
+    margin: 10px auto;
+    text-align: center;
+    width: 60%;
+}
+
+#content h1 {
+    margin: 20px 0;
+}
+
+#backhome {
+    display: inline-block;
+    margin: 10px;
+    padding: 3px 6px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100px;
+    text-decoration: none;
+    font-weight: 500;
+    color: gray;
+    font-size: .7em;
+
+    -webkit-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+    transition: all 100ms linear;
+}
+#backhome:hover {
+    background: #ddd;
+    color: white;
+}
+
+#game-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    position: relative;
+}
+
+#error-wrapper {
+    position: absolute;
+    right: 30px;
+    top: 74px;
+    font-size: .8em;
+    color: red;
+    text-align: right;
+    font-weight: 500;
+    opacity: .5;
+}
+
+#question-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    font-style: italic;
+    margin: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #818181;
+}
+
+#plant-commonName-wrapper {
+    text-align: center;
+    margin: 10px;
+}
+
+#plant-scientificName-wrapper {
+    text-align: center;
+    margin: 10px;
+}
+
+.common-card {
+    max-width: 140px;
+    min-width: 100px;
+    margin: 8px;
+    padding: 6px 8px;
+    text-align: center;
+    font-size: .8em;
+    border: 1px solid #efefef;
+    border-radius: 5px;
+    display: inline-block;
+    font-weight: 500;
+    background: white;
+}
+.common-card:hover {
+    background: #efefef;
+    cursor:move;
+    box-shadow: 0px 1px 5px rgba(0,0,0,.5);
+}
+
+.scientific-card {
+    width: 160px;
+    height: 85px;
+    margin: 6px;
+    padding: 6px 8px;
+    text-align: center;
+    font-size: .8em;
+    background: #efefef;
+    color: gray;
+    border: 1px dashed #aeaeae;
+    border-radius: 5px;
+    display: inline-block;
+    font-weight: 300;
+    text-transform: capitalize;
+}
+.scientific-card:hover {
+    background: #dfdfdf;
+}
+
+.scientific-card.blocked {
+    background: #4bab78;
+    color: white;
+    border: 1px solid white;
+}
+
+.lil-message {
+    font-size: .8em;
+    font-weight: 500;
+    opacity: .3;
+}
+
+#newgame-div {
+    display: inline-block;
+    margin: 10px;
+    margin-bottom: 0px;
+    padding: 10px 20px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    width: 100px;
+
+    -webkit-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+    transition: all 100ms linear;
+}
+
+#newgame-div:hover {
+    cursor: pointer;
+}
+
+.disabled {
+    opacity: .25;
+}
+.disabled:hover {
+    cursor: default!important;
+}
+
+.blue {
+    border-color: #298cbb!important;
+    color: #298cbb;
+}
+.blue:hover {
+    background: #298cbb!important;
+    color: white;
+}

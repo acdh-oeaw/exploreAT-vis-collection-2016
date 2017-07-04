@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Plant Wordsearch</title>
+    <link href="stylesheets/plant-game-wordsearch.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        <!-- <h1>Name The Plant!</h1> -->
+        <div id="game-wrapper">
+            <div id="question-title">Find the plant names!</div>
+            <div id="plant-scientificName-wrapper">
+                <div id="spinner"><img src="img/loading.gif"/></div>
+                <div id="theGrid"></div>
+            </div>
+        </div>
+        <a id="backhome" href="../">Home</a>
+    </div>
+
+  <script src="javascripts/eshelper.js"></script>
+  <script src="javascripts/plant-game-wordsearch.js"></script>
+
+</body>
+
+</html>

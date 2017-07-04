@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Plant-a-Game</title>
+    <link href="stylesheets/plant-game-full.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        <h1>Plant-a-Game</h1>
+        <div id="game-start">
+            <div id="question-type-wrapper">
+                <div id="type-geography" class="question-card rotate">Geography</div><div id="type-commonName" class="question-card rotate">Common Names</div>
+                <br>
+                <div id="type-scientificName" class="question-card rotate">Scientific Names</div><div id="type-photo" class="question-card rotate">Photos</div>
+                <br>
+                <div id="type-submitFeedback" class="question-card large">Submit Feedback</div>
+            </div>
+        </div>
+        <div id="game-feedback" style="display: none;">
+            <form>
+                <input type="text" id="feedback-text">
+                <span id="feedback-message" style="display: none;">Feedback sent!</span>
+            </form>
+            <a href="#"><div id="sendFeedback" class="question-card large">Send Feedback</div></a>
+            <a href="#"><div id="backFeedback" class="question-card large">Back</div></a>
+        </div>
+        <div id="question-feedback" style="display: none;">
+            <div id="question-title">Please, rate the last question!</div>
+            <div id="grade-1" class="question-card grade">Awful</div>
+            <div id="grade-2" class="question-card grade">Meh</div>
+            <div id="grade-3" class="question-card grade">Good</div>
+            <div id="grade-4" class="question-card grade">Great</div>
+        </div>
+        <div class="game-wrapper wPhoto" style="display: none;">
+            <div class="score">Score: 0</div>
+            <div id="question-title">Tap the Plant!</div>
+            <div id="time-div"></div>
+            <div id="plant-names-wrapper">
+                <div id="commonName"></div>
+                <div id="scientificName"></div>
+            </div>
+            <div id="plant-image-wrapper">
+                <div class="score">Score: 0</div>
+                <div id="submit-0" class="gray option"><img id="plant-image-0" src=""/></div>
+                <div id="submit-1" class="gray option"><img id="plant-image-1" src=""/></div>
+                <br>
+                <div id="submit-2" class="gray option"><img id="plant-image-2" src=""/></div>
+                <div id="submit-3" class="gray option"><img id="plant-image-3" src=""/></div>
+                <br>
+                <div id="tip-div" class="red">Tip</div><div id="newgame-div" class="blue disabled">Next Question</div><div id="grade-div" class="red disabled">Rate Question</div>
+            </div>
+        </div>
+        <div class="game-wrapper wScientific"style="display: none;" >
+            <div class="score">Score: 0</div>
+            <div id="question-title">Which is this plant's Scientific Name?</div>
+            <div id="time-div" class="scientific"></div>
+            <div id="plant-image-wrapper"><img id="plant-image" src=""/></div>
+            <div id="plant-commonName-wrapper"></div>
+            <div id="plant-scientificName-wrapper">
+                <div id="submit-0" class="scientific gray option"></div>
+                <div id="submit-1" class="scientific gray option"></div>
+                <br>
+                <div id="submit-2" class="scientific gray option"></div>
+                <div id="submit-3" class="scientific gray option"></div>
+                <br>
+                <div id="tip-div" class="scientific red">Tip</div><div id="newgame-div" class="blue disabled">Next Question</div><div id="grade-div" class="red disabled">Rate Question</div>
+            </div>
+        </div>
+        <div class="game-wrapper wCommon"style="display: none;" >
+            <div class="score">Score: 0</div>
+            <div id="question-title">Which is this plant's Common Name?</div>
+            <div id="time-div" class="common"></div>
+            <div id="plant-image-wrapper"><img id="plant-image" src=""/></div>
+            <div id="plant-scientificName-wrapper"></div>
+            <div id="plant-commonName-wrapper">
+                <div id="submit-0" class="common gray option"></div>
+                <div id="submit-1" class="common gray option"></div>
+                <br>
+                <div id="submit-2" class="common gray option"></div>
+                <div id="submit-3" class="common gray option"></div>
+                <br>
+                <div id="tip-div" class="common red">Tip</div><div id="newgame-div" class="blue disabled">Next Question</div><div id="grade-div" class="red disabled">Rate Question</div>
+            </div>
+        </div>
+        <div class="game-wrapper wGeography"style="display: none;" >
+            <div class="score">Score: 0</div>
+            <div id="question-title">Where is this plant's name used?</div>
+            <div id="time-div" class="geography"></div>
+            <!-- <div id="plant-image-wrapper"><img id="plant-image" src=""/></div> -->
+            <div id="plant-commonName-wrapper"></div>
+            <div id="plant-geography-wrapper">
+                <div id="submit-0" class="geography gray option"></div>
+                <div id="submit-1" class="geography gray option"></div>
+                <br>
+                <div id="submit-2" class="geography gray option"></div>
+                <div id="submit-3" class="geography gray option"></div>
+                <br>
+                <div id="tip-div" class="geography red">Tip</div><div id="newgame-div" class="blue disabled">Next Question</div><div id="grade-div" class="red disabled">Rate Question</div>
+            </div>
+        </div>
+        <a id="backhome" href="../">Home</a>
+    </div>
+
+  <script src="javascripts/eshelper.js"></script>
+  <script src="javascripts/plant-game-full.js"></script>
+
+</body>
+
+</html>

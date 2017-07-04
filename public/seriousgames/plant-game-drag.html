@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Drag the Plant</title>
+    <link href="stylesheets/plant-game-drag.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>    
+</head>
+
+<body>
+    <div id="content">
+        <!-- <h1>Name The Plant!</h1> -->
+        <div id="game-wrapper">
+            <div id="question-title">Drag each plant's Common name in its correct Scientific slot</div>
+            <div id="error-wrapper">Errors: <span id="counter">0</span></div>
+            <span class="lil-message">Common Names</span>
+            <div id="plant-commonName-wrapper"></div>
+            <span class="lil-message">Scientific Names</span>
+            <div id="plant-scientificName-wrapper">
+                <br>
+                <div id="newgame-div" class="blue">New Game</div>
+            </div>
+            <div id="progressbar"></div>
+        </div>
+        <a id="backhome" href="../">Home</a>
+    </div>
+
+  <script src="javascripts/eshelper.js"></script>
+  <script src="javascripts/plant-game-drag.js"></script>
+
+</body>
+
+</html>
