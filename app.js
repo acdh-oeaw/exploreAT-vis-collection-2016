@@ -12,7 +12,8 @@ const express = require('express'),
 
 
 const models = require('./server/models');
-models.connect(config.get('mongodb').url, config.get('email'));
+const emailConfig = config.get('email');
+models.connect(config.get('mongodb').url, emailConfig);
 
 const nev = models.nev;
 
@@ -52,7 +53,7 @@ app.use(passport.initialize());
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
-const localSignupStrategy = require('./server/passport/local-signup')(nev).strategy;
+const localSignupStrategy = require('./server/passport/local-signup')(nev, emailConfig.sendTo).strategy;
 const localLoginStrategy = require('./server/passport/local-login');
 const jwtStrategy = require('./server/passport/jwt');
 

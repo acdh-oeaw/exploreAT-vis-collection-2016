@@ -1,7 +1,7 @@
 const User = require('mongoose').model('User');
 const PassportLocalStrategy = require('passport-local').Strategy;
 
-module.exports = (nev) => {
+module.exports = (nev, sendTo) => {
     let module = {};
 
     module.strategy = new PassportLocalStrategy({
@@ -38,7 +38,7 @@ module.exports = (nev) => {
                     "EMAIL" : newTempUser.email,
                     "ABOUT" : newTempUser.about
                 };
-                nev.sendVerificationEmail("abenito@usal.es", URL, extraSubs, (err, info) => {
+                nev.sendVerificationEmail(sendTo, URL, extraSubs, (err, info) => {
                     if (err)
                         console.log(err);
                     console.log('Email successfully sent!');

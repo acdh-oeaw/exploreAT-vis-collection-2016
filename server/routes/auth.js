@@ -186,32 +186,6 @@ module.exports = (nev) => {
         })(req, res, next);
     });
 
-
-
-// router.post('/login', function(req, res, next) {
-//     passport.authenticate('local-login', function(err, user, info) {
-//         if (err) { return next(err) }
-//         if (!user) {
-//             return res.status(401).json({ error: 'Unauthorized' });
-//         }
-//
-//         req.logIn(user, function (err) {
-//             if (err) throw err;
-//             const jwtUser = {};
-//             jwtUser.username = user.local.username;
-//             jwtUser.id = user._id.toString();
-//             const token = jwt.sign(jwtUser, jwtConfig.secretOrKey, {
-//                 expiresIn: 60*60*24
-//             });
-//             console.log(token);
-//             res.cookie('token', token);
-//             console.log(req.session.redirectTo);
-//             res.redirect(req.session.redirectTo || '/');
-//
-//         });
-//     })(req, res, next);
-// });
-
     router.post('/login', (req, res, next) => {
         const validationResult = validateLoginForm(req.body);
         if (!validationResult.success) {
