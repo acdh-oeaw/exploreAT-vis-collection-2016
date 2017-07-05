@@ -9,7 +9,7 @@
       name      : "ExploreaAT-staging",
       script    : "bin/www",
       env: {
-        PORT: "3000"
+        PORT: "3001"
       },
       env_staging : {
         NODE_ENV: "staging",
@@ -29,9 +29,9 @@
       user : "exploreat",
       host : "exploreat.usal.es",
       ref  : "origin/develop",
-      repo : "***REMOVED***",
+      repo : "https://alex:033myLNRfjK@gitlab.grial.eu/usal-vis/exploreat.git",
       path : "/usr/src/app/staging",
-      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; pm2 startOrRestart ecosystem-prod.json --env production",
+      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; cd public/seriousgames; bower install; cd ../../; pm2 startOrRestart ecosystem-prod.json --env production",
       env  : {
         NODE_ENV: "staging"
       }
