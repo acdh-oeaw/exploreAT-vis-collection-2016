@@ -21,7 +21,7 @@
     "europeana": "^1.1.2",
     "express": "^4.13.4",
     "express-session": "^1.14.1",
-    "flickrapi": "^0.4.1",
+    "flickrapi": "^0.6.0",
     "fs": "0.0.1-security",
     "glob": "^7.0.3",
     "jsonwebtoken": "^7.2.1",
