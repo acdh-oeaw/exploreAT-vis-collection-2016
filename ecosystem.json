@@ -31,7 +31,7 @@
       ref  : "origin/develop",
       repo : "https://alex:033myLNRfjK@gitlab.grial.eu/usal-vis/exploreat.git",
       path : "/usr/src/app/staging",
-      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; cd public/seriousgames; bower install; cd ../../; pm2 startOrRestart ecosystem.json --env production",
+      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; cd public/seriousgames; bower install; cd ../../; webpack -c webpack.config.production.js; pm2 startOrRestart ecosystem-prod.json --env staging",
       env  : {
         NODE_ENV: "staging"
       }
