@@ -93,7 +93,7 @@ class DashboardPage extends React.Component {
                 "title": "2016 Prototypes",
                 "text": "Access to the visual prototypes made during the first year of ExploreAT!"},
             {"id": 2,
-                "image_src": "/exploreat-v3/img/home/ex_words_sources.png",
+                "image_src": "/seriousgames/img/home/plant-game-full.png",
                 "href": {
                     "link": `${link}/4`,
                     "open_tab": false

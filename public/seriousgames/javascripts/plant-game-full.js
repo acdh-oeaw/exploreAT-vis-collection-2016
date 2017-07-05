@@ -1269,14 +1269,14 @@ var mainExports = {};
 
                     $.ajax({
                         type: "POST",
-                        url: "api/europeana",
+                        url: "/api/europeana",
                         data: JSON.stringify(params),
                         contentType: 'application/json',
                         async: true,
                         success: function (response) {
 
                             if(questionType == "wPhoto"){
-                                if(response.totalResults == 0){
+                                if(response.totalResults == 0 || response.error != undefined){
                                     $(".'+questionType+' #plant-image").attr("src",'img/ex.png');
                                     setTimer(questionType);
                                     return;
@@ -1294,7 +1294,7 @@ var mainExports = {};
                                 setTimer(questionType);
                             }
                             else if(questionType == "wScientific"){
-                                if(response.totalResults == 0){
+                                if(response.totalResults == 0 || response.error != undefined){
                                     $('.'+questionType+' #plant-image').attr("src",'img/ex.png');
                                     setTimer(questionType);
                                     return;
@@ -1312,7 +1312,7 @@ var mainExports = {};
                                 setTimer(questionType);
                             }
                             else if(questionType == "wCommon"){
-                                if(response.totalResults == 0){
+                                if(response.totalResults == 0 || response.error != undefined){
                                     $('.'+questionType+' #plant-image').attr("src",'img/ex.png');
                                     setTimer(questionType);
                                     return;
@@ -1352,14 +1352,14 @@ var mainExports = {};
 
                     $.ajax({
                         type: "POST",
-                        url: "api/europeana",
+                        url: "/api/europeana",
                         data: JSON.stringify(params),
                         contentType: 'application/json',
                         async: true,
                         success: function (response) {
 
                             if(questionType == "wPhoto"){
-                                if(response.totalResults == 0){
+                                if(response.totalResults == 0 || response.error != undefined){
                                     $('.'+questionType+' #plant-image-'+index).attr("src",'img/ex.png');
                                     loadedImages++; if(loadedImages == 4){setTimer(questionType);}
                                     return;

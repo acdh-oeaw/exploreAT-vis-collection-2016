@@ -2,6 +2,7 @@ const express = require('express'),
     path = require('path'),
     router = express.Router(),
     config = require('config'),
+    europeanaConfig = config.get('europeana'),
     flickrConfig = config.get('flickr'),
     Flickr = require("flickrapi"),
     flickrOptions = {
@@ -30,8 +31,7 @@ const mysqlConfig = config.get('mysql'),
         database: mysqlConfig.db
     });
 
-const europeana = require('europeana')('***REMOVED***');
-
+const europeana = require('europeana')(europeanaConfig.key);
 //
 
 dbClient.connect(function(err) {
@@ -64,6 +64,7 @@ router.get('/flickr/:queryText', function(req, res, next) {
 });
 
 router.post('/europeana', function(req, res, next) {
+
     function euroCallback (err, data) {
         if (err) {
             res.send(err);
@@ -72,6 +73,7 @@ router.post('/europeana', function(req, res, next) {
             res.send(data)
         }
     }
+
     europeana ('search', req.body, euroCallback);
 });
 

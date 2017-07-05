@@ -354,12 +354,12 @@ var mainExports = {};
 
                     $.ajax({
                         type: "POST",
-                        url: "api/europeana",
+                        url: "/api/europeana",
                         data: JSON.stringify(params),
                         contentType: 'application/json',
                         async: true,
                         success: function (response) {
-                            if(response.totalResults == 0){
+                            if(response.totalResults == 0 || response.error != undefined){
                                 $("#plant-image").attr("src",'img/ex.png');
                                 setTimer();
                                 return;
@@ -395,12 +395,12 @@ var mainExports = {};
 
                     $.ajax({
                         type: "POST",
-                        url: "api/europeana",
+                        url: "/api/europeana",
                         data: JSON.stringify(params),
                         contentType: 'application/json',
                         async: true,
                         success: function (response) {
-                            if(response.totalResults == 0){
+                            if(response.totalResults == 0 || response.error != undefined){
                                 $("#plant-image-"+index).attr("src",'img/ex.png');
                                 loadedImages++; if(loadedImages == 4){setTimer();}
                                 return;
