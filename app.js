@@ -46,8 +46,10 @@ if (app.get('env') === 'development') {
 
 } else app.use(logger('combined'));
 
-app.use(bodyparser.urlencoded({ extended: false }));
-
+app.use(bodyparser.urlencoded({
+  extended: true
+}));
+app.use(bodyparser.json());
 app.use(passport.initialize());
 
 
@@ -80,9 +82,9 @@ app.use('/', [authCheckMiddleware, express.static(path.join(__dirname, 'public')
 // });
 
 app.use(function(req, res, next) {
-    res.header("access-control-allow-origin", "*");
-    res.header("access-control-allow-headers", "origin, x-requested-with, content-type, accept");
-    next();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
 // Always return the main index.html, so react-router render the route in the client
