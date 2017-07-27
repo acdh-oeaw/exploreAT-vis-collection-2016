@@ -63,7 +63,7 @@
 	},
 	  {
 		  "id": 7,
-		  "image_src": "/seriousgames/img/home/plant-game-wordsearch.png",
+		  "image_src": "/conceptlights/img/conceptlights.png",
 		  "href" : {
 			  "link" : "/conceptlights/index.html",
 			  "open_tab": true
