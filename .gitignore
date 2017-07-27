@@ -77,3 +77,8 @@ scripts/noresults.json
 scripts/unmatched.json
 client/dist
 config
+public/conceptlights/build
+public/conceptlights/data
+public/conceptlights/scripts/dboe-concept-features-fs-lod-tei.xml
+public/conceptlights/scripts/frage-fragebogen-full-tgd01-reduced.xml
+public/conceptlights/scripts/frage-fragebogen-full-tgd01.xml
