@@ -7,7 +7,9 @@ https://exploreat.usal.es
 
 ## Introduction
 
-This is the official code repository of the **ExploreAT!** Project. 
+With collection explorer user may search for lemmas or parts of compounds. Results are displayed on a map in the shape of buckets. Words or word elements are displayed as community graphs and word relations. Filtering by timeline is also possible. Users may zoom into individual entries by clicking on the buckets.
+
+This code is related to the **ExploreAT!** Project. 
 This project aims to reveal unique insights into the rich texture of the German Language, especially in Austria, by providing state of the art tools for exploring the unique collection (1911-1998) of the Bavarian Dialects in the region of the Austro-Hungarian Empire. This corpus is large and rich, estimated to contain 200,000 headwords in estimated 4 Million records. The collection includes a five-volume dictionary of about 50,000 headwords, covering a period from the beginning of German language until the present (DBÖ, WBÖ).
 
 This work has generated some publications that can be found [here](https://exploreat.usal.es/our-publications). The one that shows the work accomplished by this applications is located [here](https://exploreat.usal.es/publication/spatio-temporal-visual-analysis-tool-historical-dictionaries).
