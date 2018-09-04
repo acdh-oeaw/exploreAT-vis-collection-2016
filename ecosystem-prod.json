@@ -31,7 +31,7 @@
       ref  : "origin/master",
       repo : "https://alex:033myLNRfjK@gitlab.grial.eu/usal-vis/exploreat.git",
       path : "/usr/src/app/production",
-      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; cd public/seriousgames; bower install; cd ../../; cd public/conceptlights; npm install; webpack; cd ../../; webpack --config webpack.config.production.js; pm2 startOrRestart ecosystem-prod.json --env production",
+      "post-deploy" : "npm install ; cd public/exploreat-v3; bower install; cd ../../; cd public/seriousgames; bower install; cd ../../; webpack --config webpack.config.production.js; pm2 startOrRestart ecosystem-prod.json --env production",
       env  : {
         NODE_ENV: "production"
       }

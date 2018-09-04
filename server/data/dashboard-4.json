@@ -60,16 +60,6 @@
 		},  
 		"title" : "Plant Wordsearch",
 		"text" : "Find plant names through a letter soup"
-	},
-	  {
-		  "id": 7,
-		  "image_src": "/conceptlights/img/conceptlights.png",
-		  "href" : {
-			  "link" : "/conceptlights/index.html",
-			  "open_tab": true
-		  },
-		  "title" : "Concept Lights",
-		  "text" : "Questionnaire concept exploreation POC"
-	  }
+	}
   ]
 }
