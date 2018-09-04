@@ -8,8 +8,8 @@
 			"link" : "/seriousgames/plant-game-one.html",
 			"open_tab": true
 		},  
-		"title" : "Plant Game One",
-		"text" : "Guess the Scientific name of a random plant given its Common name by typing it!"
+		"title" : "Plant Word Guru",
+		"text" : "A plant’s common name is given together with the plant’s image. Players guess the corresponding scientific name in a certain time frame."
 	},
     {
 		"id": 2,
@@ -18,8 +18,8 @@
 			"link" : "/seriousgames/plant-game-two.html",
 			"open_tab": true
 		},  
-		"title" : "Plant Game Two",
-		"text" : "Mobile-friendly version of the Plant Game, just tapping the correct Scientific name"
+		"title" : " Plant Word Guru II",
+		"text" : "A plant’s common name is given together with the plant’s image. Players guess the corresponding correct scientific name in a certain time frame from a set of 4 given scientific names."
 	},
 	{
 		"id": 3,
@@ -28,8 +28,8 @@
 			"link" : "/seriousgames/plant-game-three.html",
 			"open_tab": true
 		},  
-		"title" : "Plant Game Three",
-		"text" : "Tap the image that fits the provided Common plant name, or ask for its Scientific name!"
+		"title" : "1word4pics / 1wort4bilder",
+		"text" : "This game prototype shows the player a common plant name and the correct image has to be selected in a given time frame."
 	},
 	{
 		"id": 4,
@@ -38,8 +38,8 @@
 			"link" : "/seriousgames/plant-game-full.html",
 			"open_tab": true
 		},  
-		"title" : "Plant-a-Game",
-		"text" : "Full RDF-Plants game, including different types of questions, timeouts, feedback,..."
+		"title" : "Game Playground / Spielplatz",
+		"text" : "This prototype offers players a selection of different games."
 	},
 	{
 		"id": 5,
@@ -48,8 +48,8 @@
 			"link" : "/seriousgames/plant-game-drag.html",
 			"open_tab": true
 		},  
-		"title" : "Drag the Plant",
-		"text" : "Drag and drop each plant in its correct Scientific slot"
+		"title" : "Drop-the-word / Wort-drop",
+		"text" : "This game asks players to select the given common names of plants and match them with their corresponding scientific name by drag-and-drop function."
 	},
 	{
 		"id": 6,
@@ -58,8 +58,18 @@
 			"link" : "/seriousgames/plant-game-wordsearch.html",
 			"open_tab": true
 		},  
-		"title" : "Plant Wordsearch",
-		"text" : "Find plant names through a letter soup"
-	}
+		"title" : "Search4words / Wörtersuche",
+		"text" : "In search4words players need to find the set of given words in the crosswords field."
+	},
+	  {
+		  "id": 7,
+		  "image_src": "/conceptlights/img/conceptlights.png",
+		  "href" : {
+			  "link" : "https://concept-lights.herokuapp.com/",
+			  "open_tab": true
+		  },
+		  "title" : "Concept Lights / Konzeptlichter",
+		  "text" : "Concept Lights / Konzeptlichter visually explores concepts occurring in and across different questions within individual questionnaires. In addition, information concept grouping within questionnaires as well as collocation information is displayed."
+	  }
   ]
 }
