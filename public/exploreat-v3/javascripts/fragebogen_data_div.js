@@ -10,9 +10,7 @@ var processing = false;
 var ESToken = getToken();
 
 var esClient = new $.es.Client({
-    host: getESHost(),
-    headers: {
-        'Authorization' : "Bearer " + ESToken}
+    host: getESHost()
 });
 
 // AUTOMATIC INITIALIZATION
@@ -74,6 +72,9 @@ function createWords() {
 
     esClient.search({
         index: 'dboe-beleg-frage-fragebogen-lemma',
+        headers: {
+            'Authorization' : "Bearer " + ESToken
+        },
         size: 1000,
         body: {
             query : {
