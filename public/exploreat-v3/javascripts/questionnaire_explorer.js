@@ -51,7 +51,7 @@ var mainExports = {};
                         "aggs": {
                             "questionnaires": {
                                 "terms": {
-                                    "field": "questionnaire.keyword",
+                                    "field": "questionnaire.raw",
                                     "min_doc_count": 50,
                                     "order": {
                                         "_count": "desc"
@@ -88,17 +88,17 @@ var mainExports = {};
                                     },
                                     {
                                         "exists": {
-                                            "field": "sense.keyword"
+                                            "field": "sense.raw"
                                         }
                                     },
                                     {
                                         "exists": {
-                                            "field": "fullLemma.keyword"
+                                            "field": "fullLemma.raw"
                                         }
                                     },
                                     {
                                         "match": {
-                                            "questionnaire.keyword": {
+                                            "questionnaire.raw": {
                                                 "query": ui.item.value,
                                                 "type": "phrase"
                                             }
@@ -114,7 +114,7 @@ var mainExports = {};
                         "aggs": {
                             "senses": {
                                 "terms": {
-                                    "field": "sense.keyword",
+                                    "field": "sense.raw",
                                     "size": 50,
                                     "min_doc_count": 5,
                                     "order": {
@@ -124,7 +124,7 @@ var mainExports = {};
                                 "aggs": {
                                     "lemmas": {
                                         "terms": {
-                                            "field": "fullLemma.keyword",
+                                            "field": "fullLemma.raw",
                                             "size": 1000,
                                             "order": {
                                                 "_count": "desc"
