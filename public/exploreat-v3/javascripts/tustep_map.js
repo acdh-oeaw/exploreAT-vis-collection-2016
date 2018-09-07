@@ -443,6 +443,8 @@ var mainExports = {};
 
             function updateTimelineInfoLabels(geoFeatures){
 
+                timelineChart.xAxis().tickFormat(d3.format("0f"));
+
                 // Year labels
 
                 if(timelineChart.filters()[0] != undefined){
