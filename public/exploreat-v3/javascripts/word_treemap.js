@@ -112,9 +112,9 @@ function createWords(inputString) {
 
                         // For each lade get only those lemmas where the lade is the same
                         esClient.search({
-                            index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
-                            headers: {
-                                'Authorization' : "Bearer " + ESToken},
+                                index: 'dboe-beleg_bedeutung_lemma_v'+indexV,
+                                headers: {
+                                    'Authorization' : "Bearer " + ESToken},
                                 body: {
                                     query: {
                                         bool: {
@@ -177,7 +177,7 @@ function createWords(inputString) {
 
                     $.ajax({
                         type: "GET",
-                        url: "api/flickr/"+name,
+                        url: "/api/flickr/"+name,
                         dataType: "json",
                         async: true,
                         success: function (response) {
