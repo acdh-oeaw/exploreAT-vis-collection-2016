@@ -27,7 +27,7 @@
     "jsonwebtoken": "^7.2.1",
     "material-ui": "^1.0.0-alpha.14",
     "material-ui-icons": "^1.0.0-alpha.3",
-    "mongoose": "^4.6.5",
+    "mongoose": "^5.7.5",
     "morgan": "~1.6.1",
     "mysql": "^2.10.2",
     "node-persist": "0.0.11",
