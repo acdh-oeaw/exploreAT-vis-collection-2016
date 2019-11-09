@@ -29,7 +29,7 @@
     "material-ui-icons": "^1.0.0-alpha.3",
     "mongoose": "^5.7.5",
     "morgan": "~1.6.1",
-    "mysql": "^2.10.2",
+    "mysql": "^2.14.0",
     "node-persist": "0.0.11",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
